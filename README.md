@@ -1,4 +1,4 @@
-# CGW_THETAZ1_VFX_HDRIHandbook
+# CGW_THETAZ1_VFXHDRIHandbook
 
 ## ABOUT
 
