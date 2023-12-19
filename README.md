@@ -22,7 +22,7 @@
   - ThetaZ1.pts
 
 これらのファイルはリポジトリライセンスに則りCC BY-SA 4.0で提供されています。
-
+https://creativecommons.org/licenses/by-sa/4.0/
 
 
 ## TEHTA Z1 IDT(.icc)ファイルについて
