@@ -21,19 +21,23 @@
 - PTGui
   - ThetaZ1.pts
 
-これらのファイルはリポジトリライセンスに則りCC BY-SA 4.0で提供されています。
+これらのファイルはCC BY-SA 4.0で提供されています。
 
 https://creativecommons.org/licenses/by-sa/4.0/
 
 ## ダウンロードについて
 
 一部ファイルサイズの大きなバイナリファイルが含まれているためリリースページからのダウンロードをお願いします。
+
 リポジトリのソースコードについては主に設定関連と25MB未満のバイナリファイルの管理のために存在しています。
 
 [第3回：シンプルな現像・HDRI化フロー向け配布ファイル](https://github.com/cgslab/CGW_TEHTAZ1_VFXHDRIHandbook/releases/tag/CGW_HDRI_vol3)
 
+## 再配布ファイルについて
 
-## TEHTA Z1 IDT(.icc)ファイルについて
+本リポジトリで提供するファイルには一部再配布ファイルが含まれています。
+
+### TEHTA Z1 IDT(.icc)ファイルについて
 
 本リポジトリ内で提供しているTHETA Z1向けのIDT(.icc)ファイルに関しては、株式会社ロゴスコープ 亀村氏が制作して、同社サイト上で提供している内容を再配布しています。
 
@@ -41,7 +45,7 @@ https://www.logoscope.co.jp/development/2020/05/idt-for-theta/?fbclid=IwAR0urHEf
 
 ファイル名：**THETA-Z1-normalized-5000k-adaptation-whiteInput-Device-Transform-developed-by-logoscope.icc**
 
-## Elle Stone's ICC profileについて
+### Elle Stone's ICC profileについて
 
 本リポジトリ内で提供されているICCプロファイルは、Elle Stone's氏によってコンパイルされ、以下のリポジトリで提供されている内容を再配布しています。
 
