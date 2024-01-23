@@ -15,11 +15,20 @@
 - darktable
   - THETA_Z1_HDRI_IDT_REC2020_v2.dtstyle
   - THETA_Z1_HDR2EXR.dtstyle
+  - darktable_CGWHDRI_DevBatch.bat
 - blender
   - HDRI_STmap_node_16bit.blend
   - HDRI_STmap_node_32bit.blend
 - PTGui
   - ThetaZ1.pts
+ - Nuke関連
+  - Nuke_HDRI_Merge/Nuke_HDRI_Merge_v2.nk
+  - Nuke_HDRI_Merge/data/BIS_0000/0003/0004/0005.tif
+  - Nuke_HDRI_Merge/data/STMapPTGui_A.exr
+  - Nuke_HDRI_Merge/data/STMapPTGui_B.exr
+  - Nuke_HDRI_Merge/data/STMapPTGui_Mask.exr
+  - Nuke_HDRI_Merge/data/UVMap.exr
+  - Nuke_HDRI_Merge/data/XH2_Plate_ACEScg.exr
 
 これらのファイルはCC BY-SA 4.0で提供されています。
 
@@ -32,6 +41,7 @@ https://creativecommons.org/licenses/by-sa/4.0/
 リポジトリのソースコードについては主に設定関連と25MB未満のバイナリファイルの管理のために存在しています。
 
 [第3回：シンプルな現像・HDRI化フロー向け配布ファイル](https://github.com/cgslab/CGW_TEHTAZ1_VFXHDRIHandbook/releases/tag/CGW_HDRI_vol3)
+[第4回：Nukeを用いた高品質フロー向け配布ファイル](https://github.com/cgslab/CGW_TEHTAZ1_VFXHDRIHandbook/releases/tag/CGW_HDRI_vol4)
 
 ## 再配布ファイルについて
 
