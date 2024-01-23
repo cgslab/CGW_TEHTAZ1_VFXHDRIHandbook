@@ -41,6 +41,7 @@ https://creativecommons.org/licenses/by-sa/4.0/
 リポジトリのソースコードについては主に設定関連と25MB未満のバイナリファイルの管理のために存在しています。
 
 [第3回：シンプルな現像・HDRI化フロー向け配布ファイル](https://github.com/cgslab/CGW_TEHTAZ1_VFXHDRIHandbook/releases/tag/CGW_HDRI_vol3)
+
 [第4回：Nukeを用いた高品質フロー向け配布ファイル](https://github.com/cgslab/CGW_TEHTAZ1_VFXHDRIHandbook/releases/tag/CGW_HDRI_vol4)
 
 ## 再配布ファイルについて
