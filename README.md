@@ -21,7 +21,7 @@
   - HDRI_STmap_node_32bit.blend
 - PTGui
   - ThetaZ1.pts
- - Nuke関連
+- Nuke関連
   - Nuke_HDRI_Merge/Nuke_HDRI_Merge_v2.nk
   - Nuke_HDRI_Merge/data/BIS_0000/0003/0004/0005.tif
   - Nuke_HDRI_Merge/data/STMapPTGui_A.exr
