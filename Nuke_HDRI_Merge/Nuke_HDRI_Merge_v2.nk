@@ -1,0 +1,7729 @@
+#! C:/Program Files/Nuke14.0v2/nuke-14.0.2.dll -nx
+version 14.0 v2
+define_window_layout_xml {<?xml version="1.0" encoding="UTF-8"?>
+<layout version="1.0">
+    <window x="0" y="0" w="1917" h="1000" screen="0">
+        <splitter orientation="1">
+            <split size="40"/>
+            <dock id="" hideTitles="1" activePageId="Toolbar.1">
+                <page id="Toolbar.1"/>
+            </dock>
+            <split size="1254" stretch="1"/>
+            <splitter orientation="2">
+                <split size="562"/>
+                <dock id="" activePageId="Viewer.1">
+                    <page id="Viewer.1"/>
+                </dock>
+                <split size="396"/>
+                <dock id="" activePageId="DAG.1">
+                    <page id="DAG.1"/>
+                    <page id="Curve Editor.1"/>
+                    <page id="DopeSheet.1"/>
+                </dock>
+            </splitter>
+            <split size="615"/>
+            <dock id="" activePageId="Properties.1" focus="true">
+                <page id="Properties.1"/>
+                <page id="uk.co.thefoundry.backgroundrenderview.1"/>
+                <page id="Scenegraph.1"/>
+            </dock>
+        </splitter>
+    </window>
+</layout>
+}
+Root {
+ inputs 0
+ name Z:/project/cgslab/CGW_HDRI/202309_CGW/CGW_HDRIvol4/Nuke_HDRI_Merge/Nuke_HDRI_Merge_v2.nk
+ project_directory "\[python \{nuke.script_directory()\}]"
+ format "7200 3600 0 0 7200 3600 1 "
+ proxy_type scale
+ proxy_format "1024 778 0 0 1024 778 1 1K_Super_35(full-ap)"
+ colorManagement OCIO
+ OCIO_config aces_1.2
+ defaultViewerLUT "OCIO LUTs"
+ workingSpaceLUT scene_linear
+ monitorLut "sRGB (ACES)"
+ monitorOutLUT "sRGB (ACES)"
+ int8Lut matte_paint
+ int16Lut "Utility - Rec.2020 - Camera"
+ logLut compositing_log
+ floatLut scene_linear
+}
+BackdropNode {
+ inputs 0
+ name HDRI
+ label "HDRI Merge"
+ note_font_size 24
+ xpos -633
+ ypos -1287
+ bdwidth 820
+ bdheight 602
+}
+BackdropNode {
+ inputs 0
+ name STMapStitch
+ label STMapを使用したStitch
+ note_font_size 24
+ xpos -853
+ ypos -644
+ bdwidth 584
+ bdheight 667
+}
+StickyNote {
+ inputs 0
+ name StickyNote3
+ label "\n”Exposure_HDRI”\n”HDRI_Merge”のEVをOFFにして、EV値、任意の撮影設定\nバックプレートなど外部のメタデータ合わせいずれかの補正が行なえます。\n\n\n"
+ xpos 223
+ ypos -1031
+}
+StickyNote {
+ inputs 0
+ name StickyNote1
+ label "”HDRI_Merge”\n露出オーバーしていないシャッタースピードの遅い(明るい)画像から順に接続します。最大9枚まで\nExifデータをもとにHDRマージされます。※補正処理は無いのでリニア現像された画像に限ります。\nEVのパラメータで適正露出に補正します。\nWhite Balanceの調整が必要な場合任意で調整します。\n\n「darktable THETA Z1 IDT optimize」のチェックボックスは、本来現像後のIDTを\ndarktableで事前に適応していることによる露出差分とホワイトバランスの簡易的な補正値の適応になります。\nNEWはホワイトバランス修正版のIDTを使用の場合で露出補正のみ行います\n\nEV check Tab　画像の接続が間違っていないか各画像のEV値の確認が行なえます\n\nSun Tabで太陽の任意補完、追加が行えます(簡易処理)\n\n※ゴースト除去、位置補正は含まれません。インプット画像を部分的にマスク処理することで簡易処理可\n\n\n\nCGSLAB LLC. \nhttp://site.cgslab.info/\n\n\n\n\n\n"
+ xpos -616
+ ypos -1044
+}
+StickyNote {
+ inputs 0
+ name StickyNote4
+ label "\n”Add_Sun”\nステッチ後に太陽の補完追加をする場合の簡易ノード\nInpaint=クランプした光源エリアのインペイント処理\nAddGlow＝グロー追加\n※どちらもなじませの見た目処理として\n"
+ xpos 222
+ ypos -936
+}
+StickyNote {
+ inputs 0
+ name StickyNote5
+ label "\n”HDRI_Lux_Meter”\nHDRIから照度値を計算\nステッチ済みの画像のみ対応。\nEV補正値をInputEVに指定\n"
+ xpos 223
+ ypos -841
+}
+StickyNote {
+ inputs 0
+ name StickyNote6
+ label "\n\"ColorMatch\"\nHDRIとバックプレートの同じ箇所をピックして色合わせ、露出合わせ\n\n"
+ xpos 221
+ ypos -753
+}
+StickyNote {
+ inputs 0
+ name StickyNote2
+ label "\n”SetColorspace”\nRead/Write１ NodeのColorspace一括変換用スクリプトボタン\n変更したいノードを選んで希望のColorspaceを選択\n\n\n"
+ xpos 225
+ ypos -1135
+}
+Read {
+ inputs 0
+ file_type exr
+ file ./data/UVMap.exr
+ format "7296 3648 0 0 7296 3648 1 "
+ origset true
+ version 3
+ colorspace "Utility - Raw"
+ raw true
+ name Read6
+ xpos -810
+ ypos -309
+}
+StickyNote {
+ inputs 0
+ name StickyNote7
+ label "Utility - Rec.2020 - Camera"
+ xpos -193
+ ypos -1270
+}
+Read {
+ inputs 0
+ file_type tiff
+ file "\[file dirname \[value root.name]]/data/BIS_0003.tif"
+ format "7296 3648 0 0 7296 3648 1 "
+ origset true
+ name Read10
+ xpos -331
+ ypos -1245
+}
+Read {
+ inputs 0
+ file_type tiff
+ file "\[file dirname \[value root.name]]/data/BIS_0000.tif"
+ format "7296 3648 0 0 7296 3648 1 "
+ origset true
+ name Read9
+ xpos -213
+ ypos -1245
+}
+Read {
+ inputs 0
+ file_type tiff
+ file "\[file dirname \[value root.name]]/data/BIS_0004.tif"
+ format "7296 3648 0 0 7296 3648 1 "
+ origset true
+ name Read11
+ xpos -98
+ ypos -1245
+}
+Read {
+ inputs 0
+ file_type tiff
+ file "\[file dirname \[value root.name]]/data/BIS_0005.tif"
+ format "7296 3648 0 0 7296 3648 1 "
+ origset true
+ colorspace "Utility - Rec.2020 - Camera"
+ name Read1
+ xpos 14
+ ypos -1245
+}
+Group {
+ inputs 4
+ name HDRI_Merge
+ knobChanged "n = nuke.thisNode()\nk = nuke.thisKnob() \n\nif k.name()  in ('evon', 'showPanel'):\n    evon = n\['evon'].value()\n    if evon ==  0:\n        n\['EV'].setEnabled(False)\n    elif evon ==  1:\n        n\['EV'].setEnabled(True)\n   \n\nif k.name()  in ('WhiteBalance', 'showPanel'):\n    WhiteBalance = n\['WhiteBalance'].value()\n    if WhiteBalance ==  0:\n        n\['WhiteBalanceTemp'].setEnabled(False)\n        n\['WhiteBalanceTint'].setEnabled(False)\n    elif WhiteBalance ==  1:\n        n\['WhiteBalanceTemp'].setEnabled(True)\n        n\['WhiteBalanceTint'].setEnabled(True)\n"
+ tile_color 0x32a9ffff
+ label "\[value Name]\n\[value EV]EV"
+ note_font Verdana
+ xpos -150
+ ypos -1095
+ addUserKnob {20 HDRIMerge l "HDRI Merge"}
+ addUserKnob {26 Input l "Shutter speed" t "In1:Slow Shutter~ In9:fastShutter" T "Slow In1>fast Max In9"}
+ addUserKnob {6 evon l "" +STARTLINE +STARTLINE}
+ evon true
+ addUserKnob {7 EV t OutputEV -STARTLINE R -6 24}
+ EV 15
+ addUserKnob {1 Name l Name(MetaData) t "default\n\[lindex \[split \[metadata input/filename] \"/\"] end-2]"}
+ Name "\[lindex \[split \[metadata input/filename] \"/\"] end-2]"
+ addUserKnob {26 ""}
+ addUserKnob {6 darktable_optimize l "darktable THETA Z1 IDT optimize" +STARTLINE}
+ darktable_optimize true
+ addUserKnob {4 version l "" t "NEW\nTHETA Z1 normalized 5000k adaptation white (Input Device Transform developed by logoscope) \n\nOLD \nCGWORLD vol.262 distribute" -STARTLINE M {NEW OLD "" "" "" ""}}
+ addUserKnob {26 ""}
+ addUserKnob {20 WhiteBalance_1 l "" +STARTLINE n 1}
+ WhiteBalance_1 0
+ addUserKnob {6 WhiteBalance l "White Balance" +STARTLINE}
+ addUserKnob {7 WhiteBalanceTemp l "Color Temp" +DISABLED R -0.3 0.3}
+ addUserKnob {7 WhiteBalanceTint l Tint +DISABLED R -0.1 0.1}
+ addUserKnob {20 endGroup_1 l endGroup n -1}
+ addUserKnob {26 ""}
+ addUserKnob {20 Lighting l "Lighting condition((reference value))" t 参考照明条件 n 1}
+ addUserKnob {26 Location l "" t "EV\n16 :        雪の晴れの日\n15 :        晴天\n14 :        うす曇り、晴れ\n13 :        曇り\n12 :        曇り、晴れの日陰、日の出・日の入り\n9 to 11 : 日の出の直前と日没後のブルーアワー\n8 :         明るい街灯、明るい室内照明\n5 to 7 :  室内照明、明るい窓からの光\n2 to 4 :   薄暗い窓の光\n-1 to 1 :  日の出前の薄暗い朝、日没後の暗い夜\n-2 to -3 : 夜、満月からの月明かり" +STARTLINE T "EV\n16 :        Snow on a sunny day\n15 :        Full sunlight\n14 :        Hazy, some clouds,Sunny day\n13 :        Cloudy\n12 :        Overcast, shady areas on a sunny day, Sunrise / sunset\n9 to 11 : Just before sunrise and after sunset, the blue hour.\n8 :         Bright street light, bright indoor lighting\n5 to 7 :   Indoor lighting. Bright window light.\n2 to 4 :   Dim window light.\n-1 to 1 :  Dark morning before sunrise, dark evening after sunset.\n-2 to -3 : Night, Moonlight from a full moon.\n"}
+ addUserKnob {20 endGroup n -1}
+ addUserKnob {26 credit l "" +STARTLINE T "\nCGSLAB LLC. \nhttp://site.cgslab.info/"}
+ addUserKnob {20 EVcheck l "EV check"}
+ addUserKnob {41 EV_1 l In1_EV T Multiply1.EV}
+ addUserKnob {7 double l "EV step0" -STARTLINE}
+ double {{Multiply1.EV-Multiply1.EV}}
+ addUserKnob {41 EV_2 l In2_EV T Multiply2.EV}
+ addUserKnob {7 double_1 l "EV step1" -STARTLINE}
+ double_1 {{Multiply2.EV?Multiply1.EV-Multiply2.EV:0}}
+ addUserKnob {41 EV_3 l In3_EV T Multiply3.EV}
+ addUserKnob {7 double_2 l "EV step2" -STARTLINE}
+ double_2 {{Multiply3.EV?Multiply2.EV-Multiply3.EV:0}}
+ addUserKnob {41 EV_4 l In4_EV T Multiply4.EV}
+ addUserKnob {7 double_3 l "EV step3" -STARTLINE}
+ double_3 {{Multiply4.EV?Multiply3.EV-Multiply4.EV:0}}
+ addUserKnob {41 EV_5 l In5_EV T Multiply5.EV}
+ addUserKnob {7 double_4 l "EV step4" -STARTLINE}
+ double_4 {{Multiply5.EV?Multiply4.EV-Multiply5.EV:0}}
+ addUserKnob {41 EV_6 l In6_EV T Multiply6.EV}
+ addUserKnob {7 double_5 l "EV step5" -STARTLINE}
+ double_5 {{Multiply6.EV?Multiply5.EV-Multiply6.EV:0}}
+ addUserKnob {41 EV_7 l In7_EV T Multiply7.EV}
+ addUserKnob {7 double_6 l "EV step6" -STARTLINE}
+ double_6 {{Multiply7.EV?Multiply6.EV-Multiply7.EV:0}}
+ addUserKnob {41 EV_8 l In8_EV T Multiply8.EV}
+ addUserKnob {7 double_7 l "EV step7" -STARTLINE}
+ double_7 {{Multiply8.EV?Multiply7.EV-Multiply8.EV:0}}
+ addUserKnob {41 EV_9 l In9_EV T Multiply9.EV}
+ addUserKnob {7 double_8 l "EV step8" -STARTLINE}
+ double_8 {{Multiply9.EV?Multiply8.EV-Multiply9.EV:0}}
+ addUserKnob {20 Sun l "Add Sun"}
+ addUserKnob {6 AddSun +STARTLINE}
+ addUserKnob {7 power l Power R -5 5}
+ addUserKnob {18 color_sun l Color}
+ color_sun {1 1 1}
+ addUserKnob {6 color_sun_panelDropped l "panel dropped state" -STARTLINE +HIDDEN}
+ addUserKnob {6 color_rgb_panelDropped l "panel dropped state" +HIDDEN +STARTLINE}
+ color_rgb_panelDropped true
+ addUserKnob {41 scale l Scale T Transform2.scale}
+ addUserKnob {41 translate l Translate T Transform2.translate}
+ addUserKnob {41 blur l Blur T Blur2.size}
+ addUserKnob {20 Inpaint_G l Inpaint n 1}
+ addUserKnob {6 Inpaint +STARTLINE}
+ addUserKnob {7 Scale}
+ Scale 0.4
+ addUserKnob {41 Blursize l Blur T Blur1.size}
+ addUserKnob {41 detailAmount l DetailAmount T Inpaint1.detailAmount}
+ addUserKnob {20 endGroup_2 l endGroup n -1}
+ addUserKnob {20 AddGlow n 1}
+ addUserKnob {6 Glow +STARTLINE}
+ addUserKnob {41 GlowSize T NaturalGlow1.GlowSize}
+ addUserKnob {41 Value T NaturalGlow1.Value}
+ addUserKnob {20 endGroup_3 l endGroup n -1}
+}
+ Multiply {
+  inputs 0
+  value {{(evon?EV:0)}}
+  name EV_meta
+  xpos 620
+  ypos 945
+ }
+ ModifyMetaData {
+  inputs 0
+  metadata {
+   {set EV "\[value EV_meta.value]"}
+   {set Name "\[value Name]"}
+  }
+  name ModifyMetaData2
+  xpos 620
+  ypos 1023
+ }
+ Reformat {
+  inputs 0
+  format "256 256 0 0 256 256 1 square_256"
+  name Reformat1
+  xpos 180
+  ypos 249
+ }
+ Radial {
+  area {0 0 256 256}
+  softness {{parent.softness_sun.main}}
+  color {1 1 1 1}
+  color_panelDropped true
+  name Radial1
+  xpos 180
+  ypos 303
+ }
+set N6d5d7c00 [stack 0]
+ Transform {
+  scale 0.07
+  center {128 128}
+  name Transform1
+  xpos 180
+  ypos 351
+ }
+ Transform {
+  center {128 128}
+  name Transform2
+  xpos 180
+  ypos 375
+ }
+ Unpremult {
+  name Unpremult1
+  xpos 180
+  ypos 423
+ }
+ Grade {
+  whitepoint {{(white.r*0.2126)+(white.g*0.7152)+(white.b*0.0722)}}
+  white {{parent.color_sun.r} {parent.color_sun.g} {parent.color_sun.b} 1}
+  name Grade1
+  xpos 180
+  ypos 471
+ }
+ Multiply {
+  channels rgb
+  value {{2**(24+power)}}
+  name Multiply11
+  xpos 180
+  ypos 519
+ }
+ Premult {
+  name Premult1
+  xpos 180
+  ypos 563
+ }
+ Blur {
+  size 1
+  name Blur2
+  xpos 180
+  ypos 609
+ }
+set N6d4a3800 [stack 0]
+push $N6d4a3800
+push $N6d5d7c00
+ Transform {
+  translate {{parent.Transform2.translate.main.x} {parent.Transform2.translate.main.y}}
+  scale {{parent.Scale.main}}
+  center {128 128}
+  name Transform3
+  xpos 401
+  ypos 303
+ }
+set N6d4a3c00 [stack 0]
+push $N6d4a3c00
+ ModifyMetaData {
+  inputs 0
+  metadata {
+   {set exif/2/FNumber 1}
+   {set exif/2/ExposureTime 1}
+   {set exif/2/ISOSpeedRatings 100}
+  }
+  name ModifyMetaData1
+  xpos -480
+  ypos -442
+ }
+set N6d4e6000 [stack 0]
+ Input {
+  inputs 0
+  name In9
+  xpos -370
+  ypos -538
+  number 8
+ }
+ Keyer {
+  operation "luminance key"
+  range {0.0002 0.1 1 1}
+  name Keyer8
+  xpos -370
+  ypos -496
+ }
+ CopyMetaData {
+  inputs 2
+  mergeMode Meta+Image
+  name CopyMetaData9
+  xpos -370
+  ypos -346
+ }
+ Multiply {
+  channels rgb
+  value {{2**(EV)}}
+  maskChannelInput rgba.alpha
+  name Multiply9
+  label "EV \[value Label]"
+  xpos -370
+  ypos -311
+  addUserKnob {20 EVV l EV}
+  addUserKnob {7 EV}
+  EV {{"(log(\[metadata exif/2/FNumber]**2/\[metadata exif/2/ExposureTime])/log(2)-log(\[metadata exif/2/ISOSpeedRatings]/100)/log(2))"}}
+  addUserKnob {7 Label}
+  Label {{rint(EV*10)/10}}
+ }
+ Dot {
+  name Dot8
+  xpos -336
+  ypos 138
+ }
+push $N6d4e6000
+ Input {
+  inputs 0
+  name In8
+  xpos -260
+  ypos -538
+  number 7
+ }
+ Keyer {
+  operation "luminance key"
+  range {0.0002 0.1 1 1}
+  name Keyer7
+  xpos -260
+  ypos -496
+ }
+ CopyMetaData {
+  inputs 2
+  mergeMode Meta+Image
+  name CopyMetaData8
+  xpos -260
+  ypos -346
+ }
+ Multiply {
+  channels rgb
+  value {{2**(EV)}}
+  maskChannelInput rgba.alpha
+  name Multiply8
+  label "EV \[value Label]"
+  xpos -260
+  ypos -311
+  addUserKnob {20 EVV l EV}
+  addUserKnob {7 EV}
+  EV {{"(log(\[metadata exif/2/FNumber]**2/\[metadata exif/2/ExposureTime])/log(2)-log(\[metadata exif/2/ISOSpeedRatings]/100)/log(2))"}}
+  addUserKnob {7 Label}
+  Label {{rint(EV*10)/10}}
+ }
+ Dot {
+  name Dot7
+  xpos -226
+  ypos 90
+ }
+push $N6d4e6000
+ Input {
+  inputs 0
+  name In7
+  xpos -150
+  ypos -538
+  number 6
+ }
+ Keyer {
+  operation "luminance key"
+  range {0.0002 0.1 1 1}
+  name Keyer6
+  xpos -150
+  ypos -496
+ }
+ CopyMetaData {
+  inputs 2
+  mergeMode Meta+Image
+  name CopyMetaData7
+  xpos -150
+  ypos -346
+ }
+ Multiply {
+  channels rgb
+  value {{2**(EV)}}
+  maskChannelInput rgba.alpha
+  name Multiply7
+  label "EV \[value Label]"
+  xpos -150
+  ypos -311
+  addUserKnob {20 EVV l EV}
+  addUserKnob {7 EV}
+  EV {{"(log(\[metadata exif/2/FNumber]**2/\[metadata exif/2/ExposureTime])/log(2)-log(\[metadata exif/2/ISOSpeedRatings]/100)/log(2))"}}
+  addUserKnob {7 Label}
+  Label {{rint(EV*10)/10}}
+ }
+ Dot {
+  name Dot6
+  xpos -116
+  ypos 42
+ }
+push $N6d4e6000
+ Input {
+  inputs 0
+  name In6
+  xpos -40
+  ypos -538
+  number 5
+ }
+ Keyer {
+  operation "luminance key"
+  range {0.0002 0.1 1 1}
+  name Keyer5
+  xpos -40
+  ypos -496
+ }
+ CopyMetaData {
+  inputs 2
+  mergeMode Meta+Image
+  name CopyMetaData6
+  xpos -40
+  ypos -346
+ }
+ Multiply {
+  channels rgb
+  value {{2**(EV)}}
+  maskChannelInput rgba.alpha
+  name Multiply6
+  label "EV \[value Label]"
+  xpos -40
+  ypos -311
+  addUserKnob {20 EVV l EV}
+  addUserKnob {7 EV}
+  EV {{"(log(\[metadata exif/2/FNumber]**2/\[metadata exif/2/ExposureTime])/log(2)-log(\[metadata exif/2/ISOSpeedRatings]/100)/log(2))"}}
+  addUserKnob {7 Label}
+  Label {{rint(EV*10)/10}}
+ }
+ Dot {
+  name Dot4
+  xpos -6
+  ypos -6
+ }
+push $N6d4e6000
+ Input {
+  inputs 0
+  name In5
+  xpos 70
+  ypos -538
+  number 4
+ }
+ Keyer {
+  operation "luminance key"
+  range {0.0002 0.1 1 1}
+  name Keyer4
+  xpos 70
+  ypos -496
+ }
+ CopyMetaData {
+  inputs 2
+  mergeMode Meta+Image
+  name CopyMetaData5
+  xpos 70
+  ypos -346
+ }
+ Multiply {
+  channels rgb
+  value {{2**(EV)}}
+  maskChannelInput rgba.alpha
+  name Multiply5
+  label "EV \[value Label]"
+  xpos 70
+  ypos -311
+  addUserKnob {20 EVV l EV}
+  addUserKnob {7 EV}
+  EV {{"(log(\[metadata exif/2/FNumber]**2/\[metadata exif/2/ExposureTime])/log(2)-log(\[metadata exif/2/ISOSpeedRatings]/100)/log(2))"}}
+  addUserKnob {7 Label}
+  Label {{rint(EV*10)/10}}
+ }
+ Dot {
+  name Dot5
+  xpos 104
+  ypos -54
+ }
+push $N6d4e6000
+ Input {
+  inputs 0
+  name In4
+  xpos 180
+  ypos -538
+  number 3
+ }
+ Keyer {
+  operation "luminance key"
+  range {0.0002 0.1 1 1}
+  name Keyer3
+  xpos 180
+  ypos -496
+ }
+ CopyMetaData {
+  inputs 2
+  mergeMode Meta+Image
+  name CopyMetaData4
+  xpos 180
+  ypos -346
+ }
+ Multiply {
+  channels rgb
+  value {{2**(EV)}}
+  maskChannelInput rgba.alpha
+  name Multiply4
+  label "EV \[value Label]"
+  xpos 180
+  ypos -311
+  addUserKnob {20 EVV l EV}
+  addUserKnob {7 EV}
+  EV {{"(log(\[metadata exif/2/FNumber]**2/\[metadata exif/2/ExposureTime])/log(2)-log(\[metadata exif/2/ISOSpeedRatings]/100)/log(2))"}}
+  addUserKnob {7 Label}
+  Label {{rint(EV*10)/10}}
+ }
+ Dot {
+  name Dot3
+  xpos 214
+  ypos -102
+ }
+push $N6d4e6000
+ Input {
+  inputs 0
+  name In3
+  xpos 290
+  ypos -538
+  number 2
+ }
+ Keyer {
+  operation "luminance key"
+  range {0.0002 0.1 1 1}
+  name Keyer2
+  xpos 290
+  ypos -496
+ }
+ CopyMetaData {
+  inputs 2
+  mergeMode Meta+Image
+  name CopyMetaData3
+  xpos 290
+  ypos -346
+ }
+ Multiply {
+  channels rgb
+  value {{2**(EV)}}
+  maskChannelInput rgba.alpha
+  name Multiply3
+  label "EV \[value Label]"
+  xpos 290
+  ypos -311
+  addUserKnob {20 EVV l EV}
+  addUserKnob {7 EV}
+  EV {{"(log(\[metadata exif/2/FNumber]**2/\[metadata exif/2/ExposureTime])/log(2)-log(\[metadata exif/2/ISOSpeedRatings]/100)/log(2))"}}
+  addUserKnob {7 Label}
+  Label {{rint(EV*10)/10}}
+ }
+ Dot {
+  name Dot2
+  xpos 324
+  ypos -150
+ }
+push $N6d4e6000
+ Input {
+  inputs 0
+  name In2
+  xpos 400
+  ypos -538
+  number 1
+ }
+ Keyer {
+  operation "luminance key"
+  range {0.0002 0.1 1 1}
+  name Keyer1
+  xpos 400
+  ypos -496
+ }
+ CopyMetaData {
+  inputs 2
+  mergeMode Meta+Image
+  name CopyMetaData2
+  xpos 400
+  ypos -346
+ }
+ Multiply {
+  channels rgb
+  value {{2**(EV)}}
+  maskChannelInput rgba.alpha
+  name Multiply2
+  label "EV \[value Label]"
+  xpos 400
+  ypos -311
+  addUserKnob {20 EVV l EV}
+  addUserKnob {7 EV}
+  EV {{"(log(\[metadata exif/2/FNumber]**2/\[metadata exif/2/ExposureTime])/log(2)-log(\[metadata exif/2/ISOSpeedRatings]/100)/log(2))"}}
+  addUserKnob {7 Label}
+  Label {{rint(EV*10)/10}}
+ }
+ Dot {
+  name Dot1
+  xpos 434
+  ypos -199
+ }
+push $N6d4e6000
+ Input {
+  inputs 0
+  name In1
+  xpos 510
+  ypos -538
+ }
+ Shuffle {
+  alpha white
+  name Shuffle2
+  xpos 510
+  ypos -490
+ }
+ CopyMetaData {
+  inputs 2
+  mergeMode Meta+Image
+  name CopyMetaData1
+  xpos 510
+  ypos -346
+ }
+ Multiply {
+  channels rgb
+  value {{2**(EV)}}
+  name Multiply1
+  label "EV \[value Label]"
+  xpos 510
+  ypos -304
+  addUserKnob {20 EVV l EV}
+  addUserKnob {7 EV}
+  EV {{"(log(\[metadata exif/2/FNumber]**2/\[metadata exif/2/ExposureTime])/log(2)-log(\[metadata exif/2/ISOSpeedRatings]/100)/log(2))"}}
+  addUserKnob {7 Label}
+  Label {{rint(EV*10)/10}}
+ }
+ Merge2 {
+  inputs 2
+  name Merge1
+  xpos 510
+  ypos -202
+ }
+ Merge2 {
+  inputs 2
+  name Merge2
+  xpos 510
+  ypos -153
+ }
+ Merge2 {
+  inputs 2
+  name Merge3
+  xpos 510
+  ypos -105
+ }
+ Merge2 {
+  inputs 2
+  name Merge4
+  xpos 510
+  ypos -57
+ }
+ Merge2 {
+  inputs 2
+  name Merge5
+  xpos 510
+  ypos -9
+ }
+ Merge2 {
+  inputs 2
+  name Merge6
+  xpos 510
+  ypos 39
+ }
+ Merge2 {
+  inputs 2
+  name Merge7
+  xpos 510
+  ypos 87
+ }
+ Merge2 {
+  inputs 2
+  name Merge8
+  xpos 510
+  ypos 135
+ }
+set N6d253000 [stack 0]
+ Inpaint2 {
+  inputs 2
+  fillRegion "Matte Alpha"
+  LABColourSpace true
+  detailAmount 0.2
+  center {3600 1800}
+  name Inpaint1
+  xpos 401
+  ypos 375
+  disable {{!(Inpaint*parent.AddSun)}}
+ }
+ Merge2 {
+  inputs 2
+  operation mask
+  name Merge10
+  xpos 620
+  ypos 375
+ }
+ Blur {
+  size 20
+  name Blur1
+  xpos 620
+  ypos 441
+ }
+push $N6d253000
+ Merge2 {
+  inputs 2
+  name Merge11
+  xpos 510
+  ypos 519
+  disable {{!Inpaint}}
+ }
+ Merge2 {
+  inputs 2
+  name Merge9
+  xpos 510
+  ypos 615
+  disable {{!(parent.AddSun)}}
+ }
+ Group {
+  inputs 2
+  name NaturalGlow1
+  knobChanged "n = nuke.thisNode()\nk = nuke.thisKnob() \n\nif k.name()  in ('lightwrap', 'showPanel'):\n    lightwrap = n\['lightwrap'].value()\n    if lightwrap ==  0:\n        n\['Lightwrap'].setVisible(False)\n        n\['View'].setVisible(False)\n        n\['BGBlur'].setVisible(False)\n    elif lightwrap ==  1:\n        n\['Lightwrap'].setVisible(True)\n        n\['View'].setVisible(True)\n        n\['BGBlur'].setVisible(True)\nif k.name()  in ('Mask', 'showPanel'):\n    Mask = n\['Mask'].value()\n    if Mask ==  0:\n        n\['mask'].setEnabled(False)\n        n\['invert'].setEnabled(False)\n    elif Mask ==  1:\n        n\['mask'].setEnabled(True)\n        n\['invert'].setEnabled(True)\nif k.name()  in ('color', 'showPanel'):\n    color = n\['color'].value()\n    if color ==  0:\n        n\['ColorBalance'].setEnabled(False)\n    elif color ==  1:\n        n\['ColorBalance'].setEnabled(True)\n"
+  tile_color 0xff9455ff
+  xpos 510
+  ypos 663
+  disable {{!(Glow*parent.AddSun)}}
+  addUserKnob {20 NaturalGlow}
+  addUserKnob {4 Mode M {Plus Screen Over Max GlowOnly "" "" "" "" "" ""}}
+  addUserKnob {6 lightwrap l "Lightwrap Mode(Use bg)" -STARTLINE}
+  addUserKnob {6 Mask l "UseInputMask   " +STARTLINE}
+  Mask true
+  addUserKnob {41 mask -STARTLINE T ChannelMerge1.A}
+  addUserKnob {6 invert -STARTLINE}
+  addUserKnob {26 ""}
+  addUserKnob {7 GlowSize R 0 10}
+  GlowSize 0.5
+  addUserKnob {7 Value R 0 5}
+  Value 0.7
+  addUserKnob {6 color l ColorBalance +STARTLINE}
+  addUserKnob {41 ColorBalance l "" -STARTLINE T Grade1.whiteBalance}
+  addUserKnob {26 Lightwrap +HIDDEN}
+  addUserKnob {6 View l "View  " +HIDDEN +STARTLINE}
+  addUserKnob {7 BGBlur l "BG Blur" -STARTLINE +HIDDEN R 0 100}
+  addUserKnob {26 ""}
+  addUserKnob {6 ThresholdView l Threshold(Mask)View +STARTLINE}
+  addUserKnob {41 blackpoint T Grade2.blackpoint}
+  addUserKnob {41 whitepoint T Grade2.whitepoint}
+  addUserKnob {41 gamma T Grade2.gamma}
+  addUserKnob {26 ""}
+  addUserKnob {4 Alpha l AlphaOut M {img+Glow Glow img a1 "" "" "" "" ""}}
+  Alpha img
+ }
+  Input {
+   inputs 0
+   name bg
+   xpos -1985
+   ypos -929
+   number 2
+  }
+  Blur {
+   size {{parent.BGBlur}}
+   name Blur13
+   xpos -1985
+   ypos -784
+  }
+set N6d08d000 [stack 0]
+  Dot {
+   name Dot61
+   xpos -1951
+   ypos 1295
+  }
+  Input {
+   inputs 0
+   name mask
+   xpos -1556
+   ypos -924
+   number 1
+  }
+  Input {
+   inputs 0
+   name img
+   xpos -1777
+   ypos -924
+  }
+  Dot {
+   name Dot59
+   xpos -1743
+   ypos -860
+  }
+set N6d0c2000 [stack 0]
+  Dot {
+   name Dot60
+   xpos -1841
+   ypos -860
+  }
+  Invert {
+   channels alpha
+   name Invert3
+   xpos -1875
+   ypos -828
+  }
+push $N6d08d000
+  Merge2 {
+   inputs 2
+   operation mask
+   name Merge21
+   xpos -1875
+   ypos -778
+  }
+push $N6d0c2000
+  Switch {
+   inputs 2
+   which {{parent.lightwrap}}
+   name Switch5
+   xpos -1777
+   ypos -740
+  }
+  Dot {
+   name Dot44
+   xpos -1743
+   ypos -678
+  }
+set N6d0c3400 [stack 0]
+  Dot {
+   name Dot45
+   xpos -1627
+   ypos -678
+  }
+set N6d0c3800 [stack 0]
+  ChannelMerge {
+   inputs 2
+   operation divide
+   name ChannelMerge1
+   xpos -1556
+   ypos -690
+  }
+  Invert {
+   name Invert2
+   xpos -1556
+   ypos -640
+   disable {{1-parent.invert}}
+  }
+push $N6d0c3800
+  Dot {
+   name Dot43
+   xpos -1627
+   ypos -592
+  }
+  ShuffleCopy {
+   inputs 2
+   name ShuffleCopy1
+   xpos -1556
+   ypos -596
+  }
+  Premult {
+   name Premult3
+   xpos -1556
+   ypos -570
+  }
+push $N6d0c3400
+  Dot {
+   name Dot1
+   xpos -1743
+   ypos -526
+  }
+set N6d0eb000 [stack 0]
+  Switch {
+   inputs 2
+   which {{parent.Mask}}
+   name Switch4
+   xpos -1556
+   ypos -530
+  }
+set N6d0eb400 [stack 0]
+  Saturation {
+   saturation 0
+   name Saturation1
+   xpos -1329
+   ypos -530
+  }
+  Grade {
+   name Grade2
+   xpos -1329
+   ypos -500
+  }
+  Shuffle {
+   green red
+   blue red
+   alpha red
+   name Shuffle2
+   xpos -1329
+   ypos -429
+  }
+set N6e76e000 [stack 0]
+push $N6d0eb400
+  ShuffleCopy {
+   inputs 2
+   name ShuffleCopy3
+   xpos -1452
+   ypos -429
+  }
+set N6e76e400 [stack 0]
+  Shuffle {
+   red alpha
+   green alpha
+   blue alpha
+   name Shuffle1
+   xpos -1625
+   ypos -387
+  }
+  Text2 {
+   font_size_toolbar 54
+   font_width_toolbar 100
+   font_height_toolbar 100
+   message Threshold
+   old_message {{84 104 114 101 115 104 111 108 100}
+     }
+   box {0 0 0 0}
+   yjustify bottom
+   transforms {{0 2}
+     }
+   font_size_values {{0 {input.height/20} 1 {input.height/20} 2 {input.height/20} 3 {input.height/20} 4 {input.height/20} 5 {input.height/20} 6 {input.height/20} 7 {input.height/20} 8 {input.height/20} 0 {input.height/20 x1 0} 1 {input.height/20 x1 0} 2 {input.height/20 x1 0} 3 {input.height/20 x1 0}}
+     }
+   cursor_position 9
+   font_size 54
+   scale {1 1}
+   cursor_initialised true
+   autofit_bbox false
+   initial_cursor_position {{0 1080}
+     }
+   group_animations {{0} imported: 0 selected: items: "root transform/"}
+   animation_layers {{1 11 {input.width/2} {input.height/2} 0 0 1 1 0 0 0 0}
+     }
+   enable_shadows true
+   shadow_size 0.7
+   name Text3
+   xpos -1625
+   ypos 1233
+  }
+  Dot {
+   name Dot18
+   xpos -1591
+   ypos 1295
+  }
+push $N6d0c2000
+  Dot {
+   name Dot50
+   xpos -1685
+   ypos -860
+  }
+  Dot {
+   name Dot52
+   xpos -1685
+   ypos 685
+  }
+set N6e76f800 [stack 0]
+push $N6d0eb400
+push $N6e76e400
+  Merge2 {
+   inputs 2
+   operation mask
+   name Merge18
+   xpos -1556
+   ypos -350
+  }
+  Dot {
+   name Dot32
+   xpos -1522
+   ypos -287
+  }
+  Dot {
+   name Dot14
+   xpos -1516
+   ypos 449
+  }
+set N6e7ac400 [stack 0]
+  Invert {
+   clamp true
+   name Invert1
+   xpos -1550
+   ypos 508
+  }
+  ColorCorrect {
+   saturation 0
+   name ColorCorrect1
+   xpos -1550
+   ypos 552
+  }
+  Dot {
+   name Dot48
+   xpos -1516
+   ypos 643
+  }
+push $N6e76e400
+  Premult {
+   name Premult1
+   xpos -1452
+   ypos -381
+  }
+  Dot {
+   name Dot2
+   xpos -1418
+   ypos -339
+  }
+set N6e7ad800 [stack 0]
+  Dot {
+   name Dot3
+   xpos -1285
+   ypos -339
+  }
+set N6e7adc00 [stack 0]
+  Dot {
+   name Dot4
+   xpos -1174
+   ypos -339
+  }
+set N6cece000 [stack 0]
+  Dot {
+   name Dot5
+   xpos -1060
+   ypos -339
+  }
+set N6cece400 [stack 0]
+  Dot {
+   name Dot6
+   xpos -950
+   ypos -339
+  }
+set N6cece800 [stack 0]
+  Dot {
+   name Dot7
+   xpos -837
+   ypos -339
+  }
+set N6cecec00 [stack 0]
+  Dot {
+   name Dot8
+   xpos -736
+   ypos -339
+  }
+set N6cecf000 [stack 0]
+  Dot {
+   name Dot9
+   xpos -621
+   ypos -339
+  }
+set N6cecf400 [stack 0]
+  Dot {
+   name Dot10
+   xpos -511
+   ypos -339
+  }
+set N6cecf800 [stack 0]
+  Dot {
+   name Dot11
+   xpos -401
+   ypos -339
+  }
+set N6cecfc00 [stack 0]
+  Dot {
+   name Dot12
+   xpos -290
+   ypos -339
+  }
+set N6ceea000 [stack 0]
+  Dot {
+   name Dot13
+   xpos -168
+   ypos -339
+  }
+  Blur {
+   size {{parent.Blur11.size*2}}
+   mix 0
+   name Blur12
+   xpos -202
+   ypos -267
+  }
+  Multiply {
+   value {{parent.Multiply11.value/2}}
+   name Multiply12
+   xpos -202
+   ypos -136
+  }
+  Dot {
+   name Dot29
+   xpos -168
+   ypos 330
+  }
+push $N6ceea000
+  Blur {
+   size {{parent.Blur10.size*2}}
+   name Blur11
+   xpos -324
+   ypos -267
+  }
+  Multiply {
+   value {{parent.Multiply10.value/2}}
+   name Multiply11
+   xpos -324
+   ypos -136
+  }
+  Dot {
+   name Dot28
+   xpos -290
+   ypos 284
+  }
+push $N6cecfc00
+  Blur {
+   size {{parent.Blur9.size*2}}
+   name Blur10
+   xpos -435
+   ypos -270
+  }
+  Multiply {
+   value {{parent.Multiply9.value/2}}
+   name Multiply10
+   xpos -435
+   ypos -137
+  }
+  Dot {
+   name Dot27
+   xpos -401
+   ypos 240
+  }
+push $N6cecf800
+  Blur {
+   size {{parent.Blur8.size*2}}
+   mix 0
+   name Blur9
+   xpos -545
+   ypos -270
+  }
+  Multiply {
+   value {{parent.Multiply8.value/2}}
+   mix 0
+   name Multiply9
+   xpos -545
+   ypos -135
+  }
+  Dot {
+   name Dot26
+   xpos -511
+   ypos 199
+  }
+push $N6cecf400
+  Blur {
+   size {{parent.Blur7.size*2}}
+   name Blur8
+   xpos -655
+   ypos -271
+  }
+  Multiply {
+   value {{parent.Multiply7.value/2}}
+   mix 0
+   name Multiply8
+   xpos -655
+   ypos -135
+  }
+  Dot {
+   name Dot25
+   xpos -621
+   ypos 147
+  }
+push $N6cecf000
+  Blur {
+   size {{parent.Blur6.size*2}}
+   name Blur7
+   xpos -770
+   ypos -272
+  }
+  Multiply {
+   value {{parent.Multiply6.value/2}}
+   mix 0
+   name Multiply7
+   xpos -770
+   ypos -135
+  }
+  Dot {
+   name Dot24
+   xpos -736
+   ypos 107
+  }
+push $N6cecec00
+  Blur {
+   size {{parent.Blur5.size*2}}
+   name Blur6
+   xpos -871
+   ypos -273
+  }
+  Multiply {
+   value {{parent.Multiply5.value/2}}
+   mix 0
+   name Multiply6
+   xpos -871
+   ypos -136
+  }
+  Dot {
+   name Dot23
+   xpos -837
+   ypos 65
+  }
+push $N6cece800
+  Blur {
+   size {{parent.Blur4.size*2}}
+   name Blur5
+   xpos -984
+   ypos -272
+  }
+  Multiply {
+   value {{parent.Multiply4.value/2}}
+   mix 0
+   name Multiply5
+   xpos -984
+   ypos -136
+  }
+  Dot {
+   name Dot22
+   xpos -950
+   ypos 29
+  }
+push $N6cece400
+  Blur {
+   size {{parent.Blur3.size*2}}
+   name Blur4
+   xpos -1094
+   ypos -272
+  }
+  Multiply {
+   value {{parent.Multiply3.value/2}}
+   mix 0
+   name Multiply4
+   xpos -1094
+   ypos -137
+  }
+  Dot {
+   name Dot21
+   xpos -1060
+   ypos -15
+  }
+push $N6cece000
+  Blur {
+   size {{parent.Blur2.size*2}}
+   name Blur3
+   xpos -1208
+   ypos -271
+  }
+  Multiply {
+   value {{parent.Multiply2.value/2}}
+   mix 0
+   name Multiply3
+   xpos -1208
+   ypos -134
+  }
+  Dot {
+   name Dot20
+   xpos -1174
+   ypos -54
+  }
+push $N6e7adc00
+  Blur {
+   size {{parent.Blur1.size*2}}
+   name Blur2
+   xpos -1319
+   ypos -272
+  }
+  Multiply {
+   value {{parent.Multiply1.value/2}}
+   name Multiply2
+   xpos -1319
+   ypos -135
+  }
+  Dot {
+   name Dot19
+   xpos -1285
+   ypos -82
+  }
+push $N6e7ad800
+  Blur {
+   size {{parent.GlowSize}}
+   name Blur1
+   xpos -1452
+   ypos -271
+  }
+  Multiply {
+   name Multiply1
+   xpos -1452
+   ypos -135
+  }
+  Merge2 {
+   inputs 2
+   operation plus
+   name Merge1
+   xpos -1452
+   ypos -86
+  }
+  Merge2 {
+   inputs 2
+   operation plus
+   name Merge2
+   xpos -1452
+   ypos -58
+  }
+  Merge2 {
+   inputs 2
+   operation plus
+   name Merge3
+   xpos -1452
+   ypos -19
+  }
+  Merge2 {
+   inputs 2
+   operation plus
+   name Merge4
+   xpos -1452
+   ypos 25
+  }
+  Merge2 {
+   inputs 2
+   operation plus
+   name Merge5
+   xpos -1452
+   ypos 61
+  }
+  Merge2 {
+   inputs 2
+   operation plus
+   name Merge6
+   xpos -1452
+   ypos 103
+  }
+  Merge2 {
+   inputs 2
+   operation plus
+   name Merge7
+   xpos -1452
+   ypos 148
+  }
+  Merge2 {
+   inputs 2
+   operation plus
+   name Merge8
+   xpos -1452
+   ypos 195
+  }
+  Merge2 {
+   inputs 2
+   operation plus
+   name Merge9
+   xpos -1452
+   ypos 236
+  }
+  Merge2 {
+   inputs 2
+   operation plus
+   name Merge10
+   xpos -1452
+   ypos 280
+  }
+  Merge2 {
+   inputs 2
+   operation plus
+   name Merge11
+   xpos -1452
+   ypos 326
+  }
+  Unpremult {
+   name Unpremult1
+   xpos -1452
+   ypos 358
+  }
+  Grade {
+   whitepoint {{whiteBalance.r/((whiteBalance.r+whiteBalance.g+whiteBalance.b)/3)} {whiteBalance.g/((whiteBalance.r+whiteBalance.g+whiteBalance.b)/3)} {whiteBalance.b/((whiteBalance.r+whiteBalance.g+whiteBalance.b)/3)} {curve}}
+   reverse true
+   name Grade1
+   xpos -1452
+   ypos 384
+   disable {{1-parent.color}}
+   addUserKnob {20 User}
+   addUserKnob {6 whitebalance_panelDropped l "panel dropped state" -STARTLINE +HIDDEN}
+   whitebalance_panelDropped true
+   addUserKnob {18 whiteBalance +DISABLED R 0.15 1}
+   whiteBalance 1
+   addUserKnob {6 whiteBalance_panelDropped l "panel dropped state" -STARTLINE +HIDDEN}
+   whiteBalance_panelDropped true
+  }
+  Premult {
+   name Premult2
+   xpos -1452
+   ypos 420
+  }
+  Multiply {
+   channels rgba
+   value 0.1175997422
+   name Multiply16
+   xpos -1452
+   ypos 470
+  }
+  Multiply {
+   channels rgba
+   value 0.2
+   name Multiply15
+   xpos -1452
+   ypos 514
+  }
+  Multiply {
+   channels rgba
+   value {{parent.Value}}
+   name Multiply14
+   xpos -1452
+   ypos 551
+  }
+set N6cd1f400 [stack 0]
+  Dot {
+   name Dot47
+   xpos -1418
+   ypos 596
+  }
+set N6cd1f800 [stack 0]
+  Merge2 {
+   inputs 2
+   operation mask
+   mix {{(-parent.Value+6.2)/1.2}}
+   name Merge14
+   xpos -1452
+   ypos 639
+   disable {{parent.lightwrap}}
+  }
+  Merge2 {
+   inputs 2
+   operation mask
+   name Merge20
+   xpos -1452
+   ypos 681
+   disable {{1-parent.lightwrap}}
+  }
+set N6cd5c000 [stack 0]
+push $N6cd1f800
+  Dot {
+   name Dot35
+   xpos -1477
+   ypos 596
+  }
+  Switch {
+   inputs 2
+   which {{parent.lightwrap}}
+   name Switch8
+   xpos -1511
+   ypos 743
+  }
+  Dot {
+   name Dot37
+   xpos -1477
+   ypos 1076
+  }
+  Dot {
+   name Dot49
+   xpos -1652
+   ypos 1076
+  }
+push $N6cd5c000
+  Dot {
+   name Dot17
+   xpos -1418
+   ypos 888
+  }
+  Dot {
+   name Dot42
+   xpos -1667
+   ypos 888
+  }
+set N6cd5d800 [stack 0]
+  Dot {
+   name Dot33
+   xpos -1667
+   ypos 925
+  }
+set N6cd5dc00 [stack 0]
+  Dot {
+   name Dot51
+   xpos -1667
+   ypos 971
+  }
+set N6d7b6000 [stack 0]
+  Dot {
+   name Dot34
+   xpos -1667
+   ypos 1010
+  }
+push $N6e76f800
+push $N6d0eb000
+  Dot {
+   name Dot46
+   xpos -1747
+   ypos 580
+  }
+  Switch {
+   inputs 2
+   which {{parent.lightwrap}}
+   name Switch6
+   xpos -1781
+   ypos 738
+  }
+  Dot {
+   name Dot30
+   xpos -1747
+   ypos 830
+  }
+set N6d7b7000 [stack 0]
+  Dot {
+   name Dot15
+   xpos -1879
+   ypos 830
+  }
+set N6d7b7400 [stack 0]
+  Dot {
+   name Dot41
+   xpos -1972
+   ypos 830
+  }
+set N6d7b7800 [stack 0]
+  Dot {
+   name Dot31
+   xpos -2071
+   ypos 830
+  }
+  Merge2 {
+   inputs 2
+   operation max
+   name Merge15
+   xpos -2105
+   ypos 1000
+  }
+  Dot {
+   name Dot36
+   xpos -2071
+   ypos 1108
+  }
+push $N6d7b6000
+push $N6d7b7800
+  Merge2 {
+   inputs 2
+   name Merge17
+   xpos -2006
+   ypos 967
+  }
+  Dot {
+   name Dot53
+   xpos -1972
+   ypos 1066
+  }
+push $N6cd5dc00
+push $N6d7b7400
+  Merge2 {
+   inputs 2
+   operation screen
+   name Merge19
+   xpos -1913
+   ypos 921
+  }
+  Dot {
+   name Dot54
+   xpos -1879
+   ypos 1058
+  }
+push $N6cd5d800
+push $N6d7b7000
+  Merge2 {
+   inputs 2
+   operation plus
+   name Merge12
+   xpos -1781
+   ypos 884
+  }
+  Switch {
+   inputs 5
+   which {{parent.Mode}}
+   name Switch2
+   xpos -1781
+   ypos 1110
+  }
+set N6d7d3c00 [stack 0]
+  Shuffle {
+   alpha white
+   name Shuffle3
+   xpos -1519
+   ypos 1110
+  }
+push $N6d7b7000
+  Dot {
+   name Dot38
+   xpos -1535
+   ypos 830
+  }
+  Dot {
+   name Dot39
+   xpos -1535
+   ypos 956
+  }
+set N6d806800 [stack 0]
+  Dot {
+   name Dot57
+   xpos -1420
+   ypos 956
+  }
+set N6d806c00 [stack 0]
+push $N6cd5c000
+push $N6e7ac400
+  Dot {
+   name Dot16
+   xpos -1297
+   ypos 449
+  }
+push $N6cd1f400
+  Merge2 {
+   inputs 2
+   operation max
+   name Merge13
+   xpos -1331
+   ypos 551
+  }
+  Dot {
+   name Dot63
+   xpos -1297
+   ypos 638
+  }
+set N6d807800 [stack 0]
+  Dot {
+   name Dot62
+   xpos -1355
+   ypos 710
+  }
+  Switch {
+   inputs 2
+   which {{parent.lightwrap}}
+   name Switch7
+   xpos -1389
+   ypos 742
+  }
+  Dot {
+   name Dot58
+   xpos -1355
+   ypos 887
+  }
+push $N6d806800
+  Dot {
+   name Dot56
+   xpos -1535
+   ypos 1054
+  }
+push $N6d807800
+  Dot {
+   name Dot55
+   xpos -1298
+   ypos 958
+  }
+push $N6d806c00
+  Dot {
+   name Dot40
+   xpos -1331
+   ypos 956
+  }
+  Merge2 {
+   inputs 2
+   name Merge16
+   xpos -1365
+   ypos 995
+  }
+  Switch {
+   inputs 2
+   which {{parent.lightwrap}}
+   name Switch9
+   xpos -1365
+   ypos 1050
+  }
+  Shuffle {
+   name Shuffle4
+   xpos -1365
+   ypos 1112
+  }
+  Switch {
+   inputs 4
+   which {{parent.Alpha}}
+   name Switch3
+   xpos -1454
+   ypos 1174
+  }
+push $N6d7d3c00
+  ShuffleCopy {
+   inputs 2
+   name ShuffleCopy2
+   xpos -1781
+   ypos 1174
+  }
+  Switch {
+   inputs 3
+   which {{parent.ThresholdView+(parent.View*2)}}
+   name Switch1
+   xpos -1781
+   ypos 1291
+  }
+  Output {
+   name Output1
+   xpos -1781
+   ypos 1349
+  }
+push $N6e76e000
+push $N6e76e000
+  Viewer {
+   inputs 2
+   frame_range 1-186
+   name Viewer1
+   xpos -1091
+   ypos -458
+  }
+push $N6d0eb400
+  Keyer {
+   operation "luminance key"
+   name Keyer1
+   xpos -1434
+   ypos -568
+  }
+ end_group
+ Multiply {
+  channels rgb
+  value {{2**(-EV)}}
+  name EV
+  xpos 510
+  ypos 759
+  disable {{!(parent.evon)}}
+ }
+set N6e697800 [stack 0]
+ Grade {
+  whitepoint 0.740035
+  white {1.020454 1 1.06533 1}
+  name darktable_optimize
+  xpos 620
+  ypos 807
+  disable {{!(darktable_optimize)}}
+ }
+push $N6e697800
+ Grade {
+  whitepoint 0.699793
+  name darktable_optimize1
+  xpos 400
+  ypos 807
+  disable {{!(darktable_optimize)}}
+ }
+ Switch {
+  inputs 2
+  which {{version}}
+  name Switch1
+  xpos 510
+  ypos 855
+ }
+ Grade {
+  whitepoint {{1+(WhiteBalanceTemp/2)-(WhiteBalanceTint/2)} {1+(WhiteBalanceTint)} {1-(WhiteBalanceTemp/2)-(WhiteBalanceTint/2)} 1}
+  name Whitebalance
+  xpos 510
+  ypos 903
+  disable {{!(parent.WhiteBalance)}}
+ }
+ CopyMetaData {
+  inputs 2
+  imageMetadatafilter input/filename
+  imageMetadatafilterMode "keys only"
+  name CopyMetaData10
+  xpos 510
+  ypos 1023
+ }
+set N6e6dcc00 [stack 0]
+ Shuffle {
+  alpha white
+  name Shuffle1
+  xpos 510
+  ypos 1071
+ }
+ Output {
+  name Output1
+  xpos 510
+  ypos 1119
+ }
+push $N6e6dcc00
+ ViewMetaData {
+  name ViewMetaData1
+  selected true
+  xpos 730
+  ypos 1071
+ }
+end_group
+Dot {
+ name Dot11
+ xpos -116
+ ypos -1014
+}
+set N6e6ddc00 [stack 0]
+Dot {
+ name Dot12
+ label " HDRI_Merge EV OFF"
+ note_font "Verdana Bold"
+ xpos 104
+ ypos -1014
+}
+Group {
+ name Exposure_HDRI
+ knobChanged "n = nuke.thisNode()\nk = nuke.thisKnob() \n\nif k.name()  in ('mode', 'showPanel'):\n    mode = n\['mode'].value()\n    if mode == 'EV':\n        n\['EV'].setVisible(True)\n        n\['EV_meta'].setVisible(False)\n        n\['EV_user'].setVisible(False)\n        n\['f_number'].setVisible(False)\n        n\['f_number_meta'].setVisible(False)\n        n\['Shutter_speed'].setVisible(False)\n        n\['Shutter_speed_meta'].setVisible(False)\n        n\['ISO'].setVisible(False)\n        n\['ISO_meta'].setVisible(False)\n    elif mode == 'USER':\n        n\['EV'].setVisible(False)\n        n\['EV_meta'].setVisible(False)\n        n\['EV_user'].setVisible(True)\n        n\['f_number'].setVisible(True)\n        n\['f_number_meta'].setVisible(False)\n        n\['Shutter_speed'].setVisible(True)\n        n\['Shutter_speed_meta'].setVisible(False)\n        n\['ISO'].setVisible(True)\n        n\['ISO_meta'].setVisible(False)\n    elif mode == 'Input Metadata':\n        n\['EV'].setVisible(False)\n        n\['EV_meta'].setVisible(True)\n        n\['EV_user'].setVisible(False)\n        n\['f_number'].setVisible(False)\n        n\['f_number_meta'].setVisible(True)\n        n\['Shutter_speed'].setVisible(False)\n        n\['Shutter_speed_meta'].setVisible(True)\n        n\['ISO'].setVisible(False)\n        n\['ISO_meta'].setVisible(True)\n   \n\nif k.name()  in ('WhiteBalance', 'showPanel'):\n    WhiteBalance = n\['WhiteBalance'].value()\n    if WhiteBalance ==  0:\n        n\['WhiteBalanceTemp'].setEnabled(False)\n        n\['WhiteBalanceTint'].setEnabled(False)\n    elif WhiteBalance ==  1:\n        n\['WhiteBalanceTemp'].setEnabled(True)\n        n\['WhiteBalanceTint'].setEnabled(True)\n"
+ tile_color 0x32a9ffff
+ xpos 70
+ ypos -969
+ addUserKnob {20 User l "Exposure value"}
+ addUserKnob {4 mode l Mode M {EV USER "Input MetaData" "" "" "" "" ""}}
+ addUserKnob {7 f_number l F-number +HIDDEN R 1 22}
+ f_number 5.6
+ addUserKnob {7 Shutter_speed l "Shutter speed" +HIDDEN}
+ Shutter_speed 0.001
+ addUserKnob {7 ISO +HIDDEN R 0 10000}
+ ISO 100
+ addUserKnob {7 EV R -5 24}
+ addUserKnob {7 f_number_meta l F-number +HIDDEN}
+ f_number_meta {{Multiply2.f_number_in.main}}
+ addUserKnob {7 Shutter_speed_meta l "Shutter speed" +HIDDEN}
+ Shutter_speed_meta {{Multiply2.Shutter_speed_in.main}}
+ addUserKnob {7 ISO_meta l ISO +HIDDEN}
+ ISO_meta {{Multiply2.ISO_in.main}}
+ addUserKnob {7 EV_meta l EV +HIDDEN R -5 24}
+ EV_meta {{rint(Multiply2.EV_in.main*10)/10}}
+ addUserKnob {7 EV_user l EV +HIDDEN R -5 24}
+ EV_user {{rint((log(f_number.main**2/Shutter_speed.main)/log(2)-log(ISO.main/100)/log(2))*100)/100}}
+ addUserKnob {26 ""}
+ addUserKnob {6 WhiteBalance +STARTLINE}
+ addUserKnob {7 WhiteBalanceTemp l "Color Temp" +DISABLED R -0.3 0.3}
+ addUserKnob {7 WhiteBalanceTint l Tint +DISABLED R -0.1 0.1}
+ addUserKnob {26 credit l "" +STARTLINE T "\nCGSLAB LLC. \nhttp://site.cgslab.info/"}
+}
+ ModifyMetaData {
+  inputs 0
+  metadata {
+   {set EV "\[value Multiply2.EV_in]"}
+  }
+  name ModifyMetaData4
+  xpos -480
+  ypos -297
+ }
+ Input {
+  inputs 0
+  name HDRI
+  xpos -150
+  ypos -537
+ }
+set N6dd72000 [stack 0]
+ ModifyMetaData {
+  inputs 0
+  metadata {
+   {set exif/2/FNumber 1}
+   {set exif/2/ExposureTime 1}
+   {set exif/2/ISOSpeedRatings 100}
+  }
+  name ModifyMetaData1
+  xpos -370
+  ypos -441
+ }
+ Input {
+  inputs 0
+  name meta
+  xpos -260
+  ypos -537
+  number 1
+ }
+push $N6dd72000
+ CopyMetaData {
+  inputs 2
+  name CopyMetaData1
+  xpos -260
+  ypos -489
+ }
+ CopyMetaData {
+  inputs 2
+  mergeMode Meta+Image
+  name CopyMetaData2
+  xpos -260
+  ypos -441
+ }
+ Multiply {
+  value {{"2**-(log(\[metadata exif/2/FNumber]**2/\[metadata exif/2/ExposureTime])/log(2)-log(\[metadata exif/2/ISOSpeedRatings]/100)/log(2))"}}
+  name Multiply2
+  xpos -260
+  ypos -399
+  addUserKnob {20 User}
+  addUserKnob {7 f_number_in l F-number}
+  f_number_in {{"\[metadata exif/2/FNumber]"}}
+  addUserKnob {7 Shutter_speed_in l "Shutter speed"}
+  Shutter_speed_in {{"\[metadata exif/2/ExposureTime]"}}
+  addUserKnob {7 ISO_in l ISO}
+  ISO_in {{"\[metadata exif/2/ISOSpeedRatings]"}}
+  addUserKnob {7 EV_in l EV}
+  EV_in {{"log(\[metadata exif/2/FNumber]**2/\[metadata exif/2/ExposureTime])/log(2)-log(\[metadata exif/2/ISOSpeedRatings]/100)/log(2)"}}
+ }
+ CopyMetaData {
+  inputs 2
+  mergeMode Meta+Image
+  name CopyMetaData5
+  xpos -260
+  ypos -345
+ }
+ CopyMetaData {
+  inputs 2
+  name CopyMetaData6
+  xpos -260
+  ypos -297
+ }
+ ModifyMetaData {
+  inputs 0
+  metadata {
+   {set EV "\[value EV_user]"}
+   {set exif/2/ExposureTime "\[value Shutter_speed]"}
+   {set exif/2/FNumber "\[value f_number]"}
+   {set exif/2/ISOSpeedRatings "\[value ISO]"}
+  }
+  name ModifyMetaData3
+  xpos 185
+  ypos -321
+ }
+push $N6dd72000
+ Multiply {
+  value {{2**-(log(parent.f_number.main**2/parent.Shutter_speed.main)/log(2)-log(parent.ISO.main/100)/log(2))}}
+  name Multiply1
+  xpos -150
+  ypos -400
+ }
+ CopyMetaData {
+  inputs 2
+  name CopyMetaData4
+  xpos -150
+  ypos -321
+ }
+ ModifyMetaData {
+  inputs 0
+  metadata {
+   {set EV "\[value EV]"}
+  }
+  name ModifyMetaData2
+  xpos 74
+  ypos -345
+ }
+push $N6dd72000
+ Multiply {
+  value {{2**-parent.EV.main}}
+  name Multiply3
+  xpos -40
+  ypos -400
+ }
+ CopyMetaData {
+  inputs 2
+  name CopyMetaData3
+  xpos -40
+  ypos -345
+ }
+ Switch {
+  inputs 3
+  which {{parent.mode.main}}
+  name Switch1
+  xpos -150
+  ypos -270
+ }
+ Grade {
+  whitepoint {{1+(WhiteBalanceTemp/2)-(WhiteBalanceTint/2)} {1+(WhiteBalanceTint)} {1-(WhiteBalanceTemp/2)-(WhiteBalanceTint/2)} 1}
+  name Whitebalance
+  xpos -150
+  ypos -225
+  disable {{!(parent.WhiteBalance)}}
+ }
+ Shuffle {
+  alpha white
+  name Shuffle1
+  xpos -150
+  ypos -177
+ }
+ Output {
+  name Output1
+  xpos -150
+  ypos -129
+ }
+end_group
+Group {
+ inputs 0
+ name Add_Sun
+ tile_color 0x31a8ffff
+ xpos 70
+ ypos -897
+ cached true
+ addUserKnob {20 User l "Add Sun"}
+ addUserKnob {6 SunOFF l "Sun OFF" +STARTLINE}
+ addUserKnob {7 power l Power R -5 5}
+ power 4
+ addUserKnob {6 color_rgb_panelDropped l "panel dropped state" +HIDDEN +STARTLINE}
+ addUserKnob {18 color_sun l Color}
+ color_sun {1 1 1}
+ addUserKnob {6 color_sun_panelDropped l "panel dropped state" -STARTLINE +HIDDEN}
+ addUserKnob {41 scale l Scale T Transform2.scale}
+ addUserKnob {41 translate l Translate T Transform2.translate}
+ addUserKnob {41 blur l Blur T Blur2.size}
+ addUserKnob {20 Inpaint_G l Inpaint n 1}
+ addUserKnob {6 Inpaint +STARTLINE}
+ addUserKnob {7 Scale R 0 5}
+ Scale 0.7
+ addUserKnob {41 Blursize l Blur T Blur1.size}
+ addUserKnob {41 detailAmount l DetailAmount T Inpaint1.detailAmount}
+ addUserKnob {20 endGroup_1 l endGroup n -1}
+ addUserKnob {20 AddGlow n 1}
+ addUserKnob {6 Glow +STARTLINE}
+ addUserKnob {41 GlowSize T NaturalGlow1.GlowSize}
+ addUserKnob {41 Value T NaturalGlow1.Value}
+ addUserKnob {20 endGroup n -1}
+ addUserKnob {26 credit l "" +STARTLINE T "\nCGSLAB LLC. \nhttp://site.cgslab.info/"}
+}
+ Reformat {
+  inputs 0
+  format "256 256 0 0 256 256 1 square_256"
+  name Reformat1
+  xpos 70
+  ypos -855
+ }
+ Radial {
+  area {0 0 256 256}
+  softness {{parent.softness_sun.main}}
+  color {1 1 1 1}
+  color_panelDropped true
+  name Radial1
+  xpos 70
+  ypos -801
+ }
+set N6ddd3000 [stack 0]
+ Transform {
+  scale 0.07
+  center {128 128}
+  name Transform1
+  xpos 70
+  ypos -753
+ }
+ Transform {
+  center {128 128}
+  name Transform2
+  xpos 70
+  ypos -705
+ }
+ Unpremult {
+  name Unpremult1
+  xpos 70
+  ypos -657
+ }
+ Grade {
+  whitepoint {{(white.r*0.2126)+(white.g*0.7152)+(white.b*0.0722)}}
+  white {{parent.color_sun.r} {parent.color_sun.g} {parent.color_sun.b} 1}
+  name Grade1
+  xpos 70
+  ypos -609
+ }
+ Multiply {
+  channels rgb
+  value {{2**(10+power)}}
+  name Multiply1
+  xpos 70
+  ypos -561
+ }
+ Premult {
+  name Premult1
+  xpos 70
+  ypos -513
+ }
+ Blur {
+  size 1
+  name Blur2
+  xpos 70
+  ypos -471
+ }
+set N6de0cc00 [stack 0]
+push $N6de0cc00
+push $N6ddd3000
+ Transform {
+  translate {{parent.Transform2.translate.main.x} {parent.Transform2.translate.main.y}}
+  scale {{parent.Scale.main}}
+  center {128 128}
+  name Transform3
+  xpos 180
+  ypos -705
+ }
+set N6de0d000 [stack 0]
+push $N6de0d000
+ Input {
+  inputs 0
+  name Input1
+  xpos 290
+  ypos -873
+ }
+ Shuffle {
+  alpha white
+  name Shuffle1
+  xpos 290
+  ypos -825
+ }
+ Dot {
+  name Dot1
+  xpos 324
+  ypos -708
+ }
+set N6de0dc00 [stack 0]
+ Inpaint2 {
+  inputs 2
+  fillRegion "Matte Alpha"
+  LABColourSpace true
+  detailAmount 0.2
+  translate {-479.1000061 310}
+  center {3600 1800}
+  name Inpaint1
+  selected true
+  xpos 180
+  ypos -633
+  disable {{!(Inpaint)}}
+ }
+ Merge2 {
+  inputs 2
+  operation mask
+  name Merge1
+  xpos 400
+  ypos -633
+ }
+ Blur {
+  size 40
+  name Blur1
+  xpos 400
+  ypos -567
+ }
+push $N6de0dc00
+ Merge2 {
+  inputs 2
+  name Merge3
+  xpos 290
+  ypos -561
+  disable {{!(Inpaint)}}
+ }
+ Merge2 {
+  inputs 2
+  name Merge2
+  xpos 290
+  ypos -465
+  disable {{SunOFF}}
+ }
+ Group {
+  inputs 2
+  name NaturalGlow1
+  knobChanged "n = nuke.thisNode()\nk = nuke.thisKnob() \n\nif k.name()  in ('lightwrap', 'showPanel'):\n    lightwrap = n\['lightwrap'].value()\n    if lightwrap ==  0:\n        n\['Lightwrap'].setVisible(False)\n        n\['View'].setVisible(False)\n        n\['BGBlur'].setVisible(False)\n    elif lightwrap ==  1:\n        n\['Lightwrap'].setVisible(True)\n        n\['View'].setVisible(True)\n        n\['BGBlur'].setVisible(True)\nif k.name()  in ('Mask', 'showPanel'):\n    Mask = n\['Mask'].value()\n    if Mask ==  0:\n        n\['mask'].setEnabled(False)\n        n\['invert'].setEnabled(False)\n    elif Mask ==  1:\n        n\['mask'].setEnabled(True)\n        n\['invert'].setEnabled(True)\nif k.name()  in ('color', 'showPanel'):\n    color = n\['color'].value()\n    if color ==  0:\n        n\['ColorBalance'].setEnabled(False)\n    elif color ==  1:\n        n\['ColorBalance'].setEnabled(True)\n"
+  tile_color 0xff9455ff
+  xpos 290
+  ypos -393
+  disable {{!(Glow)}}
+  addUserKnob {20 NaturalGlow}
+  addUserKnob {4 Mode M {Plus Screen Over Max GlowOnly "" "" "" "" "" ""}}
+  addUserKnob {6 lightwrap l "Lightwrap Mode(Use bg)" -STARTLINE}
+  addUserKnob {6 Mask l "UseInputMask   " +STARTLINE}
+  Mask true
+  addUserKnob {41 mask -STARTLINE T ChannelMerge1.A}
+  addUserKnob {6 invert -STARTLINE}
+  addUserKnob {26 ""}
+  addUserKnob {7 GlowSize R 0 10}
+  GlowSize 1
+  addUserKnob {7 Value R 0 5}
+  Value 1
+  addUserKnob {6 color l ColorBalance +STARTLINE}
+  addUserKnob {41 ColorBalance l "" -STARTLINE T Grade1.whiteBalance}
+  addUserKnob {26 Lightwrap +HIDDEN}
+  addUserKnob {6 View l "View  " +HIDDEN +STARTLINE}
+  addUserKnob {7 BGBlur l "BG Blur" -STARTLINE +HIDDEN R 0 100}
+  addUserKnob {26 ""}
+  addUserKnob {6 ThresholdView l Threshold(Mask)View +STARTLINE}
+  addUserKnob {41 blackpoint T Grade2.blackpoint}
+  addUserKnob {41 whitepoint T Grade2.whitepoint}
+  addUserKnob {41 gamma T Grade2.gamma}
+  addUserKnob {26 ""}
+  addUserKnob {4 Alpha l AlphaOut M {img+Glow Glow img a1 "" "" "" "" ""}}
+  Alpha img
+ }
+  Input {
+   inputs 0
+   name bg
+   xpos -1985
+   ypos -929
+   number 2
+  }
+  Blur {
+   size {{parent.BGBlur}}
+   name Blur13
+   xpos -1985
+   ypos -784
+  }
+set N6de45c00 [stack 0]
+  Dot {
+   name Dot61
+   xpos -1951
+   ypos 1295
+  }
+  Input {
+   inputs 0
+   name mask
+   xpos -1556
+   ypos -924
+   number 1
+  }
+  Input {
+   inputs 0
+   name img
+   xpos -1777
+   ypos -924
+  }
+  Dot {
+   name Dot59
+   xpos -1743
+   ypos -860
+  }
+set N6de7ec00 [stack 0]
+  Dot {
+   name Dot60
+   xpos -1841
+   ypos -860
+  }
+  Invert {
+   channels alpha
+   name Invert3
+   xpos -1875
+   ypos -828
+  }
+push $N6de45c00
+  Merge2 {
+   inputs 2
+   operation mask
+   name Merge21
+   xpos -1875
+   ypos -778
+  }
+push $N6de7ec00
+  Switch {
+   inputs 2
+   which {{parent.lightwrap}}
+   name Switch5
+   xpos -1777
+   ypos -740
+  }
+  Dot {
+   name Dot44
+   xpos -1743
+   ypos -678
+  }
+set N6dea6000 [stack 0]
+  Dot {
+   name Dot45
+   xpos -1627
+   ypos -678
+  }
+set N6dea6400 [stack 0]
+  ChannelMerge {
+   inputs 2
+   operation divide
+   name ChannelMerge1
+   xpos -1556
+   ypos -690
+  }
+  Invert {
+   name Invert2
+   xpos -1556
+   ypos -640
+   disable {{1-parent.invert}}
+  }
+push $N6dea6400
+  Dot {
+   name Dot43
+   xpos -1627
+   ypos -592
+  }
+  ShuffleCopy {
+   inputs 2
+   name ShuffleCopy1
+   xpos -1556
+   ypos -596
+  }
+  Premult {
+   name Premult3
+   xpos -1556
+   ypos -570
+  }
+push $N6dea6000
+  Dot {
+   name Dot1
+   xpos -1743
+   ypos -526
+  }
+set N6dea7c00 [stack 0]
+  Switch {
+   inputs 2
+   which {{parent.Mask}}
+   name Switch4
+   xpos -1556
+   ypos -530
+  }
+set N6dece000 [stack 0]
+  Saturation {
+   saturation 0
+   name Saturation1
+   xpos -1329
+   ypos -530
+  }
+  Grade {
+   name Grade2
+   xpos -1329
+   ypos -500
+  }
+  Shuffle {
+   green red
+   blue red
+   alpha red
+   name Shuffle2
+   xpos -1329
+   ypos -429
+  }
+set N6decec00 [stack 0]
+push $N6dece000
+  ShuffleCopy {
+   inputs 2
+   name ShuffleCopy3
+   xpos -1452
+   ypos -429
+  }
+set N6decf000 [stack 0]
+  Shuffle {
+   red alpha
+   green alpha
+   blue alpha
+   name Shuffle1
+   xpos -1625
+   ypos -387
+  }
+  Text2 {
+   font_size_toolbar 54
+   font_width_toolbar 100
+   font_height_toolbar 100
+   message Threshold
+   old_message {{84 104 114 101 115 104 111 108 100}
+     }
+   box {0 0 0 0}
+   yjustify bottom
+   transforms {{0 2}
+     }
+   font_size_values {{0 {input.height/20} 1 {input.height/20} 2 {input.height/20} 3 {input.height/20} 4 {input.height/20} 5 {input.height/20} 6 {input.height/20} 7 {input.height/20} 8 {input.height/20} 0 {input.height/20 x1 0} 1 {input.height/20 x1 0} 2 {input.height/20 x1 0} 3 {input.height/20 x1 0}}
+     }
+   cursor_position 9
+   font_size 54
+   scale {1 1}
+   cursor_initialised true
+   autofit_bbox false
+   initial_cursor_position {{0 1080}
+     }
+   group_animations {{0} imported: 0 selected: items: "root transform/"}
+   animation_layers {{1 11 {input.width/2} {input.height/2} 0 0 1 1 0 0 0 0}
+     }
+   enable_shadows true
+   shadow_size 0.7
+   name Text3
+   xpos -1625
+   ypos 1233
+  }
+  Dot {
+   name Dot18
+   xpos -1591
+   ypos 1295
+  }
+push $N6de7ec00
+  Dot {
+   name Dot50
+   xpos -1685
+   ypos -860
+  }
+  Dot {
+   name Dot52
+   xpos -1685
+   ypos 685
+  }
+set N68aaa400 [stack 0]
+push $N6dece000
+push $N6decf000
+  Merge2 {
+   inputs 2
+   operation mask
+   name Merge18
+   xpos -1556
+   ypos -350
+  }
+  Dot {
+   name Dot32
+   xpos -1522
+   ypos -287
+  }
+  Dot {
+   name Dot14
+   xpos -1516
+   ypos 449
+  }
+set N68aab000 [stack 0]
+  Invert {
+   clamp true
+   name Invert1
+   xpos -1550
+   ypos 508
+  }
+  ColorCorrect {
+   saturation 0
+   name ColorCorrect1
+   xpos -1550
+   ypos 552
+  }
+  Dot {
+   name Dot48
+   xpos -1516
+   ypos 643
+  }
+push $N6decf000
+  Premult {
+   name Premult1
+   xpos -1452
+   ypos -381
+  }
+  Dot {
+   name Dot2
+   xpos -1418
+   ypos -339
+  }
+set N68ad6400 [stack 0]
+  Dot {
+   name Dot3
+   xpos -1285
+   ypos -339
+  }
+set N68ad6800 [stack 0]
+  Dot {
+   name Dot4
+   xpos -1174
+   ypos -339
+  }
+set N68ad6c00 [stack 0]
+  Dot {
+   name Dot5
+   xpos -1060
+   ypos -339
+  }
+set N68ad7000 [stack 0]
+  Dot {
+   name Dot6
+   xpos -950
+   ypos -339
+  }
+set N68ad7400 [stack 0]
+  Dot {
+   name Dot7
+   xpos -837
+   ypos -339
+  }
+set N68ad7800 [stack 0]
+  Dot {
+   name Dot8
+   xpos -736
+   ypos -339
+  }
+set N68ad7c00 [stack 0]
+  Dot {
+   name Dot9
+   xpos -621
+   ypos -339
+  }
+set N68af4000 [stack 0]
+  Dot {
+   name Dot10
+   xpos -511
+   ypos -339
+  }
+set N68af4400 [stack 0]
+  Dot {
+   name Dot11
+   xpos -401
+   ypos -339
+  }
+set N68af4800 [stack 0]
+  Dot {
+   name Dot12
+   xpos -290
+   ypos -339
+  }
+set N68af4c00 [stack 0]
+  Dot {
+   name Dot13
+   xpos -168
+   ypos -339
+  }
+  Blur {
+   size {{parent.Blur11.size*2}}
+   mix 0
+   name Blur12
+   xpos -202
+   ypos -267
+  }
+  Multiply {
+   value {{parent.Multiply11.value/2}}
+   name Multiply12
+   xpos -202
+   ypos -136
+  }
+  Dot {
+   name Dot29
+   xpos -168
+   ypos 330
+  }
+push $N68af4c00
+  Blur {
+   size {{parent.Blur10.size*2}}
+   name Blur11
+   xpos -324
+   ypos -267
+  }
+  Multiply {
+   value {{parent.Multiply10.value/2}}
+   name Multiply11
+   xpos -324
+   ypos -136
+  }
+  Dot {
+   name Dot28
+   xpos -290
+   ypos 284
+  }
+push $N68af4800
+  Blur {
+   size {{parent.Blur9.size*2}}
+   name Blur10
+   xpos -435
+   ypos -270
+  }
+  Multiply {
+   value {{parent.Multiply9.value/2}}
+   name Multiply10
+   xpos -435
+   ypos -137
+  }
+  Dot {
+   name Dot27
+   xpos -401
+   ypos 240
+  }
+push $N68af4400
+  Blur {
+   size {{parent.Blur8.size*2}}
+   mix 0
+   name Blur9
+   xpos -545
+   ypos -270
+  }
+  Multiply {
+   value {{parent.Multiply8.value/2}}
+   mix 0
+   name Multiply9
+   xpos -545
+   ypos -135
+  }
+  Dot {
+   name Dot26
+   xpos -511
+   ypos 199
+  }
+push $N68af4000
+  Blur {
+   size {{parent.Blur7.size*2}}
+   name Blur8
+   xpos -655
+   ypos -271
+  }
+  Multiply {
+   value {{parent.Multiply7.value/2}}
+   mix 0
+   name Multiply8
+   xpos -655
+   ypos -135
+  }
+  Dot {
+   name Dot25
+   xpos -621
+   ypos 147
+  }
+push $N68ad7c00
+  Blur {
+   size {{parent.Blur6.size*2}}
+   name Blur7
+   xpos -770
+   ypos -272
+  }
+  Multiply {
+   value {{parent.Multiply6.value/2}}
+   mix 0
+   name Multiply7
+   xpos -770
+   ypos -135
+  }
+  Dot {
+   name Dot24
+   xpos -736
+   ypos 107
+  }
+push $N68ad7800
+  Blur {
+   size {{parent.Blur5.size*2}}
+   name Blur6
+   xpos -871
+   ypos -273
+  }
+  Multiply {
+   value {{parent.Multiply5.value/2}}
+   mix 0
+   name Multiply6
+   xpos -871
+   ypos -136
+  }
+  Dot {
+   name Dot23
+   xpos -837
+   ypos 65
+  }
+push $N68ad7400
+  Blur {
+   size {{parent.Blur4.size*2}}
+   name Blur5
+   xpos -984
+   ypos -272
+  }
+  Multiply {
+   value {{parent.Multiply4.value/2}}
+   mix 0
+   name Multiply5
+   xpos -984
+   ypos -136
+  }
+  Dot {
+   name Dot22
+   xpos -950
+   ypos 29
+  }
+push $N68ad7000
+  Blur {
+   size {{parent.Blur3.size*2}}
+   name Blur4
+   xpos -1094
+   ypos -272
+  }
+  Multiply {
+   value {{parent.Multiply3.value/2}}
+   mix 0
+   name Multiply4
+   xpos -1094
+   ypos -137
+  }
+  Dot {
+   name Dot21
+   xpos -1060
+   ypos -15
+  }
+push $N68ad6c00
+  Blur {
+   size {{parent.Blur2.size*2}}
+   name Blur3
+   xpos -1208
+   ypos -271
+  }
+  Multiply {
+   value {{parent.Multiply2.value/2}}
+   mix 0
+   name Multiply3
+   xpos -1208
+   ypos -134
+  }
+  Dot {
+   name Dot20
+   xpos -1174
+   ypos -54
+  }
+push $N68ad6800
+  Blur {
+   size {{parent.Blur1.size*2}}
+   name Blur2
+   xpos -1319
+   ypos -272
+  }
+  Multiply {
+   value {{parent.Multiply1.value/2}}
+   name Multiply2
+   xpos -1319
+   ypos -135
+  }
+  Dot {
+   name Dot19
+   xpos -1285
+   ypos -82
+  }
+push $N68ad6400
+  Blur {
+   size {{parent.GlowSize}}
+   name Blur1
+   xpos -1452
+   ypos -271
+  }
+  Multiply {
+   name Multiply1
+   xpos -1452
+   ypos -135
+  }
+  Merge2 {
+   inputs 2
+   operation plus
+   name Merge1
+   xpos -1452
+   ypos -86
+  }
+  Merge2 {
+   inputs 2
+   operation plus
+   name Merge2
+   xpos -1452
+   ypos -58
+  }
+  Merge2 {
+   inputs 2
+   operation plus
+   name Merge3
+   xpos -1452
+   ypos -19
+  }
+  Merge2 {
+   inputs 2
+   operation plus
+   name Merge4
+   xpos -1452
+   ypos 25
+  }
+  Merge2 {
+   inputs 2
+   operation plus
+   name Merge5
+   xpos -1452
+   ypos 61
+  }
+  Merge2 {
+   inputs 2
+   operation plus
+   name Merge6
+   xpos -1452
+   ypos 103
+  }
+  Merge2 {
+   inputs 2
+   operation plus
+   name Merge7
+   xpos -1452
+   ypos 148
+  }
+  Merge2 {
+   inputs 2
+   operation plus
+   name Merge8
+   xpos -1452
+   ypos 195
+  }
+  Merge2 {
+   inputs 2
+   operation plus
+   name Merge9
+   xpos -1452
+   ypos 236
+  }
+  Merge2 {
+   inputs 2
+   operation plus
+   name Merge10
+   xpos -1452
+   ypos 280
+  }
+  Merge2 {
+   inputs 2
+   operation plus
+   name Merge11
+   xpos -1452
+   ypos 326
+  }
+  Unpremult {
+   name Unpremult1
+   xpos -1452
+   ypos 358
+  }
+  Grade {
+   whitepoint {{whiteBalance.r/((whiteBalance.r+whiteBalance.g+whiteBalance.b)/3)} {whiteBalance.g/((whiteBalance.r+whiteBalance.g+whiteBalance.b)/3)} {whiteBalance.b/((whiteBalance.r+whiteBalance.g+whiteBalance.b)/3)} {curve}}
+   reverse true
+   name Grade1
+   xpos -1452
+   ypos 384
+   disable {{1-parent.color}}
+   addUserKnob {20 User}
+   addUserKnob {6 whitebalance_panelDropped l "panel dropped state" -STARTLINE +HIDDEN}
+   whitebalance_panelDropped true
+   addUserKnob {18 whiteBalance +DISABLED R 0.15 1}
+   whiteBalance 1
+   addUserKnob {6 whiteBalance_panelDropped l "panel dropped state" -STARTLINE +HIDDEN}
+   whiteBalance_panelDropped true
+  }
+  Premult {
+   name Premult2
+   xpos -1452
+   ypos 420
+  }
+  Multiply {
+   channels rgba
+   value 0.1175997422
+   name Multiply16
+   xpos -1452
+   ypos 470
+  }
+  Multiply {
+   channels rgba
+   value 0.2
+   name Multiply15
+   xpos -1452
+   ypos 514
+  }
+  Multiply {
+   channels rgba
+   value {{parent.Value}}
+   name Multiply14
+   xpos -1452
+   ypos 551
+  }
+set N68c66000 [stack 0]
+  Dot {
+   name Dot47
+   xpos -1418
+   ypos 596
+  }
+set N68c66400 [stack 0]
+  Merge2 {
+   inputs 2
+   operation mask
+   mix {{(-parent.Value+6.2)/1.2}}
+   name Merge14
+   xpos -1452
+   ypos 639
+   disable {{parent.lightwrap}}
+  }
+  Merge2 {
+   inputs 2
+   operation mask
+   name Merge20
+   xpos -1452
+   ypos 681
+   disable {{1-parent.lightwrap}}
+  }
+set N68c66c00 [stack 0]
+push $N68c66400
+  Dot {
+   name Dot35
+   xpos -1477
+   ypos 596
+  }
+  Switch {
+   inputs 2
+   which {{parent.lightwrap}}
+   name Switch8
+   xpos -1511
+   ypos 743
+  }
+  Dot {
+   name Dot37
+   xpos -1477
+   ypos 1076
+  }
+  Dot {
+   name Dot49
+   xpos -1652
+   ypos 1076
+  }
+push $N68c66c00
+  Dot {
+   name Dot17
+   xpos -1418
+   ypos 888
+  }
+  Dot {
+   name Dot42
+   xpos -1667
+   ypos 888
+  }
+set N68c94400 [stack 0]
+  Dot {
+   name Dot33
+   xpos -1667
+   ypos 925
+  }
+set N68c94800 [stack 0]
+  Dot {
+   name Dot51
+   xpos -1667
+   ypos 971
+  }
+set N68c94c00 [stack 0]
+  Dot {
+   name Dot34
+   xpos -1667
+   ypos 1010
+  }
+push $N68aaa400
+push $N6dea7c00
+  Dot {
+   name Dot46
+   xpos -1747
+   ypos 580
+  }
+  Switch {
+   inputs 2
+   which {{parent.lightwrap}}
+   name Switch6
+   xpos -1781
+   ypos 738
+  }
+  Dot {
+   name Dot30
+   xpos -1747
+   ypos 830
+  }
+set N68c95c00 [stack 0]
+  Dot {
+   name Dot15
+   xpos -1879
+   ypos 830
+  }
+set N68caa000 [stack 0]
+  Dot {
+   name Dot41
+   xpos -1972
+   ypos 830
+  }
+set N68caa400 [stack 0]
+  Dot {
+   name Dot31
+   xpos -2071
+   ypos 830
+  }
+  Merge2 {
+   inputs 2
+   operation max
+   name Merge15
+   xpos -2105
+   ypos 1000
+  }
+  Dot {
+   name Dot36
+   xpos -2071
+   ypos 1108
+  }
+push $N68c94c00
+push $N68caa400
+  Merge2 {
+   inputs 2
+   name Merge17
+   xpos -2006
+   ypos 967
+  }
+  Dot {
+   name Dot53
+   xpos -1972
+   ypos 1066
+  }
+push $N68c94800
+push $N68caa000
+  Merge2 {
+   inputs 2
+   operation screen
+   name Merge19
+   xpos -1913
+   ypos 921
+  }
+  Dot {
+   name Dot54
+   xpos -1879
+   ypos 1058
+  }
+push $N68c94400
+push $N68c95c00
+  Merge2 {
+   inputs 2
+   operation plus
+   name Merge12
+   xpos -1781
+   ypos 884
+  }
+  Switch {
+   inputs 5
+   which {{parent.Mode}}
+   name Switch2
+   xpos -1781
+   ypos 1110
+  }
+set N68cd4800 [stack 0]
+  Shuffle {
+   alpha white
+   name Shuffle3
+   xpos -1519
+   ypos 1110
+  }
+push $N68c95c00
+  Dot {
+   name Dot38
+   xpos -1535
+   ypos 830
+  }
+  Dot {
+   name Dot39
+   xpos -1535
+   ypos 956
+  }
+set N68cd5400 [stack 0]
+  Dot {
+   name Dot57
+   xpos -1420
+   ypos 956
+  }
+set N68cd5800 [stack 0]
+push $N68c66c00
+push $N68aab000
+  Dot {
+   name Dot16
+   xpos -1297
+   ypos 449
+  }
+push $N68c66000
+  Merge2 {
+   inputs 2
+   operation max
+   name Merge13
+   xpos -1331
+   ypos 551
+  }
+  Dot {
+   name Dot63
+   xpos -1297
+   ypos 638
+  }
+set N68cf6400 [stack 0]
+  Dot {
+   name Dot62
+   xpos -1355
+   ypos 710
+  }
+  Switch {
+   inputs 2
+   which {{parent.lightwrap}}
+   name Switch7
+   xpos -1389
+   ypos 742
+  }
+  Dot {
+   name Dot58
+   xpos -1355
+   ypos 887
+  }
+push $N68cd5400
+  Dot {
+   name Dot56
+   xpos -1535
+   ypos 1054
+  }
+push $N68cf6400
+  Dot {
+   name Dot55
+   xpos -1298
+   ypos 958
+  }
+push $N68cd5800
+  Dot {
+   name Dot40
+   xpos -1331
+   ypos 956
+  }
+  Merge2 {
+   inputs 2
+   name Merge16
+   xpos -1365
+   ypos 995
+  }
+  Switch {
+   inputs 2
+   which {{parent.lightwrap}}
+   name Switch9
+   xpos -1365
+   ypos 1050
+  }
+  Shuffle {
+   name Shuffle4
+   xpos -1365
+   ypos 1112
+  }
+  Switch {
+   inputs 4
+   which {{parent.Alpha}}
+   name Switch3
+   xpos -1454
+   ypos 1174
+  }
+push $N68cd4800
+  ShuffleCopy {
+   inputs 2
+   name ShuffleCopy2
+   xpos -1781
+   ypos 1174
+  }
+  Switch {
+   inputs 3
+   which {{parent.ThresholdView+(parent.View*2)}}
+   name Switch1
+   xpos -1781
+   ypos 1291
+  }
+  Output {
+   name Output1
+   xpos -1781
+   ypos 1349
+  }
+push $N6decec00
+push $N6decec00
+  Viewer {
+   inputs 2
+   frame_range 1-186
+   name Viewer1
+   xpos -1091
+   ypos -458
+  }
+push $N6dece000
+  Keyer {
+   operation "luminance key"
+   name Keyer1
+   xpos -1434
+   ypos -568
+  }
+ end_group
+ Output {
+  name Output1
+  xpos 290
+  ypos -345
+ }
+end_group
+Group {
+ inputs 0
+ name HDRI_Lux_Meter
+ knobChanged "n = nuke.thisNode()\nk = nuke.thisKnob() \n\nif k.name()  in ('meta', 'showPanel'):\n    meta = n\['meta'].value()\n    if meta ==  0:\n        n\['InputEV'].setEnabled(True)\n        n\['metaEV'].setEnabled(False)\n    elif meta ==  1:\n        n\['InputEV'].setEnabled(False)\n        n\['metaEV'].setEnabled(True)\n"
+ tile_color 0xffd455ff
+ label "\[value Lux]lux"
+ xpos 70
+ ypos -817
+ addUserKnob {20 LuxMater}
+ addUserKnob {41 colourspace_Pulldown_Choice l Colourspace T Panoramic_HDRI_Absolute_Luminance_Calibration.colourspace_Pulldown_Choice}
+ addUserKnob {7 InputEV R -3 18}
+ InputEV 15
+ addUserKnob {6 meta l "" +STARTLINE +STARTLINE}
+ addUserKnob {7 metaEV l "    metaEV" t "metadata EV Use check" -STARTLINE +DISABLED R -3 18}
+ metaEV {{"\[metadata EV]"}}
+ addUserKnob {26 ""}
+ addUserKnob {41 compute_input_illuminance_Python_Script_Button l "Compute Input Illuminance" T Panoramic_HDRI_Absolute_Luminance_Calibration.compute_input_illuminance_Python_Script_Button}
+ addUserKnob {41 reset_input_illuminance_Python_Script_Button l "Reset Input Illuminance" -STARTLINE T Panoramic_HDRI_Absolute_Luminance_Calibration.reset_input_illuminance_Python_Script_Button}
+ addUserKnob {26 ""}
+ addUserKnob {7 Lux}
+ Lux {{Panoramic_HDRI_Absolute_Luminance_Calibration.luminance_scaling_Multiply.input_illuminance_Floating_Point_Slider}}
+ addUserKnob {26 ""}
+ addUserKnob {20 Luxcondition l "Lux condition(reference value)" t 参考照度条件 n 1}
+ addUserKnob {26 text l "" t "Lux\n120,000 lux :      最も明るい太陽光\n111,000 lux :      晴天\n20,000 lux :        うす曇り、晴れ\n1,000–2,000 lux: 曇り、晴れの日陰、日の出・日の入り\n400-800 lux :      明るい室内照明\n<300 lux :          室内照明、明るい窓からの光\n<100 lux :          日の出前の薄暗い朝、日没後の暗い夜\n0.25 lux :           満月の月明かり\n0.01 lux :           晴れた夜空" +STARTLINE T "Lux\n120,000 lux :      Brightest sunlight\n111,000 lux :      Full sunlight\n20,000 lux :        Hazy, some clouds,Sunny day\n1,000–2,000 lux: Overcast, shady areas on a sunny day, Sunrise / sunset\n400-800 lux :      Bright indoor lighting\n<300 lux :          Indoor lighting. Bright window light.\n<100 lux :          Dark morning before sunrise, dark evening after sunset.\n0.25 lux :           Moonlight from a full moon\n0.01 lux :           Clear night sky"}
+ addUserKnob {20 endGroup n -1}
+ addUserKnob {26 credit l "" +STARTLINE T "\nCGSLAB LLC. \nhttp://site.cgslab.info/"}
+ addUserKnob {20 about_Tab l About}
+ addUserKnob {26 description_Text l "" +STARTLINE T "Customized for use\n\nPanoramic HDRI - Absolute Luminance Calibration v0.1.0\n\ncolour-science.org - September 06, 2016\n\nThis Gizmo / Group performs absolute luminance calibration of panoramic HDRI images.\n\n\[1] Lagarde, S., Lachambre, S., & Jover, C. (2016). An Artist-Friendly Workflow for Panoramic HDRI. Retrieved from http://blog.selfshadow.com/publications/s2016-shading-course/unity/s2016_pbs_unity_hdri_notes.pdf"}
+}
+ Input {
+  inputs 0
+  name Input1
+  xpos -260
+  ypos -57
+ }
+set N68d84800 [stack 0]
+ Output {
+  name Output1
+  xpos -260
+  ypos 139
+ }
+push $N68d84800
+ Multiply {
+  value {{2**(InputEV)}}
+  name Multiply1
+  xpos -150
+  ypos -15
+  disable {{meta}}
+ }
+ Multiply {
+  value {{2**(metaEV)}}
+  name Multiply2
+  xpos -150
+  ypos 33
+  disable {{!(meta)}}
+ }
+ Group {
+  name Panoramic_HDRI_Absolute_Luminance_Calibration
+  tile_color 0xffbf00ff
+  xpos -150
+  ypos 111
+  addUserKnob {20 panoramic_hdri_absolute_luminance_calibration_tab l "Panoramic HDRI - Absolute Luminance Calibration"}
+  addUserKnob {20 illuminance_parameters_Group l "Illuminance Parameters" n 1}
+  addUserKnob {22 compute_input_illuminance_Python_Script_Button l "Compute Input Illuminance" t "Computes the input illuminance. \n\nThe input illuminance has to be manually recomputed each time that up-stream graph is changed." T nuke.toNode('average_CurveTool').knob('go').execute() +STARTLINE}
+  addUserKnob {22 reset_input_illuminance_Python_Script_Button l "Reset Input Illuminance" t "Reset the input illuminance." -STARTLINE T "node =  nuke.toNode('average_CurveTool')\n\nknob = node.knob('intensitydata')\nknob.clearAnimated()\nknob.setValue(1)"}
+  addUserKnob {7 measured_illuminance_Floating_Point_Slider l "Measured Illuminance (Lux)" t "Measured illuminance E_v in Lumen per square metre (Lux)" R 0 120000}
+  measured_illuminance_Floating_Point_Slider 51000
+  addUserKnob {20 tone_parameters_endGroup l endGroup n -1}
+  addUserKnob {20 miscellaneous_Group l "Miscellaneous Parameters" n 1}
+  addUserKnob {4 colourspace_Pulldown_Choice l Colourspace M {ACES2065-1 ACEScc ACEScg ACESproxy "ALEXA Wide Gamut RGB" "Adobe RGB (1998)" "Adobe Wide Gamut RGB" "Apple RGB" "Best RGB" "Beta RGB" "CIE RGB" "Cinema Gamut" "ColorMatch RGB" DCI-P3 DCI-P3+ DRAGONcolor DRAGONcolor2 "Don RGB 4" "ECI RGB v2" "ERIMM RGB" "Ekta Space PS 5" "Max RGB" "NTSC RGB" "Pal/Secam RGB" "ProPhoto RGB" REDcolor REDcolor2 REDcolor3 REDcolor4 "RIMM RGB" "ROMM RGB" "Rec. 2020" "Rec. 709" "Russell RGB" S-Gamut S-Gamut3 S-Gamut3.Cine "SMPTE-C RGB" V-Gamut "Xtreme RGB" sRGB ""}}
+  colourspace_Pulldown_Choice ACEScg
+  addUserKnob {20 miscellaneous_endGroup l endGroup n -1}
+  addUserKnob {20 output_values_Group l "Output Values" n 1}
+  addUserKnob {7 luminance_scaling_factor_Floating_Point_Slider l "Luminance Scaling Factor"}
+  luminance_scaling_factor_Floating_Point_Slider {{luminance_scaling_Multiply.luminance_scaling_factor_Floating_Point_Slider}}
+  addUserKnob {20 output_values_endGroup l endGroup n -1}
+  addUserKnob {41 input_illuminance_Floating_Point_Slider l "Input Illuminance (Lux)" T luminance_scaling_Multiply.input_illuminance_Floating_Point_Slider}
+  addUserKnob {20 about_Tab l About}
+  addUserKnob {26 description_Text l "" +STARTLINE T "Panoramic HDRI - Absolute Luminance Calibration v0.1.0\n\ncolour-science.org - September 06, 2016\n\nThis Gizmo / Group performs absolute luminance calibration of panoramic HDRI images.\n\n\[1] Lagarde, S., Lachambre, S., & Jover, C. (2016). An Artist-Friendly Workflow for Panoramic HDRI. Retrieved from http://blog.selfshadow.com/publications/s2016-shading-course/unity/s2016_pbs_unity_hdri_notes.pdf"}
+ }
+  Input {
+   inputs 0
+   name Input
+   xpos -150
+   ypos -177
+  }
+set N68d85800 [stack 0]
+  Multiply {
+   value {{luminance_scaling_factor_Floating_Point_Slider}}
+   name luminance_scaling_Multiply
+   xpos -150
+   ypos -133
+   addUserKnob {20 User}
+   addUserKnob {7 input_illuminance_Floating_Point_Slider l "Input Illuminance (Lux)"}
+   input_illuminance_Floating_Point_Slider {{parent.average_CurveTool.intensitydata.r}}
+   addUserKnob {7 measured_illuminance_Floating_Point_Slider l "Measured Illuminance (Lux)"}
+   measured_illuminance_Floating_Point_Slider {{parent.measured_illuminance_Floating_Point_Slider}}
+   addUserKnob {7 luminance_scaling_factor_Floating_Point_Slider l "Luminance Scaling Factor"}
+   luminance_scaling_factor_Floating_Point_Slider {{"1 / input_illuminance_Floating_Point_Slider * measured_illuminance_Floating_Point_Slider"}}
+  }
+  Output {
+   name Output
+   xpos -152
+   ypos -89
+  }
+push $N68d85800
+  Dot {
+   name Dot1
+   xpos -116
+   ypos -198
+  }
+  Group {
+   name RGB_Luminance1
+   xpos -260
+   ypos -201
+   addUserKnob {20 RGB_luminance_Tab l "RGB Luminance"}
+   addUserKnob {20 colourspace_parameters_Begin_Group l "Colourspace Parameters" n 1}
+   colourspace_parameters_Begin_Group 0
+   addUserKnob {4 colourspace_Pulldown_Choice l Colourspace M {ACES2065-1 ACEScc ACEScg ACESproxy "ALEXA Wide Gamut RGB" "Adobe RGB (1998)" "Adobe Wide Gamut RGB" "Apple RGB" "Best RGB" "Beta RGB" "CIE RGB" "Cinema Gamut" "ColorMatch RGB" DCI-P3 DCI-P3+ DRAGONcolor DRAGONcolor2 "Don RGB 4" "ECI RGB v2" "ERIMM RGB" "Ekta Space PS 5" "Max RGB" "NTSC RGB" "Pal/Secam RGB" "ProPhoto RGB" REDcolor REDcolor2 REDcolor3 REDcolor4 "RIMM RGB" "ROMM RGB" "Rec. 2020" "Rec. 709" "Russell RGB" S-Gamut S-Gamut3 S-Gamut3.Cine "SMPTE-C RGB" V-Gamut "Xtreme RGB" sRGB}}
+   colourspace_Pulldown_Choice {{parent.colourspace_Pulldown_Choice x1 29}}
+   addUserKnob {20 endGroup n -1}
+   addUserKnob {20 about_Tab l About}
+   addUserKnob {26 description_Text l "" +STARTLINE T "RGB Luminance v0.1.4\n\ncolour-science.org - July 10, 2016\n\nThis Gizmo / Group computes the \"RGB Luminance\" of given colourspace."}
+  }
+   Input {
+    inputs 0
+    name Input
+    xpos -4880
+    ypos -273
+   }
+set N68dc2800 [stack 0]
+   Expression {
+    expr0 "0.212639005872 * r + 0.715168678768 * g + 0.0721923153607 * b"
+    expr1 "0.212639005872 * r + 0.715168678768 * g + 0.0721923153607 * b"
+    expr2 "0.212639005872 * r + 0.715168678768 * g + 0.0721923153607 * b"
+    name sRGB_luminance_Expression
+    selected true
+    xpos -5006
+    ypos -251
+   }
+push $N68dc2800
+   Expression {
+    expr0 "0.0 * r + 1.0 * g + 0.0 * b"
+    expr1 "0.0 * r + 1.0 * g + 0.0 * b"
+    expr2 "0.0 * r + 1.0 * g + 0.0 * b"
+    name Xtreme_RGB_luminance_Expression
+    xpos -5136
+    ypos -251
+   }
+push $N68dc2800
+   Expression {
+    expr0 "0.26068555009 * r + 0.77489446333 * g + -0.03558001342 * b"
+    expr1 "0.26068555009 * r + 0.77489446333 * g + -0.03558001342 * b"
+    expr2 "0.26068555009 * r + 0.77489446333 * g + -0.03558001342 * b"
+    name V-Gamut_luminance_Expression
+    xpos -5286
+    ypos -251
+   }
+push $N68dc2800
+   Expression {
+    expr0 "0.212376360705 * r + 0.701059856926 * g + 0.0865637823692 * b"
+    expr1 "0.212376360705 * r + 0.701059856926 * g + 0.0865637823692 * b"
+    expr2 "0.212376360705 * r + 0.701059856926 * g + 0.0865637823692 * b"
+    name SMPTE-C_RGB_luminance_Expression
+    xpos -5436
+    ypos -251
+   }
+push $N68dc2800
+   Expression {
+    expr0 "0.215075820116 * r + 0.885068501744 * g + -0.100144321859 * b"
+    expr1 "0.215075820116 * r + 0.885068501744 * g + -0.100144321859 * b"
+    expr2 "0.215075820116 * r + 0.885068501744 * g + -0.100144321859 * b"
+    name S-Gamut3.Cine_luminance_Expression
+    xpos -5586
+    ypos -251
+   }
+push $N68dc2800
+   Expression {
+    expr0 "0.270979670813 * r + 0.786606411221 * g + -0.0575860820344 * b"
+    expr1 "0.270979670813 * r + 0.786606411221 * g + -0.0575860820344 * b"
+    expr2 "0.270979670813 * r + 0.786606411221 * g + -0.0575860820344 * b"
+    name S-Gamut3_luminance_Expression
+    xpos -5736
+    ypos -251
+   }
+push $N68dc2800
+   Expression {
+    expr0 "0.270979670813 * r + 0.786606411221 * g + -0.0575860820344 * b"
+    expr1 "0.270979670813 * r + 0.786606411221 * g + -0.0575860820344 * b"
+    expr2 "0.270979670813 * r + 0.786606411221 * g + -0.0575860820344 * b"
+    name S-Gamut_luminance_Expression
+    xpos -5886
+    ypos -251
+   }
+push $N68dc2800
+   Expression {
+    expr0 "0.315199106486 * r + 0.664839320751 * g + 0.0199615727626 * b"
+    expr1 "0.315199106486 * r + 0.664839320751 * g + 0.0199615727626 * b"
+    expr2 "0.315199106486 * r + 0.664839320751 * g + 0.0199615727626 * b"
+    name Russell_RGB_luminance_Expression
+    xpos -6036
+    ypos -251
+   }
+push $N68dc2800
+   Expression {
+    expr0 "0.212639005872 * r + 0.715168678768 * g + 0.0721923153607 * b"
+    expr1 "0.212639005872 * r + 0.715168678768 * g + 0.0721923153607 * b"
+    expr2 "0.212639005872 * r + 0.715168678768 * g + 0.0721923153607 * b"
+    name Rec._709_luminance_Expression
+    xpos -6186
+    ypos -251
+   }
+push $N68dc2800
+   Expression {
+    expr0 "0.262700212011 * r + 0.677998071519 * g + 0.0593017164699 * b"
+    expr1 "0.262700212011 * r + 0.677998071519 * g + 0.0593017164699 * b"
+    expr2 "0.262700212011 * r + 0.677998071519 * g + 0.0593017164699 * b"
+    name Rec._2020_luminance_Expression
+    xpos -6336
+    ypos -251
+   }
+push $N68dc2800
+   Expression {
+    expr0 "0.288071128229 * r + 0.71184321781 * g + 8.56539606053e-05 * b"
+    expr1 "0.288071128229 * r + 0.71184321781 * g + 8.56539606053e-05 * b"
+    expr2 "0.288071128229 * r + 0.71184321781 * g + 8.56539606053e-05 * b"
+    name ROMM_RGB_luminance_Expression
+    xpos -6486
+    ypos -251
+   }
+push $N68dc2800
+   Expression {
+    expr0 "0.288071128229 * r + 0.71184321781 * g + 8.56539606053e-05 * b"
+    expr1 "0.288071128229 * r + 0.71184321781 * g + 8.56539606053e-05 * b"
+    expr2 "0.288071128229 * r + 0.71184321781 * g + 8.56539606053e-05 * b"
+    name RIMM_RGB_luminance_Expression
+    xpos -6636
+    ypos -251
+   }
+push $N68dc2800
+   Expression {
+    expr0 "0.211947869481 * r + 0.723019772048 * g + 0.0650323584709 * b"
+    expr1 "0.211947869481 * r + 0.723019772048 * g + 0.0650323584709 * b"
+    expr2 "0.211947869481 * r + 0.723019772048 * g + 0.0650323584709 * b"
+    name REDcolor4_luminance_Expression
+    xpos -6786
+    ypos -251
+   }
+push $N68dc2800
+   Expression {
+    expr0 "0.22890381241 * r + 0.780859824404 * g + -0.0097636368135 * b"
+    expr1 "0.22890381241 * r + 0.780859824404 * g + -0.0097636368135 * b"
+    expr2 "0.22890381241 * r + 0.780859824404 * g + -0.0097636368135 * b"
+    name REDcolor3_luminance_Expression
+    xpos -6936
+    ypos -251
+   }
+push $N68dc2800
+   Expression {
+    expr0 "0.169442097101 * r + 0.864828202542 * g + -0.0342702996431 * b"
+    expr1 "0.169442097101 * r + 0.864828202542 * g + -0.0342702996431 * b"
+    expr2 "0.169442097101 * r + 0.864828202542 * g + -0.0342702996431 * b"
+    name REDcolor2_luminance_Expression
+    xpos -7086
+    ypos -251
+   }
+push $N68dc2800
+   Expression {
+    expr0 "0.202218816094 * r + 0.758528901746 * g + 0.03925228216 * b"
+    expr1 "0.202218816094 * r + 0.758528901746 * g + 0.03925228216 * b"
+    expr2 "0.202218816094 * r + 0.758528901746 * g + 0.03925228216 * b"
+    name REDcolor_luminance_Expression
+    xpos -7236
+    ypos -251
+   }
+push $N68dc2800
+   Expression {
+    expr0 "0.288071128229 * r + 0.71184321781 * g + 8.56539606053e-05 * b"
+    expr1 "0.288071128229 * r + 0.71184321781 * g + 8.56539606053e-05 * b"
+    expr2 "0.288071128229 * r + 0.71184321781 * g + 8.56539606053e-05 * b"
+    name ProPhoto_RGB_luminance_Expression
+    xpos -7386
+    ypos -251
+   }
+push $N68dc2800
+   Expression {
+    expr0 "0.222004309998 * r + 0.706654765925 * g + 0.0713409240765 * b"
+    expr1 "0.222004309998 * r + 0.706654765925 * g + 0.0713409240765 * b"
+    expr2 "0.222004309998 * r + 0.706654765925 * g + 0.0713409240765 * b"
+    name Pal/Secam_RGB_luminance_Expression
+    xpos -7536
+    ypos -251
+   }
+push $N68dc2800
+   Expression {
+    expr0 "0.29890307025 * r + 0.586619854659 * g + 0.114477075091 * b"
+    expr1 "0.29890307025 * r + 0.586619854659 * g + 0.114477075091 * b"
+    expr2 "0.29890307025 * r + 0.586619854659 * g + 0.114477075091 * b"
+    name NTSC_RGB_luminance_Expression
+    xpos -7686
+    ypos -251
+   }
+push $N68dc2800
+   Expression {
+    expr0 "0.31011010912 * r + 0.68988989088 * g + 0.0 * b"
+    expr1 "0.31011010912 * r + 0.68988989088 * g + 0.0 * b"
+    expr2 "0.31011010912 * r + 0.68988989088 * g + 0.0 * b"
+    name Max_RGB_luminance_Expression
+    xpos -7836
+    ypos -251
+   }
+push $N68dc2800
+   Expression {
+    expr0 "0.261148012901 * r + 0.734851409355 * g + 0.00400057774408 * b"
+    expr1 "0.261148012901 * r + 0.734851409355 * g + 0.00400057774408 * b"
+    expr2 "0.261148012901 * r + 0.734851409355 * g + 0.00400057774408 * b"
+    name Ekta_Space_PS_5_luminance_Expression
+    xpos -7986
+    ypos -251
+   }
+push $N68dc2800
+   Expression {
+    expr0 "0.288071128229 * r + 0.71184321781 * g + 8.56539606053e-05 * b"
+    expr1 "0.288071128229 * r + 0.71184321781 * g + 8.56539606053e-05 * b"
+    expr2 "0.288071128229 * r + 0.71184321781 * g + 8.56539606053e-05 * b"
+    name ERIMM_RGB_luminance_Expression
+    xpos -8136
+    ypos -251
+   }
+push $N68dc2800
+   Expression {
+    expr0 "0.320159696395 * r + 0.601827518042 * g + 0.0780127855624 * b"
+    expr1 "0.320159696395 * r + 0.601827518042 * g + 0.0780127855624 * b"
+    expr2 "0.320159696395 * r + 0.601827518042 * g + 0.0780127855624 * b"
+    name ECI_RGB_v2_luminance_Expression
+    xpos -8286
+    ypos -251
+   }
+push $N68dc2800
+   Expression {
+    expr0 "0.278137227919 * r + 0.687858269682 * g + 0.0340045023989 * b"
+    expr1 "0.278137227919 * r + 0.687858269682 * g + 0.0340045023989 * b"
+    expr2 "0.278137227919 * r + 0.687858269682 * g + 0.0340045023989 * b"
+    name Don_RGB_4_luminance_Expression
+    xpos -8436
+    ypos -251
+   }
+push $N68dc2800
+   Expression {
+    expr0 "0.194255795247 * r + 0.738556869189 * g + 0.0671873355644 * b"
+    expr1 "0.194255795247 * r + 0.738556869189 * g + 0.0671873355644 * b"
+    expr2 "0.194255795247 * r + 0.738556869189 * g + 0.0671873355644 * b"
+    name DRAGONcolor2_luminance_Expression
+    xpos -8586
+    ypos -251
+   }
+push $N68dc2800
+   Expression {
+    expr0 "0.220724022316 * r + 0.839188054601 * g + -0.0599120769169 * b"
+    expr1 "0.220724022316 * r + 0.839188054601 * g + -0.0599120769169 * b"
+    expr2 "0.220724022316 * r + 0.839188054601 * g + -0.0599120769169 * b"
+    name DRAGONcolor_luminance_Expression
+    xpos -8736
+    ypos -251
+   }
+push $N68dc2800
+   Expression {
+    expr0 "0.203986297104 * r + 0.882591093117 * g + -0.0865773902211 * b"
+    expr1 "0.203986297104 * r + 0.882591093117 * g + -0.0865773902211 * b"
+    expr2 "0.203986297104 * r + 0.882591093117 * g + -0.0865773902211 * b"
+    name DCI-P3+_luminance_Expression
+    xpos -8886
+    ypos -251
+   }
+push $N68dc2800
+   Expression {
+    expr0 "0.209491677913 * r + 0.721595254161 * g + 0.0689130679262 * b"
+    expr1 "0.209491677913 * r + 0.721595254161 * g + 0.0689130679262 * b"
+    expr2 "0.209491677913 * r + 0.721595254161 * g + 0.0689130679262 * b"
+    name DCI-P3_luminance_Expression
+    xpos -9036
+    ypos -251
+   }
+push $N68dc2800
+   Expression {
+    expr0 "0.274950336309 * r + 0.658074997381 * g + 0.0669746663108 * b"
+    expr1 "0.274950336309 * r + 0.658074997381 * g + 0.0669746663108 * b"
+    expr2 "0.274950336309 * r + 0.658074997381 * g + 0.0669746663108 * b"
+    name ColorMatch_RGB_luminance_Expression
+    xpos -9186
+    ypos -251
+   }
+push $N68dc2800
+   Expression {
+    expr0 "0.261261357526 * r + 0.869642145755 * g + -0.130903503281 * b"
+    expr1 "0.261261357526 * r + 0.869642145755 * g + -0.130903503281 * b"
+    expr2 "0.261261357526 * r + 0.869642145755 * g + -0.130903503281 * b"
+    name Cinema_Gamut_luminance_Expression
+    xpos -9336
+    ypos -251
+   }
+push $N68dc2800
+   Expression {
+    expr0 "0.176204436534 * r + 0.812984693878 * g + 0.0108108695884 * b"
+    expr1 "0.176204436534 * r + 0.812984693878 * g + 0.0108108695884 * b"
+    expr2 "0.176204436534 * r + 0.812984693878 * g + 0.0108108695884 * b"
+    name CIE_RGB_luminance_Expression
+    xpos -9486
+    ypos -251
+   }
+push $N68dc2800
+   Expression {
+    expr0 "0.303318752896 * r + 0.663744233497 * g + 0.0329370136071 * b"
+    expr1 "0.303318752896 * r + 0.663744233497 * g + 0.0329370136071 * b"
+    expr2 "0.303318752896 * r + 0.663744233497 * g + 0.0329370136071 * b"
+    name Beta_RGB_luminance_Expression
+    xpos -9636
+    ypos -251
+   }
+push $N68dc2800
+   Expression {
+    expr0 "0.227601772978 * r + 0.738394652678 * g + 0.0340035743443 * b"
+    expr1 "0.227601772978 * r + 0.738394652678 * g + 0.0340035743443 * b"
+    expr2 "0.227601772978 * r + 0.738394652678 * g + 0.0340035743443 * b"
+    name Best_RGB_luminance_Expression
+    xpos -9786
+    ypos -251
+   }
+push $N68dc2800
+   Expression {
+    expr0 "0.244615922485 * r + 0.672044251324 * g + 0.0833398261912 * b"
+    expr1 "0.244615922485 * r + 0.672044251324 * g + 0.0833398261912 * b"
+    expr2 "0.244615922485 * r + 0.672044251324 * g + 0.0833398261912 * b"
+    name Apple_RGB_luminance_Expression
+    xpos -9936
+    ypos -251
+   }
+push $N68dc2800
+   Expression {
+    expr0 "0.25872824304 * r + 0.724682314949 * g + 0.0165894420113 * b"
+    expr1 "0.25872824304 * r + 0.724682314949 * g + 0.0165894420113 * b"
+    expr2 "0.25872824304 * r + 0.724682314949 * g + 0.0165894420113 * b"
+    name Adobe_Wide_Gamut_RGB_luminance_Expression
+    xpos -10086
+    ypos -251
+   }
+push $N68dc2800
+   Expression {
+    expr0 "0.297344975251 * r + 0.627363566255 * g + 0.075291458494 * b"
+    expr1 "0.297344975251 * r + 0.627363566255 * g + 0.075291458494 * b"
+    expr2 "0.297344975251 * r + 0.627363566255 * g + 0.075291458494 * b"
+    name Adobe_RGB_(1998)_luminance_Expression
+    xpos -10236
+    ypos -251
+   }
+push $N68dc2800
+   Expression {
+    expr0 "0.291953779 * r + 0.823841041511 * g + -0.11579482051 * b"
+    expr1 "0.291953779 * r + 0.823841041511 * g + -0.11579482051 * b"
+    expr2 "0.291953779 * r + 0.823841041511 * g + -0.11579482051 * b"
+    name ALEXA_Wide_Gamut_RGB_luminance_Expression
+    xpos -10386
+    ypos -251
+   }
+push $N68dc2800
+   Expression {
+    expr0 "0.272228716781 * r + 0.674081765811 * g + 0.0536895174079 * b"
+    expr1 "0.272228716781 * r + 0.674081765811 * g + 0.0536895174079 * b"
+    expr2 "0.272228716781 * r + 0.674081765811 * g + 0.0536895174079 * b"
+    name ACESproxy_luminance_Expression
+    xpos -10536
+    ypos -251
+   }
+push $N68dc2800
+   Expression {
+    expr0 "0.272228716781 * r + 0.674081765811 * g + 0.0536895174079 * b"
+    expr1 "0.272228716781 * r + 0.674081765811 * g + 0.0536895174079 * b"
+    expr2 "0.272228716781 * r + 0.674081765811 * g + 0.0536895174079 * b"
+    name ACEScg_luminance_Expression
+    xpos -10686
+    ypos -251
+   }
+push $N68dc2800
+   Expression {
+    expr0 "0.272228716781 * r + 0.674081765811 * g + 0.0536895174079 * b"
+    expr1 "0.272228716781 * r + 0.674081765811 * g + 0.0536895174079 * b"
+    expr2 "0.272228716781 * r + 0.674081765811 * g + 0.0536895174079 * b"
+    name ACEScc_luminance_Expression
+    xpos -10836
+    ypos -251
+   }
+push $N68dc2800
+   Expression {
+    expr0 "0.343966449765 * r + 0.728166096613 * g + -0.0721325463786 * b"
+    expr1 "0.343966449765 * r + 0.728166096613 * g + -0.0721325463786 * b"
+    expr2 "0.343966449765 * r + 0.728166096613 * g + -0.0721325463786 * b"
+    name ACES2065-1_luminance_Expression
+    xpos -10986
+    ypos -251
+   }
+   Switch {
+    inputs 41
+    which {{parent.colourspace_Pulldown_Choice}}
+    name colourspace_Switch
+    xpos -4880
+    ypos -225
+    addUserKnob {20 User}
+    addUserKnob {4 colourspace_Pulldown_Choice l Colourspace M {ACES2065-1 ACEScc ACEScg ACESproxy "ALEXA Wide Gamut RGB" "Adobe RGB (1998)" "Adobe Wide Gamut RGB" "Apple RGB" "Best RGB" "Beta RGB" "CIE RGB" "Cinema Gamut" "ColorMatch RGB" DCI-P3 DCI-P3+ DRAGONcolor DRAGONcolor2 "Don RGB 4" "ECI RGB v2" "ERIMM RGB" "Ekta Space PS 5" "Max RGB" "NTSC RGB" "Pal/Secam RGB" "ProPhoto RGB" REDcolor REDcolor2 REDcolor3 REDcolor4 "RIMM RGB" "ROMM RGB" "Rec. 2020" "Rec. 709" "Russell RGB" S-Gamut S-Gamut3 S-Gamut3.Cine "SMPTE-C RGB" V-Gamut "Xtreme RGB" sRGB}}
+   }
+   Output {
+    name Output
+    xpos -4880
+    ypos -201
+   }
+  end_group
+push $N68d85800
+  Expression {
+   temp_name0 theta_cos
+   temp_expr0 "cos((1 - y / (height - 1)) * pi)"
+   temp_name1 theta_sin
+   temp_expr1 "sin((1 - y / (height - 1)) * pi)"
+   expr0 "theta_cos > 0 ? theta_cos * theta_sin * 2 * pi ** 2 : 0"
+   expr1 "theta_cos > 0 ? theta_cos * theta_sin * 2 * pi ** 2 : 0"
+   expr2 "theta_cos > 0 ? theta_cos * theta_sin * 2 * pi ** 2 : 0"
+   name upper_hemisphere_illuminance_weights_Expression
+   selected true
+   xpos -370
+   ypos -177
+  }
+  Dot {
+   name Dot4
+   xpos -336
+   ypos -150
+  }
+  Merge2 {
+   inputs 2
+   operation multiply
+   name merge_Multiply
+   xpos -260
+   ypos -153
+  }
+  CurveTool {
+   avgframes 1
+   ROI {0 0 {Input.width} {Input.height}}
+   autocropdata {1071 712 3214 2136}
+   intensitydata 1
+   name average_CurveTool
+   xpos -260
+   ypos -129
+  }
+ end_group
+end_group
+NoOp {
+ inputs 0
+ name SetColorspace
+ tile_color 0xff5f00ff
+ xpos 70
+ ypos -1089
+ addUserKnob {20 User l SetColorspace}
+ addUserKnob {26 SetColorspace l "Set selecte Nodes Colorspace"}
+ addUserKnob {22 Rec2020_Camera l "Utility - Rec.2020 - Camera" T "for s in nuke.selectedNodes():\n        s\[\"colorspace\"].setValue(\"Utility - Rec.2020 - Camera\")" +STARTLINE}
+ addUserKnob {22 ACES l "ACES - ACES2065-1" T "for s in nuke.selectedNodes():\n        s\[\"colorspace\"].setValue(\"ACES - ACES2065-1\")" +STARTLINE}
+ addUserKnob {22 ACEScg l "ACES - ACEScg" T "for s in nuke.selectedNodes():\n        s\[\"colorspace\"].setValue(\"ACES - ACEScg\")" +STARTLINE}
+ addUserKnob {22 Linear_sRGB l "Utility - Linear - sRGB" T "for s in nuke.selectedNodes():\n        s\[\"colorspace\"].setValue(\"Utility - Linear - sRGB\")" +STARTLINE}
+ addUserKnob {26 text l "" +STARTLINE T "\nSupport OCIOv1.x"}
+}
+push $N6e6ddc00
+Dot {
+ name Dot7
+ xpos -116
+ ypos -606
+}
+set N6e70e000 [stack 0]
+Dot {
+ name Dot13
+ label OUT>>PTGui
+ note_font "Verdana Bold"
+ note_font_color 0xff
+ xpos -116
+ ypos -558
+}
+Write {
+ file "\[file dirname \[value root.name]]/\[metadata Name]_\[metadata EV]EV_ACEScg_PTGui.exr"
+ colorspace "ACES - ACEScg"
+ file_type exr
+ metadata "all metadata except input/*"
+ first_part rgba
+ version 19
+ in_colorspace scene_linear
+ out_colorspace scene_linear
+ name Write3
+ xpos -150
+ ypos -503
+}
+Group {
+ inputs 0
+ name ColorMatch
+ knobChanged "n = nuke.thisNode()\nk = nuke.thisKnob() \n\nif k.name()  in ('PickSource', 'showPanel'):\n    PickSource = n\['PickSource'].value()\n    if PickSource ==  0:\n        n\['SourceWH'].setVisible(False)\n        n\['SourceEV'].setVisible(True)\n    elif PickSource ==  1:\n        n\['SourceWH'].setVisible(True)\n        n\['SourceEV'].setVisible(False)\n   \n\nif k.name()  in ('Pick', 'showPanel'):\n    Pick = n\['Pick'].value()\n    if Pick ==  0:\n        n\['SourceEV'].setEnabled(False)\n        n\['TargetEV'].setEnabled(False)\n        n\['SourceWH'].setEnabled(False)\n        n\['PickSource'].setEnabled(False)\n        n\['Exposure'].setEnabled(True)\n    elif Pick ==  1:\n        n\['SourceEV'].setEnabled(True)\n        n\['TargetEV'].setEnabled(True)\n        n\['SourceWH'].setEnabled(True)\n        n\['PickSource'].setEnabled(True)\n        n\['Exposure'].setEnabled(False)\n"
+ tile_color 0xaa55ffff
+ xpos 70
+ ypos -729
+ addUserKnob {20 ColorMatch l "Color Match"}
+ addUserKnob {26 text l "Match Whitepoint"}
+ addUserKnob {18 Source l "Source color"}
+ Source {1 1 1}
+ addUserKnob {6 Source_panelDropped l "panel dropped state" -STARTLINE +HIDDEN}
+ addUserKnob {6 color_rgb_panelDropped l "panel dropped state" -STARTLINE +HIDDEN}
+ addUserKnob {18 Target l "Target color"}
+ Target {1 1 1}
+ addUserKnob {6 Target_panelDropped l "panel dropped state" +HIDDEN +STARTLINE}
+ addUserKnob {6 color_rgb_1_panelDropped l "panel dropped state" -STARTLINE +HIDDEN}
+ addUserKnob {6 Exposure l "Match Exposure" +STARTLINE}
+ addUserKnob {26 text_1 l "Change Exposure"}
+ addUserKnob {6 Pick l "Pick Other source Match Exposure" +STARTLINE}
+ addUserKnob {6 PickSource l "Use Whitepoint Source color" +DISABLED +STARTLINE}
+ addUserKnob {18 SourceWH l "Source color" +DISABLED +HIDDEN}
+ SourceWH {{Source.r} {Source.g} {Source.b}}
+ addUserKnob {6 SourceWH_panelDropped l "panel dropped state" -STARTLINE +HIDDEN}
+ addUserKnob {18 SourceEV l "Source color" +DISABLED}
+ SourceEV {1 1 1}
+ addUserKnob {6 SourceEV_panelDropped l "panel dropped state" -STARTLINE +HIDDEN}
+ addUserKnob {18 TargetEV l "Target Color" +DISABLED R 0 10}
+ TargetEV {1 1 1}
+ addUserKnob {6 TargetEV_panelDropped l "panel dropped state" -STARTLINE +HIDDEN}
+ addUserKnob {26 ""}
+ addUserKnob {6 WBreverse l "Whitepoint reverse" +STARTLINE}
+ addUserKnob {6 EVreverse l "Exposure reverse" +STARTLINE}
+ addUserKnob {26 ""}
+ addUserKnob {26 credit l "" +STARTLINE T "\nCGSLAB LLC. \nhttp://site.cgslab.info/"}
+ addUserKnob {6 PickExposure_panelDropped l "panel dropped state" +HIDDEN +STARTLINE}
+}
+ Input {
+  inputs 0
+  name Input1
+  xpos 510
+  ypos 111
+ }
+ Grade {
+  whitepoint {{(white.r*0.2126)+(white.g*0.7152)+(white.b*0.0722)}}
+  white {{parent.Target.r} {parent.Target.g} {parent.Target.b} 1}
+  reverse {{parent.WBreverse}}
+  name Grade1
+  xpos 510
+  ypos 159
+ }
+ Grade {
+  whitepoint {{parent.Source.r} {parent.Source.g} {parent.Source.b} 0}
+  white {{(whitepoint.r*0.2126)+(whitepoint.g*0.7152)+(whitepoint.b*0.0722)}}
+  reverse {{parent.WBreverse}}
+  name Grade2
+  xpos 510
+  ypos 207
+ }
+ Grade {
+  whitepoint {{parent.Grade2.white}}
+  white {{parent.Grade1.whitepoint}}
+  reverse {{parent.EVreverse}}
+  name Grade3
+  xpos 510
+  ypos 255
+  disable {{!(Exposure)/(!(Pick))}}
+ }
+ Grade {
+  whitepoint {{(SourceEV.r*0.2126)+(SourceEV.g*0.7152)+(SourceEV.b*0.0722)}}
+  white {{(TargetEV.r*0.2126)+(TargetEV.g*0.7152)+(TargetEV.b*0.0722)}}
+  reverse {{parent.EVreverse}}
+  name Grade4
+  xpos 510
+  ypos 303
+  disable {{!(Pick)}}
+ }
+ Output {
+  name Output1
+  xpos 510
+  ypos 351
+ }
+end_group
+push $N6e70e000
+Dot {
+ name Dot16
+ xpos -226
+ ypos -606
+}
+set N6e70e400 [stack 0]
+Dot {
+ name Dot10
+ xpos -226
+ ypos -246
+}
+Dot {
+ inputs 0
+ name Dot6
+ label "In>>PTGui Stitch"
+ note_font "Verdana Bold"
+ note_font_color 0xff
+ xpos -116
+ ypos -342
+}
+Group {
+ name Add_Sun2
+ tile_color 0x31a8ffff
+ xpos -150
+ ypos -297
+ cached true
+ addUserKnob {20 User l "Add Sun"}
+ addUserKnob {6 SunOFF l "Sun OFF" +STARTLINE}
+ addUserKnob {7 power l Power R -5 5}
+ power 4
+ addUserKnob {6 color_rgb_panelDropped l "panel dropped state" +HIDDEN +STARTLINE}
+ addUserKnob {18 color_sun l Color}
+ color_sun {1.038711 1.035594 0.978432}
+ addUserKnob {6 color_sun_panelDropped l "panel dropped state" -STARTLINE +HIDDEN}
+ addUserKnob {41 scale l Scale T Transform2.scale}
+ addUserKnob {41 translate l Translate T Transform2.translate}
+ addUserKnob {41 blur l Blur T Blur2.size}
+ addUserKnob {20 Inpaint_G l Inpaint n 1}
+ addUserKnob {6 Inpaint +STARTLINE}
+ Inpaint true
+ addUserKnob {7 Scale R 0 5}
+ Scale 0.7
+ addUserKnob {41 Blursize l Blur T Blur1.size}
+ addUserKnob {41 detailAmount l DetailAmount T Inpaint1.detailAmount}
+ addUserKnob {20 endGroup_1 l endGroup n -1}
+ addUserKnob {20 AddGlow n 1}
+ addUserKnob {6 Glow +STARTLINE}
+ Glow true
+ addUserKnob {41 GlowSize T NaturalGlow1.GlowSize}
+ addUserKnob {41 Value T NaturalGlow1.Value}
+ addUserKnob {20 endGroup n -1}
+ addUserKnob {26 credit l "" +STARTLINE T "\nCGSLAB LLC. \nhttp://site.cgslab.info/"}
+}
+ Reformat {
+  inputs 0
+  format "256 256 0 0 256 256 1 square_256"
+  name Reformat1
+  xpos 70
+  ypos -807
+ }
+ Radial {
+  area {0 0 256 256}
+  softness {{parent.softness_sun.main}}
+  color {1 1 1 1}
+  color_panelDropped true
+  name Radial1
+  xpos 70
+  ypos -753
+ }
+set N6e70f400 [stack 0]
+ Transform {
+  scale 0.07
+  center {128 128}
+  name Transform1
+  xpos 70
+  ypos -705
+ }
+ Transform {
+  translate {545 2946}
+  center {128 128}
+  name Transform2
+  xpos 70
+  ypos -681
+ }
+ Unpremult {
+  name Unpremult1
+  xpos 70
+  ypos -633
+ }
+ Grade {
+  whitepoint {{(white.r*0.2126)+(white.g*0.7152)+(white.b*0.0722)}}
+  white {{parent.color_sun.r} {parent.color_sun.g} {parent.color_sun.b} 1}
+  name Grade1
+  xpos 70
+  ypos -585
+ }
+ Multiply {
+  channels rgb
+  value {{2**(10+power)}}
+  name Multiply1
+  xpos 70
+  ypos -537
+ }
+ Premult {
+  name Premult1
+  xpos 70
+  ypos -489
+ }
+ Blur {
+  size 1
+  name Blur2
+  xpos 70
+  ypos -447
+ }
+set N6d3f7000 [stack 0]
+push $N6d3f7000
+push $N6e70f400
+ Transform {
+  translate {{parent.Transform2.translate.main.x} {parent.Transform2.translate.main.y}}
+  scale {{parent.Scale.main}}
+  center {128 128}
+  name Transform3
+  xpos 180
+  ypos -681
+ }
+set N6d3f7400 [stack 0]
+push $N6d3f7400
+ Input {
+  inputs 0
+  name Input1
+  xpos 290
+  ypos -825
+ }
+ Shuffle {
+  alpha white
+  name Shuffle1
+  xpos 290
+  ypos -777
+ }
+ Dot {
+  name Dot1
+  xpos 324
+  ypos -686
+ }
+set N6d426000 [stack 0]
+ Inpaint2 {
+  inputs 2
+  fillRegion "Matte Alpha"
+  LABColourSpace true
+  detailAmount 0.2
+  translate {-479.1000061 310}
+  center {3600 1800}
+  name Inpaint1
+  xpos 180
+  ypos -609
+  disable {{!(Inpaint)}}
+ }
+ Merge2 {
+  inputs 2
+  operation mask
+  name Merge1
+  xpos 400
+  ypos -609
+ }
+ Blur {
+  size 40
+  name Blur1
+  xpos 400
+  ypos -567
+ }
+push $N6d426000
+ Merge2 {
+  inputs 2
+  name Merge3
+  xpos 290
+  ypos -561
+  disable {{!(Inpaint)}}
+ }
+ Merge2 {
+  inputs 2
+  name Merge2
+  xpos 290
+  ypos -441
+  disable {{SunOFF}}
+ }
+ Group {
+  inputs 2
+  name NaturalGlow1
+  knobChanged "n = nuke.thisNode()\nk = nuke.thisKnob() \n\nif k.name()  in ('lightwrap', 'showPanel'):\n    lightwrap = n\['lightwrap'].value()\n    if lightwrap ==  0:\n        n\['Lightwrap'].setVisible(False)\n        n\['View'].setVisible(False)\n        n\['BGBlur'].setVisible(False)\n    elif lightwrap ==  1:\n        n\['Lightwrap'].setVisible(True)\n        n\['View'].setVisible(True)\n        n\['BGBlur'].setVisible(True)\nif k.name()  in ('Mask', 'showPanel'):\n    Mask = n\['Mask'].value()\n    if Mask ==  0:\n        n\['mask'].setEnabled(False)\n        n\['invert'].setEnabled(False)\n    elif Mask ==  1:\n        n\['mask'].setEnabled(True)\n        n\['invert'].setEnabled(True)\nif k.name()  in ('color', 'showPanel'):\n    color = n\['color'].value()\n    if color ==  0:\n        n\['ColorBalance'].setEnabled(False)\n    elif color ==  1:\n        n\['ColorBalance'].setEnabled(True)\n"
+  tile_color 0xff9455ff
+  xpos 290
+  ypos -369
+  disable {{!(Glow)}}
+  addUserKnob {20 NaturalGlow}
+  addUserKnob {4 Mode M {Plus Screen Over Max GlowOnly "" "" "" "" "" ""}}
+  addUserKnob {6 lightwrap l "Lightwrap Mode(Use bg)" -STARTLINE}
+  addUserKnob {6 Mask l "UseInputMask   " +STARTLINE}
+  Mask true
+  addUserKnob {41 mask -STARTLINE T ChannelMerge1.A}
+  addUserKnob {6 invert -STARTLINE}
+  addUserKnob {26 ""}
+  addUserKnob {7 GlowSize R 0 10}
+  GlowSize 1
+  addUserKnob {7 Value R 0 5}
+  Value 1
+  addUserKnob {6 color l ColorBalance +STARTLINE}
+  addUserKnob {41 ColorBalance l "" -STARTLINE T Grade1.whiteBalance}
+  addUserKnob {26 Lightwrap +HIDDEN}
+  addUserKnob {6 View l "View  " +HIDDEN +STARTLINE}
+  addUserKnob {7 BGBlur l "BG Blur" -STARTLINE +HIDDEN R 0 100}
+  addUserKnob {26 ""}
+  addUserKnob {6 ThresholdView l Threshold(Mask)View +STARTLINE}
+  addUserKnob {41 blackpoint T Grade2.blackpoint}
+  addUserKnob {41 whitepoint T Grade2.whitepoint}
+  addUserKnob {41 gamma T Grade2.gamma}
+  addUserKnob {26 ""}
+  addUserKnob {4 Alpha l AlphaOut M {img+Glow Glow img a1 "" "" "" "" ""}}
+  Alpha img
+ }
+  Input {
+   inputs 0
+   name bg
+   xpos -1985
+   ypos -929
+   number 2
+  }
+  Blur {
+   size {{parent.BGBlur}}
+   name Blur13
+   xpos -1985
+   ypos -784
+  }
+set N6d464000 [stack 0]
+  Dot {
+   name Dot61
+   xpos -1951
+   ypos 1295
+  }
+  Input {
+   inputs 0
+   name mask
+   xpos -1556
+   ypos -924
+   number 1
+  }
+  Input {
+   inputs 0
+   name img
+   xpos -1777
+   ypos -924
+  }
+  Dot {
+   name Dot59
+   xpos -1743
+   ypos -860
+  }
+set N6d465000 [stack 0]
+  Dot {
+   name Dot60
+   xpos -1841
+   ypos -860
+  }
+  Invert {
+   channels alpha
+   name Invert3
+   xpos -1875
+   ypos -828
+  }
+push $N6d464000
+  Merge2 {
+   inputs 2
+   operation mask
+   name Merge21
+   xpos -1875
+   ypos -778
+  }
+push $N6d465000
+  Switch {
+   inputs 2
+   which {{parent.lightwrap}}
+   name Switch5
+   xpos -1777
+   ypos -740
+  }
+  Dot {
+   name Dot44
+   xpos -1743
+   ypos -678
+  }
+set N6d48e400 [stack 0]
+  Dot {
+   name Dot45
+   xpos -1627
+   ypos -678
+  }
+set N6d48e800 [stack 0]
+  ChannelMerge {
+   inputs 2
+   operation divide
+   name ChannelMerge1
+   xpos -1556
+   ypos -690
+  }
+  Invert {
+   name Invert2
+   xpos -1556
+   ypos -640
+   disable {{1-parent.invert}}
+  }
+push $N6d48e800
+  Dot {
+   name Dot43
+   xpos -1627
+   ypos -592
+  }
+  ShuffleCopy {
+   inputs 2
+   name ShuffleCopy1
+   xpos -1556
+   ypos -596
+  }
+  Premult {
+   name Premult3
+   xpos -1556
+   ypos -570
+  }
+push $N6d48e400
+  Dot {
+   name Dot1
+   xpos -1743
+   ypos -526
+  }
+set N6e456000 [stack 0]
+  Switch {
+   inputs 2
+   which {{parent.Mask}}
+   name Switch4
+   xpos -1556
+   ypos -530
+  }
+set N6e456400 [stack 0]
+  Saturation {
+   saturation 0
+   name Saturation1
+   xpos -1329
+   ypos -530
+  }
+  Grade {
+   name Grade2
+   xpos -1329
+   ypos -500
+  }
+  Shuffle {
+   green red
+   blue red
+   alpha red
+   name Shuffle2
+   xpos -1329
+   ypos -429
+  }
+set N6e457000 [stack 0]
+push $N6e456400
+  ShuffleCopy {
+   inputs 2
+   name ShuffleCopy3
+   xpos -1452
+   ypos -429
+  }
+set N6e457400 [stack 0]
+  Shuffle {
+   red alpha
+   green alpha
+   blue alpha
+   name Shuffle1
+   xpos -1625
+   ypos -387
+  }
+  Text2 {
+   font_size_toolbar 54
+   font_width_toolbar 100
+   font_height_toolbar 100
+   message Threshold
+   old_message {{84 104 114 101 115 104 111 108 100}
+     }
+   box {0 0 0 0}
+   yjustify bottom
+   transforms {{0 2}
+     }
+   font_size_values {{0 {input.height/20} 1 {input.height/20} 2 {input.height/20} 3 {input.height/20} 4 {input.height/20} 5 {input.height/20} 6 {input.height/20} 7 {input.height/20} 8 {input.height/20} 0 {input.height/20 x1 0} 1 {input.height/20 x1 0} 2 {input.height/20 x1 0} 3 {input.height/20 x1 0}}
+     }
+   cursor_position 9
+   font_size 54
+   scale {1 1}
+   cursor_initialised true
+   autofit_bbox false
+   initial_cursor_position {{0 1080}
+     }
+   group_animations {{0} imported: 0 selected: items: "root transform/"}
+   animation_layers {{1 11 {input.width/2} {input.height/2} 0 0 1 1 0 0 0 0}
+     }
+   enable_shadows true
+   shadow_size 0.7
+   name Text3
+   xpos -1625
+   ypos 1233
+  }
+  Dot {
+   name Dot18
+   xpos -1591
+   ypos 1295
+  }
+push $N6d465000
+  Dot {
+   name Dot50
+   xpos -1685
+   ypos -860
+  }
+  Dot {
+   name Dot52
+   xpos -1685
+   ypos 685
+  }
+set N6e4a0800 [stack 0]
+push $N6e456400
+push $N6e457400
+  Merge2 {
+   inputs 2
+   operation mask
+   name Merge18
+   xpos -1556
+   ypos -350
+  }
+  Dot {
+   name Dot32
+   xpos -1522
+   ypos -287
+  }
+  Dot {
+   name Dot14
+   xpos -1516
+   ypos 449
+  }
+set N6e4a1400 [stack 0]
+  Invert {
+   clamp true
+   name Invert1
+   xpos -1550
+   ypos 508
+  }
+  ColorCorrect {
+   saturation 0
+   name ColorCorrect1
+   xpos -1550
+   ypos 552
+  }
+  Dot {
+   name Dot48
+   xpos -1516
+   ypos 643
+  }
+push $N6e457400
+  Premult {
+   name Premult1
+   xpos -1452
+   ypos -381
+  }
+  Dot {
+   name Dot2
+   xpos -1418
+   ypos -339
+  }
+set N6e4d0800 [stack 0]
+  Dot {
+   name Dot3
+   xpos -1285
+   ypos -339
+  }
+set N6e4d0c00 [stack 0]
+  Dot {
+   name Dot4
+   xpos -1174
+   ypos -339
+  }
+set N6e4d1000 [stack 0]
+  Dot {
+   name Dot5
+   xpos -1060
+   ypos -339
+  }
+set N6e4d1400 [stack 0]
+  Dot {
+   name Dot6
+   xpos -950
+   ypos -339
+  }
+set N6e4d1800 [stack 0]
+  Dot {
+   name Dot7
+   xpos -837
+   ypos -339
+  }
+set N6e4d1c00 [stack 0]
+  Dot {
+   name Dot8
+   xpos -736
+   ypos -339
+  }
+set N6e4ee000 [stack 0]
+  Dot {
+   name Dot9
+   xpos -621
+   ypos -339
+  }
+set N6e4ee400 [stack 0]
+  Dot {
+   name Dot10
+   xpos -511
+   ypos -339
+  }
+set N6e4ee800 [stack 0]
+  Dot {
+   name Dot11
+   xpos -401
+   ypos -339
+  }
+set N6e4eec00 [stack 0]
+  Dot {
+   name Dot12
+   xpos -290
+   ypos -339
+  }
+set N6e4ef000 [stack 0]
+  Dot {
+   name Dot13
+   xpos -168
+   ypos -339
+  }
+  Blur {
+   size {{parent.Blur11.size*2}}
+   mix 0
+   name Blur12
+   xpos -202
+   ypos -267
+  }
+  Multiply {
+   value {{parent.Multiply11.value/2}}
+   name Multiply12
+   xpos -202
+   ypos -136
+  }
+  Dot {
+   name Dot29
+   xpos -168
+   ypos 330
+  }
+push $N6e4ef000
+  Blur {
+   size {{parent.Blur10.size*2}}
+   name Blur11
+   xpos -324
+   ypos -267
+  }
+  Multiply {
+   value {{parent.Multiply10.value/2}}
+   name Multiply11
+   xpos -324
+   ypos -136
+  }
+  Dot {
+   name Dot28
+   xpos -290
+   ypos 284
+  }
+push $N6e4eec00
+  Blur {
+   size {{parent.Blur9.size*2}}
+   name Blur10
+   xpos -435
+   ypos -270
+  }
+  Multiply {
+   value {{parent.Multiply9.value/2}}
+   name Multiply10
+   xpos -435
+   ypos -137
+  }
+  Dot {
+   name Dot27
+   xpos -401
+   ypos 240
+  }
+push $N6e4ee800
+  Blur {
+   size {{parent.Blur8.size*2}}
+   mix 0
+   name Blur9
+   xpos -545
+   ypos -270
+  }
+  Multiply {
+   value {{parent.Multiply8.value/2}}
+   mix 0
+   name Multiply9
+   xpos -545
+   ypos -135
+  }
+  Dot {
+   name Dot26
+   xpos -511
+   ypos 199
+  }
+push $N6e4ee400
+  Blur {
+   size {{parent.Blur7.size*2}}
+   name Blur8
+   xpos -655
+   ypos -271
+  }
+  Multiply {
+   value {{parent.Multiply7.value/2}}
+   mix 0
+   name Multiply8
+   xpos -655
+   ypos -135
+  }
+  Dot {
+   name Dot25
+   xpos -621
+   ypos 147
+  }
+push $N6e4ee000
+  Blur {
+   size {{parent.Blur6.size*2}}
+   name Blur7
+   xpos -770
+   ypos -272
+  }
+  Multiply {
+   value {{parent.Multiply6.value/2}}
+   mix 0
+   name Multiply7
+   xpos -770
+   ypos -135
+  }
+  Dot {
+   name Dot24
+   xpos -736
+   ypos 107
+  }
+push $N6e4d1c00
+  Blur {
+   size {{parent.Blur5.size*2}}
+   name Blur6
+   xpos -871
+   ypos -273
+  }
+  Multiply {
+   value {{parent.Multiply5.value/2}}
+   mix 0
+   name Multiply6
+   xpos -871
+   ypos -136
+  }
+  Dot {
+   name Dot23
+   xpos -837
+   ypos 65
+  }
+push $N6e4d1800
+  Blur {
+   size {{parent.Blur4.size*2}}
+   name Blur5
+   xpos -984
+   ypos -272
+  }
+  Multiply {
+   value {{parent.Multiply4.value/2}}
+   mix 0
+   name Multiply5
+   xpos -984
+   ypos -136
+  }
+  Dot {
+   name Dot22
+   xpos -950
+   ypos 29
+  }
+push $N6e4d1400
+  Blur {
+   size {{parent.Blur3.size*2}}
+   name Blur4
+   xpos -1094
+   ypos -272
+  }
+  Multiply {
+   value {{parent.Multiply3.value/2}}
+   mix 0
+   name Multiply4
+   xpos -1094
+   ypos -137
+  }
+  Dot {
+   name Dot21
+   xpos -1060
+   ypos -15
+  }
+push $N6e4d1000
+  Blur {
+   size {{parent.Blur2.size*2}}
+   name Blur3
+   xpos -1208
+   ypos -271
+  }
+  Multiply {
+   value {{parent.Multiply2.value/2}}
+   mix 0
+   name Multiply3
+   xpos -1208
+   ypos -134
+  }
+  Dot {
+   name Dot20
+   xpos -1174
+   ypos -54
+  }
+push $N6e4d0c00
+  Blur {
+   size {{parent.Blur1.size*2}}
+   name Blur2
+   xpos -1319
+   ypos -272
+  }
+  Multiply {
+   value {{parent.Multiply1.value/2}}
+   name Multiply2
+   xpos -1319
+   ypos -135
+  }
+  Dot {
+   name Dot19
+   xpos -1285
+   ypos -82
+  }
+push $N6e4d0800
+  Blur {
+   size {{parent.GlowSize}}
+   name Blur1
+   xpos -1452
+   ypos -271
+  }
+  Multiply {
+   name Multiply1
+   xpos -1452
+   ypos -135
+  }
+  Merge2 {
+   inputs 2
+   operation plus
+   name Merge1
+   xpos -1452
+   ypos -86
+  }
+  Merge2 {
+   inputs 2
+   operation plus
+   name Merge2
+   xpos -1452
+   ypos -58
+  }
+  Merge2 {
+   inputs 2
+   operation plus
+   name Merge3
+   xpos -1452
+   ypos -19
+  }
+  Merge2 {
+   inputs 2
+   operation plus
+   name Merge4
+   xpos -1452
+   ypos 25
+  }
+  Merge2 {
+   inputs 2
+   operation plus
+   name Merge5
+   xpos -1452
+   ypos 61
+  }
+  Merge2 {
+   inputs 2
+   operation plus
+   name Merge6
+   xpos -1452
+   ypos 103
+  }
+  Merge2 {
+   inputs 2
+   operation plus
+   name Merge7
+   xpos -1452
+   ypos 148
+  }
+  Merge2 {
+   inputs 2
+   operation plus
+   name Merge8
+   xpos -1452
+   ypos 195
+  }
+  Merge2 {
+   inputs 2
+   operation plus
+   name Merge9
+   xpos -1452
+   ypos 236
+  }
+  Merge2 {
+   inputs 2
+   operation plus
+   name Merge10
+   xpos -1452
+   ypos 280
+  }
+  Merge2 {
+   inputs 2
+   operation plus
+   name Merge11
+   xpos -1452
+   ypos 326
+  }
+  Unpremult {
+   name Unpremult1
+   xpos -1452
+   ypos 358
+  }
+  Grade {
+   whitepoint {{whiteBalance.r/((whiteBalance.r+whiteBalance.g+whiteBalance.b)/3)} {whiteBalance.g/((whiteBalance.r+whiteBalance.g+whiteBalance.b)/3)} {whiteBalance.b/((whiteBalance.r+whiteBalance.g+whiteBalance.b)/3)} {curve}}
+   reverse true
+   name Grade1
+   xpos -1452
+   ypos 384
+   disable {{1-parent.color}}
+   addUserKnob {20 User}
+   addUserKnob {6 whitebalance_panelDropped l "panel dropped state" -STARTLINE +HIDDEN}
+   whitebalance_panelDropped true
+   addUserKnob {18 whiteBalance +DISABLED R 0.15 1}
+   whiteBalance 1
+   addUserKnob {6 whiteBalance_panelDropped l "panel dropped state" -STARTLINE +HIDDEN}
+   whiteBalance_panelDropped true
+  }
+  Premult {
+   name Premult2
+   xpos -1452
+   ypos 420
+  }
+  Multiply {
+   channels rgba
+   value 0.1175997422
+   name Multiply16
+   xpos -1452
+   ypos 470
+  }
+  Multiply {
+   channels rgba
+   value 0.2
+   name Multiply15
+   xpos -1452
+   ypos 514
+  }
+  Multiply {
+   channels rgba
+   value {{parent.Value}}
+   name Multiply14
+   xpos -1452
+   ypos 551
+  }
+set N6d32e400 [stack 0]
+  Dot {
+   name Dot47
+   xpos -1418
+   ypos 596
+  }
+set N6d32e800 [stack 0]
+  Merge2 {
+   inputs 2
+   operation mask
+   mix {{(-parent.Value+6.2)/1.2}}
+   name Merge14
+   xpos -1452
+   ypos 639
+   disable {{parent.lightwrap}}
+  }
+  Merge2 {
+   inputs 2
+   operation mask
+   name Merge20
+   xpos -1452
+   ypos 681
+   disable {{1-parent.lightwrap}}
+  }
+set N6d32f000 [stack 0]
+push $N6d32e800
+  Dot {
+   name Dot35
+   xpos -1477
+   ypos 596
+  }
+  Switch {
+   inputs 2
+   which {{parent.lightwrap}}
+   name Switch8
+   xpos -1511
+   ypos 743
+  }
+  Dot {
+   name Dot37
+   xpos -1477
+   ypos 1076
+  }
+  Dot {
+   name Dot49
+   xpos -1652
+   ypos 1076
+  }
+push $N6d32f000
+  Dot {
+   name Dot17
+   xpos -1418
+   ypos 888
+  }
+  Dot {
+   name Dot42
+   xpos -1667
+   ypos 888
+  }
+set N6d35e800 [stack 0]
+  Dot {
+   name Dot33
+   xpos -1667
+   ypos 925
+  }
+set N6d35ec00 [stack 0]
+  Dot {
+   name Dot51
+   xpos -1667
+   ypos 971
+  }
+set N6d35f000 [stack 0]
+  Dot {
+   name Dot34
+   xpos -1667
+   ypos 1010
+  }
+push $N6e4a0800
+push $N6e456000
+  Dot {
+   name Dot46
+   xpos -1747
+   ypos 580
+  }
+  Switch {
+   inputs 2
+   which {{parent.lightwrap}}
+   name Switch6
+   xpos -1781
+   ypos 738
+  }
+  Dot {
+   name Dot30
+   xpos -1747
+   ypos 830
+  }
+set N6df16000 [stack 0]
+  Dot {
+   name Dot15
+   xpos -1879
+   ypos 830
+  }
+set N6df16400 [stack 0]
+  Dot {
+   name Dot41
+   xpos -1972
+   ypos 830
+  }
+set N6df16800 [stack 0]
+  Dot {
+   name Dot31
+   xpos -2071
+   ypos 830
+  }
+  Merge2 {
+   inputs 2
+   operation max
+   name Merge15
+   xpos -2105
+   ypos 1000
+  }
+  Dot {
+   name Dot36
+   xpos -2071
+   ypos 1108
+  }
+push $N6d35f000
+push $N6df16800
+  Merge2 {
+   inputs 2
+   name Merge17
+   xpos -2006
+   ypos 967
+  }
+  Dot {
+   name Dot53
+   xpos -1972
+   ypos 1066
+  }
+push $N6d35ec00
+push $N6df16400
+  Merge2 {
+   inputs 2
+   operation screen
+   name Merge19
+   xpos -1913
+   ypos 921
+  }
+  Dot {
+   name Dot54
+   xpos -1879
+   ypos 1058
+  }
+push $N6d35e800
+push $N6df16000
+  Merge2 {
+   inputs 2
+   operation plus
+   name Merge12
+   xpos -1781
+   ypos 884
+  }
+  Switch {
+   inputs 5
+   which {{parent.Mode}}
+   name Switch2
+   xpos -1781
+   ypos 1110
+  }
+set N6df3ec00 [stack 0]
+  Shuffle {
+   alpha white
+   name Shuffle3
+   xpos -1519
+   ypos 1110
+  }
+push $N6df16000
+  Dot {
+   name Dot38
+   xpos -1535
+   ypos 830
+  }
+  Dot {
+   name Dot39
+   xpos -1535
+   ypos 956
+  }
+set N6df3f800 [stack 0]
+  Dot {
+   name Dot57
+   xpos -1420
+   ypos 956
+  }
+set N6df3fc00 [stack 0]
+push $N6d32f000
+push $N6e4a1400
+  Dot {
+   name Dot16
+   xpos -1297
+   ypos 449
+  }
+push $N6d32e400
+  Merge2 {
+   inputs 2
+   operation max
+   name Merge13
+   xpos -1331
+   ypos 551
+  }
+  Dot {
+   name Dot63
+   xpos -1297
+   ypos 638
+  }
+set N6df64800 [stack 0]
+  Dot {
+   name Dot62
+   xpos -1355
+   ypos 710
+  }
+  Switch {
+   inputs 2
+   which {{parent.lightwrap}}
+   name Switch7
+   xpos -1389
+   ypos 742
+  }
+  Dot {
+   name Dot58
+   xpos -1355
+   ypos 887
+  }
+push $N6df3f800
+  Dot {
+   name Dot56
+   xpos -1535
+   ypos 1054
+  }
+push $N6df64800
+  Dot {
+   name Dot55
+   xpos -1298
+   ypos 958
+  }
+push $N6df3fc00
+  Dot {
+   name Dot40
+   xpos -1331
+   ypos 956
+  }
+  Merge2 {
+   inputs 2
+   name Merge16
+   xpos -1365
+   ypos 995
+  }
+  Switch {
+   inputs 2
+   which {{parent.lightwrap}}
+   name Switch9
+   xpos -1365
+   ypos 1050
+  }
+  Shuffle {
+   name Shuffle4
+   xpos -1365
+   ypos 1112
+  }
+  Switch {
+   inputs 4
+   which {{parent.Alpha}}
+   name Switch3
+   xpos -1454
+   ypos 1174
+  }
+push $N6df3ec00
+  ShuffleCopy {
+   inputs 2
+   name ShuffleCopy2
+   xpos -1781
+   ypos 1174
+  }
+  Switch {
+   inputs 3
+   which {{parent.ThresholdView+(parent.View*2)}}
+   name Switch1
+   xpos -1781
+   ypos 1291
+  }
+  Output {
+   name Output1
+   xpos -1781
+   ypos 1349
+  }
+push $N6e457000
+push $N6e457000
+  Viewer {
+   inputs 2
+   frame_range 1-186
+   name Viewer1
+   xpos -1091
+   ypos -458
+  }
+push $N6e456400
+  Keyer {
+   operation "luminance key"
+   name Keyer1
+   xpos -1434
+   ypos -568
+  }
+ end_group
+ Output {
+  name Output1
+  xpos 290
+  ypos -321
+ }
+end_group
+CopyMetaData {
+ inputs 2
+ name CopyMetaData1
+ xpos -150
+ ypos -249
+}
+Group {
+ name Lux_Meter2
+ tile_color 0xffd455ff
+ label "\[value Lux]lux"
+ xpos -150
+ ypos -207
+ addUserKnob {20 LuxMater}
+ addUserKnob {41 colourspace_Pulldown_Choice l Colourspace T Panoramic_HDRI_Absolute_Luminance_Calibration1.colourspace_Pulldown_Choice}
+ addUserKnob {7 InputEV R -3 18}
+ InputEV 14.7
+ addUserKnob {7 metaEV t "metadata EV reference" R -3 18}
+ metaEV {{"\[metadata EV]"}}
+ addUserKnob {26 ""}
+ addUserKnob {41 compute_input_illuminance_Python_Script_Button l "Compute Input Illuminance" T Panoramic_HDRI_Absolute_Luminance_Calibration1.compute_input_illuminance_Python_Script_Button}
+ addUserKnob {41 reset_input_illuminance_Python_Script_Button l "Reset Input Illuminance" -STARTLINE T Panoramic_HDRI_Absolute_Luminance_Calibration1.reset_input_illuminance_Python_Script_Button}
+ addUserKnob {26 ""}
+ addUserKnob {7 Lux}
+ Lux {{Panoramic_HDRI_Absolute_Luminance_Calibration1.luminance_scaling_Multiply.input_illuminance_Floating_Point_Slider}}
+ addUserKnob {26 ""}
+ addUserKnob {20 Luxcondition l "Lux condition(reference value)" t 参考照度条件 n 1}
+ addUserKnob {26 text l "" t "Lux\n120,000 lux :      最も明るい太陽光\n111,000 lux :      晴天\n20,000 lux :        うす曇り、晴れ\n1,000–2,000 lux: 曇り、晴れの日陰、日の出・日の入り\n400-800 lux :      明るい室内照明\n<300 lux :          室内照明、明るい窓からの光\n<100 lux :          日の出前の薄暗い朝、日没後の暗い夜\n0.25 lux :           満月の月明かり\n0.01 lux :           晴れた夜空" +STARTLINE T "Lux\n120,000 lux :      Brightest sunlight\n111,000 lux :      Full sunlight\n20,000 lux :        Hazy, some clouds,Sunny day\n1,000–2,000 lux: Overcast, shady areas on a sunny day, Sunrise / sunset\n400-800 lux :      Bright indoor lighting\n<300 lux :          Indoor lighting. Bright window light.\n<100 lux :          Dark morning before sunrise, dark evening after sunset.\n0.25 lux :           Moonlight from a full moon\n0.01 lux :           Clear night sky"}
+ addUserKnob {20 endGroup n -1}
+ addUserKnob {26 credit l "" +STARTLINE T "\nCGSLAB LLC. \nhttp://site.cgslab.info/"}
+ addUserKnob {20 about_Tab l About}
+ addUserKnob {26 description_Text l "" +STARTLINE T "Customized for use\n\nPanoramic HDRI - Absolute Luminance Calibration v0.1.0\n\ncolour-science.org - September 06, 2016\n\nThis Gizmo / Group performs absolute luminance calibration of panoramic HDRI images.\n\n\[1] Lagarde, S., Lachambre, S., & Jover, C. (2016). An Artist-Friendly Workflow for Panoramic HDRI. Retrieved from http://blog.selfshadow.com/publications/s2016-shading-course/unity/s2016_pbs_unity_hdri_notes.pdf"}
+}
+ Input {
+  inputs 0
+  name Input1
+  xpos -221
+  ypos -42
+ }
+set N6dfdf000 [stack 0]
+ Output {
+  name Output1
+  xpos -221
+  ypos 154
+ }
+push $N6dfdf000
+ EXPTool {
+  mode Stops
+  red {{parent.InputEV}}
+  green {{parent.InputEV}}
+  blue {{parent.InputEV}}
+  name Exposure2
+  xpos -171
+  ypos -5
+ }
+ Group {
+  name Panoramic_HDRI_Absolute_Luminance_Calibration1
+  tile_color 0xffbf00ff
+  xpos -171
+  ypos 42
+  addUserKnob {20 panoramic_hdri_absolute_luminance_calibration_tab l "Panoramic HDRI - Absolute Luminance Calibration"}
+  addUserKnob {20 illuminance_parameters_Group l "Illuminance Parameters" n 1}
+  addUserKnob {22 compute_input_illuminance_Python_Script_Button l "Compute Input Illuminance" t "Computes the input illuminance. \n\nThe input illuminance has to be manually recomputed each time that up-stream graph is changed." T nuke.toNode('average_CurveTool').knob('go').execute() +STARTLINE}
+  addUserKnob {22 reset_input_illuminance_Python_Script_Button l "Reset Input Illuminance" t "Reset the input illuminance." -STARTLINE T "node =  nuke.toNode('average_CurveTool')\n\nknob = node.knob('intensitydata')\nknob.clearAnimated()\nknob.setValue(1)"}
+  addUserKnob {7 measured_illuminance_Floating_Point_Slider l "Measured Illuminance (Lux)" t "Measured illuminance E_v in Lumen per square metre (Lux)" R 0 120000}
+  measured_illuminance_Floating_Point_Slider 51000
+  addUserKnob {20 tone_parameters_endGroup l endGroup n -1}
+  addUserKnob {20 miscellaneous_Group l "Miscellaneous Parameters" n 1}
+  addUserKnob {4 colourspace_Pulldown_Choice l Colourspace M {ACES2065-1 ACEScc ACEScg ACESproxy "ALEXA Wide Gamut RGB" "Adobe RGB (1998)" "Adobe Wide Gamut RGB" "Apple RGB" "Best RGB" "Beta RGB" "CIE RGB" "Cinema Gamut" "ColorMatch RGB" DCI-P3 DCI-P3+ DRAGONcolor DRAGONcolor2 "Don RGB 4" "ECI RGB v2" "ERIMM RGB" "Ekta Space PS 5" "Max RGB" "NTSC RGB" "Pal/Secam RGB" "ProPhoto RGB" REDcolor REDcolor2 REDcolor3 REDcolor4 "RIMM RGB" "ROMM RGB" "Rec. 2020" "Rec. 709" "Russell RGB" S-Gamut S-Gamut3 S-Gamut3.Cine "SMPTE-C RGB" V-Gamut "Xtreme RGB" sRGB ""}}
+  colourspace_Pulldown_Choice ACEScg
+  addUserKnob {20 miscellaneous_endGroup l endGroup n -1}
+  addUserKnob {20 output_values_Group l "Output Values" n 1}
+  addUserKnob {7 luminance_scaling_factor_Floating_Point_Slider l "Luminance Scaling Factor"}
+  luminance_scaling_factor_Floating_Point_Slider {{luminance_scaling_Multiply.luminance_scaling_factor_Floating_Point_Slider}}
+  addUserKnob {20 output_values_endGroup l endGroup n -1}
+  addUserKnob {41 input_illuminance_Floating_Point_Slider l "Input Illuminance (Lux)" T luminance_scaling_Multiply.input_illuminance_Floating_Point_Slider}
+  addUserKnob {20 about_Tab l About}
+  addUserKnob {26 description_Text l "" +STARTLINE T "Panoramic HDRI - Absolute Luminance Calibration v0.1.0\n\ncolour-science.org - September 06, 2016\n\nThis Gizmo / Group performs absolute luminance calibration of panoramic HDRI images.\n\n\[1] Lagarde, S., Lachambre, S., & Jover, C. (2016). An Artist-Friendly Workflow for Panoramic HDRI. Retrieved from http://blog.selfshadow.com/publications/s2016-shading-course/unity/s2016_pbs_unity_hdri_notes.pdf"}
+ }
+  Input {
+   inputs 0
+   name Input
+   xpos -150
+   ypos -177
+  }
+set N6dfdfc00 [stack 0]
+  Multiply {
+   value {{luminance_scaling_factor_Floating_Point_Slider}}
+   name luminance_scaling_Multiply
+   xpos -150
+   ypos -133
+   addUserKnob {20 User}
+   addUserKnob {7 input_illuminance_Floating_Point_Slider l "Input Illuminance (Lux)"}
+   input_illuminance_Floating_Point_Slider {{parent.average_CurveTool.intensitydata.r}}
+   addUserKnob {7 measured_illuminance_Floating_Point_Slider l "Measured Illuminance (Lux)"}
+   measured_illuminance_Floating_Point_Slider {{parent.measured_illuminance_Floating_Point_Slider}}
+   addUserKnob {7 luminance_scaling_factor_Floating_Point_Slider l "Luminance Scaling Factor"}
+   luminance_scaling_factor_Floating_Point_Slider {{"1 / input_illuminance_Floating_Point_Slider * measured_illuminance_Floating_Point_Slider"}}
+  }
+  Output {
+   name Output
+   xpos -152
+   ypos -89
+  }
+push $N6dfdfc00
+  Dot {
+   name Dot1
+   xpos -116
+   ypos -198
+  }
+  Group {
+   name RGB_Luminance1
+   xpos -260
+   ypos -201
+   addUserKnob {20 RGB_luminance_Tab l "RGB Luminance"}
+   addUserKnob {20 colourspace_parameters_Begin_Group l "Colourspace Parameters" n 1}
+   colourspace_parameters_Begin_Group 0
+   addUserKnob {4 colourspace_Pulldown_Choice l Colourspace M {ACES2065-1 ACEScc ACEScg ACESproxy "ALEXA Wide Gamut RGB" "Adobe RGB (1998)" "Adobe Wide Gamut RGB" "Apple RGB" "Best RGB" "Beta RGB" "CIE RGB" "Cinema Gamut" "ColorMatch RGB" DCI-P3 DCI-P3+ DRAGONcolor DRAGONcolor2 "Don RGB 4" "ECI RGB v2" "ERIMM RGB" "Ekta Space PS 5" "Max RGB" "NTSC RGB" "Pal/Secam RGB" "ProPhoto RGB" REDcolor REDcolor2 REDcolor3 REDcolor4 "RIMM RGB" "ROMM RGB" "Rec. 2020" "Rec. 709" "Russell RGB" S-Gamut S-Gamut3 S-Gamut3.Cine "SMPTE-C RGB" V-Gamut "Xtreme RGB" sRGB}}
+   colourspace_Pulldown_Choice {{parent.colourspace_Pulldown_Choice x1 29}}
+   addUserKnob {20 endGroup n -1}
+   addUserKnob {20 about_Tab l About}
+   addUserKnob {26 description_Text l "" +STARTLINE T "RGB Luminance v0.1.4\n\ncolour-science.org - July 10, 2016\n\nThis Gizmo / Group computes the \"RGB Luminance\" of given colourspace."}
+  }
+   Input {
+    inputs 0
+    name Input
+    xpos -4880
+    ypos -273
+   }
+set N6dc66c00 [stack 0]
+   Expression {
+    expr0 "0.212639005872 * r + 0.715168678768 * g + 0.0721923153607 * b"
+    expr1 "0.212639005872 * r + 0.715168678768 * g + 0.0721923153607 * b"
+    expr2 "0.212639005872 * r + 0.715168678768 * g + 0.0721923153607 * b"
+    name sRGB_luminance_Expression
+    selected true
+    xpos -5006
+    ypos -251
+   }
+push $N6dc66c00
+   Expression {
+    expr0 "0.0 * r + 1.0 * g + 0.0 * b"
+    expr1 "0.0 * r + 1.0 * g + 0.0 * b"
+    expr2 "0.0 * r + 1.0 * g + 0.0 * b"
+    name Xtreme_RGB_luminance_Expression
+    xpos -5136
+    ypos -251
+   }
+push $N6dc66c00
+   Expression {
+    expr0 "0.26068555009 * r + 0.77489446333 * g + -0.03558001342 * b"
+    expr1 "0.26068555009 * r + 0.77489446333 * g + -0.03558001342 * b"
+    expr2 "0.26068555009 * r + 0.77489446333 * g + -0.03558001342 * b"
+    name V-Gamut_luminance_Expression
+    xpos -5286
+    ypos -251
+   }
+push $N6dc66c00
+   Expression {
+    expr0 "0.212376360705 * r + 0.701059856926 * g + 0.0865637823692 * b"
+    expr1 "0.212376360705 * r + 0.701059856926 * g + 0.0865637823692 * b"
+    expr2 "0.212376360705 * r + 0.701059856926 * g + 0.0865637823692 * b"
+    name SMPTE-C_RGB_luminance_Expression
+    xpos -5436
+    ypos -251
+   }
+push $N6dc66c00
+   Expression {
+    expr0 "0.215075820116 * r + 0.885068501744 * g + -0.100144321859 * b"
+    expr1 "0.215075820116 * r + 0.885068501744 * g + -0.100144321859 * b"
+    expr2 "0.215075820116 * r + 0.885068501744 * g + -0.100144321859 * b"
+    name S-Gamut3.Cine_luminance_Expression
+    xpos -5586
+    ypos -251
+   }
+push $N6dc66c00
+   Expression {
+    expr0 "0.270979670813 * r + 0.786606411221 * g + -0.0575860820344 * b"
+    expr1 "0.270979670813 * r + 0.786606411221 * g + -0.0575860820344 * b"
+    expr2 "0.270979670813 * r + 0.786606411221 * g + -0.0575860820344 * b"
+    name S-Gamut3_luminance_Expression
+    xpos -5736
+    ypos -251
+   }
+push $N6dc66c00
+   Expression {
+    expr0 "0.270979670813 * r + 0.786606411221 * g + -0.0575860820344 * b"
+    expr1 "0.270979670813 * r + 0.786606411221 * g + -0.0575860820344 * b"
+    expr2 "0.270979670813 * r + 0.786606411221 * g + -0.0575860820344 * b"
+    name S-Gamut_luminance_Expression
+    xpos -5886
+    ypos -251
+   }
+push $N6dc66c00
+   Expression {
+    expr0 "0.315199106486 * r + 0.664839320751 * g + 0.0199615727626 * b"
+    expr1 "0.315199106486 * r + 0.664839320751 * g + 0.0199615727626 * b"
+    expr2 "0.315199106486 * r + 0.664839320751 * g + 0.0199615727626 * b"
+    name Russell_RGB_luminance_Expression
+    xpos -6036
+    ypos -251
+   }
+push $N6dc66c00
+   Expression {
+    expr0 "0.212639005872 * r + 0.715168678768 * g + 0.0721923153607 * b"
+    expr1 "0.212639005872 * r + 0.715168678768 * g + 0.0721923153607 * b"
+    expr2 "0.212639005872 * r + 0.715168678768 * g + 0.0721923153607 * b"
+    name Rec._709_luminance_Expression
+    xpos -6186
+    ypos -251
+   }
+push $N6dc66c00
+   Expression {
+    expr0 "0.262700212011 * r + 0.677998071519 * g + 0.0593017164699 * b"
+    expr1 "0.262700212011 * r + 0.677998071519 * g + 0.0593017164699 * b"
+    expr2 "0.262700212011 * r + 0.677998071519 * g + 0.0593017164699 * b"
+    name Rec._2020_luminance_Expression
+    xpos -6336
+    ypos -251
+   }
+push $N6dc66c00
+   Expression {
+    expr0 "0.288071128229 * r + 0.71184321781 * g + 8.56539606053e-05 * b"
+    expr1 "0.288071128229 * r + 0.71184321781 * g + 8.56539606053e-05 * b"
+    expr2 "0.288071128229 * r + 0.71184321781 * g + 8.56539606053e-05 * b"
+    name ROMM_RGB_luminance_Expression
+    xpos -6486
+    ypos -251
+   }
+push $N6dc66c00
+   Expression {
+    expr0 "0.288071128229 * r + 0.71184321781 * g + 8.56539606053e-05 * b"
+    expr1 "0.288071128229 * r + 0.71184321781 * g + 8.56539606053e-05 * b"
+    expr2 "0.288071128229 * r + 0.71184321781 * g + 8.56539606053e-05 * b"
+    name RIMM_RGB_luminance_Expression
+    xpos -6636
+    ypos -251
+   }
+push $N6dc66c00
+   Expression {
+    expr0 "0.211947869481 * r + 0.723019772048 * g + 0.0650323584709 * b"
+    expr1 "0.211947869481 * r + 0.723019772048 * g + 0.0650323584709 * b"
+    expr2 "0.211947869481 * r + 0.723019772048 * g + 0.0650323584709 * b"
+    name REDcolor4_luminance_Expression
+    xpos -6786
+    ypos -251
+   }
+push $N6dc66c00
+   Expression {
+    expr0 "0.22890381241 * r + 0.780859824404 * g + -0.0097636368135 * b"
+    expr1 "0.22890381241 * r + 0.780859824404 * g + -0.0097636368135 * b"
+    expr2 "0.22890381241 * r + 0.780859824404 * g + -0.0097636368135 * b"
+    name REDcolor3_luminance_Expression
+    xpos -6936
+    ypos -251
+   }
+push $N6dc66c00
+   Expression {
+    expr0 "0.169442097101 * r + 0.864828202542 * g + -0.0342702996431 * b"
+    expr1 "0.169442097101 * r + 0.864828202542 * g + -0.0342702996431 * b"
+    expr2 "0.169442097101 * r + 0.864828202542 * g + -0.0342702996431 * b"
+    name REDcolor2_luminance_Expression
+    xpos -7086
+    ypos -251
+   }
+push $N6dc66c00
+   Expression {
+    expr0 "0.202218816094 * r + 0.758528901746 * g + 0.03925228216 * b"
+    expr1 "0.202218816094 * r + 0.758528901746 * g + 0.03925228216 * b"
+    expr2 "0.202218816094 * r + 0.758528901746 * g + 0.03925228216 * b"
+    name REDcolor_luminance_Expression
+    xpos -7236
+    ypos -251
+   }
+push $N6dc66c00
+   Expression {
+    expr0 "0.288071128229 * r + 0.71184321781 * g + 8.56539606053e-05 * b"
+    expr1 "0.288071128229 * r + 0.71184321781 * g + 8.56539606053e-05 * b"
+    expr2 "0.288071128229 * r + 0.71184321781 * g + 8.56539606053e-05 * b"
+    name ProPhoto_RGB_luminance_Expression
+    xpos -7386
+    ypos -251
+   }
+push $N6dc66c00
+   Expression {
+    expr0 "0.222004309998 * r + 0.706654765925 * g + 0.0713409240765 * b"
+    expr1 "0.222004309998 * r + 0.706654765925 * g + 0.0713409240765 * b"
+    expr2 "0.222004309998 * r + 0.706654765925 * g + 0.0713409240765 * b"
+    name Pal/Secam_RGB_luminance_Expression
+    xpos -7536
+    ypos -251
+   }
+push $N6dc66c00
+   Expression {
+    expr0 "0.29890307025 * r + 0.586619854659 * g + 0.114477075091 * b"
+    expr1 "0.29890307025 * r + 0.586619854659 * g + 0.114477075091 * b"
+    expr2 "0.29890307025 * r + 0.586619854659 * g + 0.114477075091 * b"
+    name NTSC_RGB_luminance_Expression
+    xpos -7686
+    ypos -251
+   }
+push $N6dc66c00
+   Expression {
+    expr0 "0.31011010912 * r + 0.68988989088 * g + 0.0 * b"
+    expr1 "0.31011010912 * r + 0.68988989088 * g + 0.0 * b"
+    expr2 "0.31011010912 * r + 0.68988989088 * g + 0.0 * b"
+    name Max_RGB_luminance_Expression
+    xpos -7836
+    ypos -251
+   }
+push $N6dc66c00
+   Expression {
+    expr0 "0.261148012901 * r + 0.734851409355 * g + 0.00400057774408 * b"
+    expr1 "0.261148012901 * r + 0.734851409355 * g + 0.00400057774408 * b"
+    expr2 "0.261148012901 * r + 0.734851409355 * g + 0.00400057774408 * b"
+    name Ekta_Space_PS_5_luminance_Expression
+    xpos -7986
+    ypos -251
+   }
+push $N6dc66c00
+   Expression {
+    expr0 "0.288071128229 * r + 0.71184321781 * g + 8.56539606053e-05 * b"
+    expr1 "0.288071128229 * r + 0.71184321781 * g + 8.56539606053e-05 * b"
+    expr2 "0.288071128229 * r + 0.71184321781 * g + 8.56539606053e-05 * b"
+    name ERIMM_RGB_luminance_Expression
+    xpos -8136
+    ypos -251
+   }
+push $N6dc66c00
+   Expression {
+    expr0 "0.320159696395 * r + 0.601827518042 * g + 0.0780127855624 * b"
+    expr1 "0.320159696395 * r + 0.601827518042 * g + 0.0780127855624 * b"
+    expr2 "0.320159696395 * r + 0.601827518042 * g + 0.0780127855624 * b"
+    name ECI_RGB_v2_luminance_Expression
+    xpos -8286
+    ypos -251
+   }
+push $N6dc66c00
+   Expression {
+    expr0 "0.278137227919 * r + 0.687858269682 * g + 0.0340045023989 * b"
+    expr1 "0.278137227919 * r + 0.687858269682 * g + 0.0340045023989 * b"
+    expr2 "0.278137227919 * r + 0.687858269682 * g + 0.0340045023989 * b"
+    name Don_RGB_4_luminance_Expression
+    xpos -8436
+    ypos -251
+   }
+push $N6dc66c00
+   Expression {
+    expr0 "0.194255795247 * r + 0.738556869189 * g + 0.0671873355644 * b"
+    expr1 "0.194255795247 * r + 0.738556869189 * g + 0.0671873355644 * b"
+    expr2 "0.194255795247 * r + 0.738556869189 * g + 0.0671873355644 * b"
+    name DRAGONcolor2_luminance_Expression
+    xpos -8586
+    ypos -251
+   }
+push $N6dc66c00
+   Expression {
+    expr0 "0.220724022316 * r + 0.839188054601 * g + -0.0599120769169 * b"
+    expr1 "0.220724022316 * r + 0.839188054601 * g + -0.0599120769169 * b"
+    expr2 "0.220724022316 * r + 0.839188054601 * g + -0.0599120769169 * b"
+    name DRAGONcolor_luminance_Expression
+    xpos -8736
+    ypos -251
+   }
+push $N6dc66c00
+   Expression {
+    expr0 "0.203986297104 * r + 0.882591093117 * g + -0.0865773902211 * b"
+    expr1 "0.203986297104 * r + 0.882591093117 * g + -0.0865773902211 * b"
+    expr2 "0.203986297104 * r + 0.882591093117 * g + -0.0865773902211 * b"
+    name DCI-P3+_luminance_Expression
+    xpos -8886
+    ypos -251
+   }
+push $N6dc66c00
+   Expression {
+    expr0 "0.209491677913 * r + 0.721595254161 * g + 0.0689130679262 * b"
+    expr1 "0.209491677913 * r + 0.721595254161 * g + 0.0689130679262 * b"
+    expr2 "0.209491677913 * r + 0.721595254161 * g + 0.0689130679262 * b"
+    name DCI-P3_luminance_Expression
+    xpos -9036
+    ypos -251
+   }
+push $N6dc66c00
+   Expression {
+    expr0 "0.274950336309 * r + 0.658074997381 * g + 0.0669746663108 * b"
+    expr1 "0.274950336309 * r + 0.658074997381 * g + 0.0669746663108 * b"
+    expr2 "0.274950336309 * r + 0.658074997381 * g + 0.0669746663108 * b"
+    name ColorMatch_RGB_luminance_Expression
+    xpos -9186
+    ypos -251
+   }
+push $N6dc66c00
+   Expression {
+    expr0 "0.261261357526 * r + 0.869642145755 * g + -0.130903503281 * b"
+    expr1 "0.261261357526 * r + 0.869642145755 * g + -0.130903503281 * b"
+    expr2 "0.261261357526 * r + 0.869642145755 * g + -0.130903503281 * b"
+    name Cinema_Gamut_luminance_Expression
+    xpos -9336
+    ypos -251
+   }
+push $N6dc66c00
+   Expression {
+    expr0 "0.176204436534 * r + 0.812984693878 * g + 0.0108108695884 * b"
+    expr1 "0.176204436534 * r + 0.812984693878 * g + 0.0108108695884 * b"
+    expr2 "0.176204436534 * r + 0.812984693878 * g + 0.0108108695884 * b"
+    name CIE_RGB_luminance_Expression
+    xpos -9486
+    ypos -251
+   }
+push $N6dc66c00
+   Expression {
+    expr0 "0.303318752896 * r + 0.663744233497 * g + 0.0329370136071 * b"
+    expr1 "0.303318752896 * r + 0.663744233497 * g + 0.0329370136071 * b"
+    expr2 "0.303318752896 * r + 0.663744233497 * g + 0.0329370136071 * b"
+    name Beta_RGB_luminance_Expression
+    xpos -9636
+    ypos -251
+   }
+push $N6dc66c00
+   Expression {
+    expr0 "0.227601772978 * r + 0.738394652678 * g + 0.0340035743443 * b"
+    expr1 "0.227601772978 * r + 0.738394652678 * g + 0.0340035743443 * b"
+    expr2 "0.227601772978 * r + 0.738394652678 * g + 0.0340035743443 * b"
+    name Best_RGB_luminance_Expression
+    xpos -9786
+    ypos -251
+   }
+push $N6dc66c00
+   Expression {
+    expr0 "0.244615922485 * r + 0.672044251324 * g + 0.0833398261912 * b"
+    expr1 "0.244615922485 * r + 0.672044251324 * g + 0.0833398261912 * b"
+    expr2 "0.244615922485 * r + 0.672044251324 * g + 0.0833398261912 * b"
+    name Apple_RGB_luminance_Expression
+    xpos -9936
+    ypos -251
+   }
+push $N6dc66c00
+   Expression {
+    expr0 "0.25872824304 * r + 0.724682314949 * g + 0.0165894420113 * b"
+    expr1 "0.25872824304 * r + 0.724682314949 * g + 0.0165894420113 * b"
+    expr2 "0.25872824304 * r + 0.724682314949 * g + 0.0165894420113 * b"
+    name Adobe_Wide_Gamut_RGB_luminance_Expression
+    xpos -10086
+    ypos -251
+   }
+push $N6dc66c00
+   Expression {
+    expr0 "0.297344975251 * r + 0.627363566255 * g + 0.075291458494 * b"
+    expr1 "0.297344975251 * r + 0.627363566255 * g + 0.075291458494 * b"
+    expr2 "0.297344975251 * r + 0.627363566255 * g + 0.075291458494 * b"
+    name Adobe_RGB_(1998)_luminance_Expression
+    xpos -10236
+    ypos -251
+   }
+push $N6dc66c00
+   Expression {
+    expr0 "0.291953779 * r + 0.823841041511 * g + -0.11579482051 * b"
+    expr1 "0.291953779 * r + 0.823841041511 * g + -0.11579482051 * b"
+    expr2 "0.291953779 * r + 0.823841041511 * g + -0.11579482051 * b"
+    name ALEXA_Wide_Gamut_RGB_luminance_Expression
+    xpos -10386
+    ypos -251
+   }
+push $N6dc66c00
+   Expression {
+    expr0 "0.272228716781 * r + 0.674081765811 * g + 0.0536895174079 * b"
+    expr1 "0.272228716781 * r + 0.674081765811 * g + 0.0536895174079 * b"
+    expr2 "0.272228716781 * r + 0.674081765811 * g + 0.0536895174079 * b"
+    name ACESproxy_luminance_Expression
+    xpos -10536
+    ypos -251
+   }
+push $N6dc66c00
+   Expression {
+    expr0 "0.272228716781 * r + 0.674081765811 * g + 0.0536895174079 * b"
+    expr1 "0.272228716781 * r + 0.674081765811 * g + 0.0536895174079 * b"
+    expr2 "0.272228716781 * r + 0.674081765811 * g + 0.0536895174079 * b"
+    name ACEScg_luminance_Expression
+    xpos -10686
+    ypos -251
+   }
+push $N6dc66c00
+   Expression {
+    expr0 "0.272228716781 * r + 0.674081765811 * g + 0.0536895174079 * b"
+    expr1 "0.272228716781 * r + 0.674081765811 * g + 0.0536895174079 * b"
+    expr2 "0.272228716781 * r + 0.674081765811 * g + 0.0536895174079 * b"
+    name ACEScc_luminance_Expression
+    xpos -10836
+    ypos -251
+   }
+push $N6dc66c00
+   Expression {
+    expr0 "0.343966449765 * r + 0.728166096613 * g + -0.0721325463786 * b"
+    expr1 "0.343966449765 * r + 0.728166096613 * g + -0.0721325463786 * b"
+    expr2 "0.343966449765 * r + 0.728166096613 * g + -0.0721325463786 * b"
+    name ACES2065-1_luminance_Expression
+    xpos -10986
+    ypos -251
+   }
+   Switch {
+    inputs 41
+    which {{parent.colourspace_Pulldown_Choice}}
+    name colourspace_Switch
+    xpos -4880
+    ypos -225
+    addUserKnob {20 User}
+    addUserKnob {4 colourspace_Pulldown_Choice l Colourspace M {ACES2065-1 ACEScc ACEScg ACESproxy "ALEXA Wide Gamut RGB" "Adobe RGB (1998)" "Adobe Wide Gamut RGB" "Apple RGB" "Best RGB" "Beta RGB" "CIE RGB" "Cinema Gamut" "ColorMatch RGB" DCI-P3 DCI-P3+ DRAGONcolor DRAGONcolor2 "Don RGB 4" "ECI RGB v2" "ERIMM RGB" "Ekta Space PS 5" "Max RGB" "NTSC RGB" "Pal/Secam RGB" "ProPhoto RGB" REDcolor REDcolor2 REDcolor3 REDcolor4 "RIMM RGB" "ROMM RGB" "Rec. 2020" "Rec. 709" "Russell RGB" S-Gamut S-Gamut3 S-Gamut3.Cine "SMPTE-C RGB" V-Gamut "Xtreme RGB" sRGB}}
+   }
+   Output {
+    name Output
+    xpos -4880
+    ypos -201
+   }
+  end_group
+push $N6dfdfc00
+  Expression {
+   temp_name0 theta_cos
+   temp_expr0 "cos((1 - y / (height - 1)) * pi)"
+   temp_name1 theta_sin
+   temp_expr1 "sin((1 - y / (height - 1)) * pi)"
+   expr0 "theta_cos > 0 ? theta_cos * theta_sin * 2 * pi ** 2 : 0"
+   expr1 "theta_cos > 0 ? theta_cos * theta_sin * 2 * pi ** 2 : 0"
+   expr2 "theta_cos > 0 ? theta_cos * theta_sin * 2 * pi ** 2 : 0"
+   name upper_hemisphere_illuminance_weights_Expression
+   selected true
+   xpos -370
+   ypos -177
+  }
+  Dot {
+   name Dot4
+   xpos -336
+   ypos -150
+  }
+  Merge2 {
+   inputs 2
+   operation multiply
+   name merge_Multiply
+   xpos -260
+   ypos -153
+  }
+  CurveTool {
+   avgframes 1
+   ROI {0 0 {Input.width} {Input.height}}
+   autocropdata {1071 712 3214 2136}
+   intensitydata {{curve x1 107220.6414} {curve x1 107220.6414} {curve x1 107220.6414} {curve x1 107220.6414}}
+   name average_CurveTool
+   xpos -260
+   ypos -129
+  }
+ end_group
+end_group
+Group {
+ name ColorMatch1
+ knobChanged "n = nuke.thisNode()\nk = nuke.thisKnob() \n\nif k.name()  in ('PickSource', 'showPanel'):\n    PickSource = n\['PickSource'].value()\n    if PickSource ==  0:\n        n\['SourceWH'].setVisible(False)\n        n\['SourceEV'].setVisible(True)\n    elif PickSource ==  1:\n        n\['SourceWH'].setVisible(True)\n        n\['SourceEV'].setVisible(False)\n   \n\nif k.name()  in ('Pick', 'showPanel'):\n    Pick = n\['Pick'].value()\n    if Pick ==  0:\n        n\['SourceEV'].setEnabled(False)\n        n\['TargetEV'].setEnabled(False)\n        n\['SourceWH'].setEnabled(False)\n        n\['PickSource'].setEnabled(False)\n        n\['Exposure'].setEnabled(True)\n    elif Pick ==  1:\n        n\['SourceEV'].setEnabled(True)\n        n\['TargetEV'].setEnabled(True)\n        n\['SourceWH'].setEnabled(True)\n        n\['PickSource'].setEnabled(True)\n        n\['Exposure'].setEnabled(False)\n"
+ tile_color 0xaa55ffff
+ selected true
+ xpos -150
+ ypos -153
+ addUserKnob {20 ColorMatch l "Color Match"}
+ addUserKnob {26 text l "Match Whitepoint"}
+ addUserKnob {18 Source l "Source color"}
+ Source {0.5068112612 0.5149133801 0.5798488259}
+ addUserKnob {6 Source_panelDropped l "panel dropped state" -STARTLINE +HIDDEN}
+ addUserKnob {6 color_rgb_panelDropped l "panel dropped state" -STARTLINE +HIDDEN}
+ addUserKnob {18 Target l "Target color"}
+ Target {0.5778717399 0.587305963 0.5947839618}
+ addUserKnob {6 Target_panelDropped l "panel dropped state" +HIDDEN +STARTLINE}
+ addUserKnob {6 color_rgb_1_panelDropped l "panel dropped state" -STARTLINE +HIDDEN}
+ addUserKnob {6 Exposure l "Match Exposure" +STARTLINE}
+ Exposure true
+ addUserKnob {26 text_1 l "Change Exposure"}
+ addUserKnob {6 Pick l "Pick Other source Match Exposure" +STARTLINE}
+ addUserKnob {6 PickSource l "Use Whitepoint Source color" +DISABLED +STARTLINE}
+ addUserKnob {18 SourceWH l "Source color" +DISABLED +HIDDEN}
+ SourceWH {{Source.r} {Source.g} {Source.b}}
+ addUserKnob {6 SourceWH_panelDropped l "panel dropped state" -STARTLINE +HIDDEN}
+ addUserKnob {18 SourceEV l "Source color" +DISABLED}
+ SourceEV {1 1 1}
+ addUserKnob {6 SourceEV_panelDropped l "panel dropped state" -STARTLINE +HIDDEN}
+ addUserKnob {18 TargetEV l "Target Color" +DISABLED R 0 10}
+ TargetEV {1 1 1}
+ addUserKnob {6 TargetEV_panelDropped l "panel dropped state" -STARTLINE +HIDDEN}
+ addUserKnob {26 ""}
+ addUserKnob {6 WBreverse l "Whitepoint reverse" +STARTLINE}
+ addUserKnob {6 EVreverse l "Exposure reverse" +STARTLINE}
+ addUserKnob {26 ""}
+ addUserKnob {26 credit l "" +STARTLINE T "\nCGSLAB LLC. \nhttp://site.cgslab.info/"}
+ addUserKnob {6 PickExposure_panelDropped l "panel dropped state" +HIDDEN +STARTLINE}
+}
+ Input {
+  inputs 0
+  name Input1
+  xpos 510
+  ypos 111
+ }
+ Grade {
+  whitepoint {{(white.r*0.2126)+(white.g*0.7152)+(white.b*0.0722)}}
+  white {{parent.Target.r} {parent.Target.g} {parent.Target.b} 1}
+  reverse {{parent.WBreverse}}
+  name Grade1
+  xpos 510
+  ypos 159
+ }
+ Grade {
+  whitepoint {{parent.Source.r} {parent.Source.g} {parent.Source.b} 0}
+  white {{(whitepoint.r*0.2126)+(whitepoint.g*0.7152)+(whitepoint.b*0.0722)}}
+  reverse {{parent.WBreverse}}
+  name Grade2
+  xpos 510
+  ypos 207
+ }
+ Grade {
+  whitepoint {{parent.Grade2.white}}
+  white {{parent.Grade1.whitepoint}}
+  reverse {{parent.EVreverse}}
+  name Grade3
+  xpos 510
+  ypos 255
+  disable {{!(Exposure)/(!(Pick))}}
+ }
+ Grade {
+  whitepoint {{(SourceEV.r*0.2126)+(SourceEV.g*0.7152)+(SourceEV.b*0.0722)}}
+  white {{(TargetEV.r*0.2126)+(TargetEV.g*0.7152)+(TargetEV.b*0.0722)}}
+  reverse {{parent.EVreverse}}
+  name Grade4
+  xpos 510
+  ypos 303
+  disable {{!(Pick)}}
+ }
+ Output {
+  name Output1
+  xpos 510
+  ypos 351
+ }
+end_group
+set N6e3e7700 [stack 0]
+Write {
+ file "\[file dirname \[value root.name]]/\[metadata Name]_\[metadata EV]EV_ACEScg.exr"
+ colorspace "ACES - ACEScg"
+ file_type exr
+ metadata "all metadata except input/*"
+ first_part rgba
+ version 14
+ in_colorspace scene_linear
+ out_colorspace scene_linear
+ name Write2
+ xpos -150
+ ypos -117
+}
+Read {
+ inputs 0
+ file_type exr
+ file "\[file dirname \[value root.name]]/data/STMapPTGui_A.exr"
+ format "7350 3675 0 0 7350 3675 1 "
+ origset true
+ colorspace data
+ name Read8
+ xpos -810
+ ypos -584
+}
+Dot {
+ name Dot4
+ xpos -776
+ ypos -435
+}
+push $N6e70e400
+Dot {
+ name Dot8
+ xpos -446
+ ypos -606
+}
+Dot {
+ name Dot2
+ xpos -446
+ ypos -486
+}
+set N6cf79c00 [stack 0]
+Dot {
+ name Dot1
+ xpos -666
+ ypos -486
+}
+STMap {
+ inputs 2
+ uv rgb
+ name STMap2
+ xpos -700
+ ypos -444
+}
+Dot {
+ name Dot5
+ xpos -666
+ ypos -390
+}
+set N6cfc0800 [stack 0]
+Dot {
+ name Dot15
+ xpos -666
+ ypos -231
+}
+Read {
+ inputs 0
+ file_type exr
+ file "\[file dirname \[value root.name]]/data/STMapPTGui_Mask.exr"
+ format "7350 3675 0 0 7350 3675 1 "
+ origset true
+ version 4
+ colorspace data
+ name Read4
+ xpos -370
+ ypos -587
+}
+Dot {
+ name Dot9
+ xpos -336
+ ypos -390
+}
+push $N6cfc0800
+Read {
+ inputs 0
+ file_type exr
+ file "\[file dirname \[value root.name]]/data/STMapPTGui_B.exr"
+ format "7350 3675 0 0 7350 3675 1 "
+ origset true
+ colorspace data
+ name Read7
+ xpos -590
+ ypos -586
+}
+Dot {
+ name Dot3
+ xpos -556
+ ypos -435
+}
+push $N6cf79c00
+STMap {
+ inputs 2
+ uv rgb
+ name STMap1
+ xpos -480
+ ypos -444
+}
+Merge2 {
+ inputs 2+1
+ name Merge1
+ xpos -480
+ ypos -393
+}
+SphericalTransform2 {
+ panTiltRollInput {180 0 0}
+ name SphericalTransform1
+ xpos -480
+ ypos -369
+}
+Group {
+ name Add_Sun1
+ tile_color 0x31a8ffff
+ xpos -480
+ ypos -321
+ cached true
+ addUserKnob {20 User l "Add Sun"}
+ addUserKnob {6 SunOFF l "Sun OFF" +STARTLINE}
+ addUserKnob {7 power l Power R -5 5}
+ power 4.08
+ addUserKnob {6 color_rgb_panelDropped l "panel dropped state" +HIDDEN +STARTLINE}
+ addUserKnob {18 color_sun l Color}
+ color_sun {0.623878 0.629242 0.637029}
+ addUserKnob {6 color_sun_panelDropped l "panel dropped state" -STARTLINE +HIDDEN}
+ addUserKnob {41 scale l Scale T Transform2.scale}
+ addUserKnob {41 translate l Translate T Transform2.translate}
+ addUserKnob {41 blur l Blur T Blur2.size}
+ addUserKnob {20 Inpaint_G l Inpaint n 1}
+ addUserKnob {6 Inpaint +STARTLINE}
+ Inpaint true
+ addUserKnob {7 Scale R 0 5}
+ Scale 0.7
+ addUserKnob {41 Blursize l Blur T Blur1.size}
+ addUserKnob {41 detailAmount l DetailAmount T Inpaint1.detailAmount}
+ addUserKnob {20 endGroup_1 l endGroup n -1}
+ addUserKnob {20 AddGlow n 1}
+ addUserKnob {6 Glow +STARTLINE}
+ Glow true
+ addUserKnob {41 GlowSize T NaturalGlow1.GlowSize}
+ addUserKnob {41 Value T NaturalGlow1.Value}
+ addUserKnob {20 endGroup n -1}
+ addUserKnob {26 credit l "" +STARTLINE T "\nCGSLAB LLC. \nhttp://site.cgslab.info/"}
+}
+ Reformat {
+  inputs 0
+  format "256 256 0 0 256 256 1 square_256"
+  name Reformat1
+  xpos 49
+  ypos -791
+ }
+ Radial {
+  area {0 0 256 256}
+  softness {{parent.softness_sun.main}}
+  color {1 1 1 1}
+  color_panelDropped true
+  name Radial1
+  xpos 49
+  ypos -754
+ }
+set N6cff1400 [stack 0]
+ Transform {
+  scale 0.07
+  center {128 128}
+  name Transform1
+  xpos 49
+  ypos -720
+ }
+ Transform {
+  translate {3297 2819}
+  center {128 128}
+  name Transform2
+  xpos 49
+  ypos -686
+ }
+ Unpremult {
+  name Unpremult1
+  xpos 49
+  ypos -637
+ }
+ Grade {
+  whitepoint {{(white.r*0.2126)+(white.g*0.7152)+(white.b*0.0722)}}
+  white {{parent.color_sun.r} {parent.color_sun.g} {parent.color_sun.b} 1}
+  name Grade1
+  xpos 49
+  ypos -603
+ }
+ Multiply {
+  channels rgb
+  value {{2**(10+power)}}
+  name Multiply1
+  xpos 49
+  ypos -568
+ }
+ Premult {
+  name Premult1
+  xpos 49
+  ypos -536
+ }
+ Blur {
+  size 1
+  name Blur2
+  xpos 49
+  ypos -503
+ }
+set N6d03b000 [stack 0]
+push $N6d03b000
+push $N6cff1400
+ Transform {
+  translate {{parent.Transform2.translate.main.x} {parent.Transform2.translate.main.y}}
+  scale {{parent.Scale.main}}
+  center {128 128}
+  name Transform3
+  xpos 162
+  ypos -684
+ }
+set N6d03b400 [stack 0]
+push $N6d03b400
+ Input {
+  inputs 0
+  name Input1
+  xpos 248
+  ypos -822
+ }
+ Shuffle {
+  alpha white
+  name Shuffle1
+  selected true
+  xpos 248
+  ypos -798
+ }
+ Dot {
+  name Dot1
+  xpos 282
+  ypos -683
+ }
+set N6cd82000 [stack 0]
+ Inpaint2 {
+  inputs 2
+  fillRegion "Matte Alpha"
+  LABColourSpace true
+  detailAmount 0.2
+  translate {-479.1000061 310}
+  center {3600 1800}
+  name Inpaint1
+  xpos 162
+  ypos -617
+  disable {{!(Inpaint)}}
+ }
+ Merge2 {
+  inputs 2
+  operation mask
+  name Merge1
+  xpos 376
+  ypos -617
+ }
+ Blur {
+  size 40
+  name Blur1
+  xpos 376
+  ypos -561
+ }
+push $N6cd82000
+ Merge2 {
+  inputs 2
+  name Merge3
+  xpos 248
+  ypos -557
+  disable {{!(Inpaint)}}
+ }
+ Merge2 {
+  inputs 2
+  name Merge2
+  xpos 248
+  ypos -499
+  disable {{SunOFF}}
+ }
+ Group {
+  inputs 2
+  name NaturalGlow1
+  knobChanged "n = nuke.thisNode()\nk = nuke.thisKnob() \n\nif k.name()  in ('lightwrap', 'showPanel'):\n    lightwrap = n\['lightwrap'].value()\n    if lightwrap ==  0:\n        n\['Lightwrap'].setVisible(False)\n        n\['View'].setVisible(False)\n        n\['BGBlur'].setVisible(False)\n    elif lightwrap ==  1:\n        n\['Lightwrap'].setVisible(True)\n        n\['View'].setVisible(True)\n        n\['BGBlur'].setVisible(True)\nif k.name()  in ('Mask', 'showPanel'):\n    Mask = n\['Mask'].value()\n    if Mask ==  0:\n        n\['mask'].setEnabled(False)\n        n\['invert'].setEnabled(False)\n    elif Mask ==  1:\n        n\['mask'].setEnabled(True)\n        n\['invert'].setEnabled(True)\nif k.name()  in ('color', 'showPanel'):\n    color = n\['color'].value()\n    if color ==  0:\n        n\['ColorBalance'].setEnabled(False)\n    elif color ==  1:\n        n\['ColorBalance'].setEnabled(True)\n"
+  tile_color 0xff9455ff
+  xpos 248
+  ypos -425
+  disable {{!(Glow)}}
+  addUserKnob {20 NaturalGlow}
+  addUserKnob {4 Mode M {Plus Screen Over Max GlowOnly "" "" "" "" "" ""}}
+  addUserKnob {6 lightwrap l "Lightwrap Mode(Use bg)" -STARTLINE}
+  addUserKnob {6 Mask l "UseInputMask   " +STARTLINE}
+  Mask true
+  addUserKnob {41 mask -STARTLINE T ChannelMerge1.A}
+  addUserKnob {6 invert -STARTLINE}
+  addUserKnob {26 ""}
+  addUserKnob {7 GlowSize R 0 10}
+  GlowSize 1
+  addUserKnob {7 Value R 0 5}
+  Value 1
+  addUserKnob {6 color l ColorBalance +STARTLINE}
+  addUserKnob {41 ColorBalance l "" -STARTLINE T Grade1.whiteBalance}
+  addUserKnob {26 Lightwrap +HIDDEN}
+  addUserKnob {6 View l "View  " +HIDDEN +STARTLINE}
+  addUserKnob {7 BGBlur l "BG Blur" -STARTLINE +HIDDEN R 0 100}
+  addUserKnob {26 ""}
+  addUserKnob {6 ThresholdView l Threshold(Mask)View +STARTLINE}
+  addUserKnob {41 blackpoint T Grade2.blackpoint}
+  addUserKnob {41 whitepoint T Grade2.whitepoint}
+  addUserKnob {41 gamma T Grade2.gamma}
+  addUserKnob {26 ""}
+  addUserKnob {4 Alpha l AlphaOut M {img+Glow Glow img a1 "" "" "" "" ""}}
+  Alpha img
+ }
+  Input {
+   inputs 0
+   name bg
+   xpos -1985
+   ypos -929
+   number 2
+  }
+  Blur {
+   size {{parent.BGBlur}}
+   name Blur13
+   xpos -1985
+   ypos -784
+  }
+set N6cdc0000 [stack 0]
+  Dot {
+   name Dot61
+   xpos -1951
+   ypos 1295
+  }
+  Input {
+   inputs 0
+   name mask
+   xpos -1556
+   ypos -924
+   number 1
+  }
+  Input {
+   inputs 0
+   name img
+   xpos -1777
+   ypos -924
+  }
+  Dot {
+   name Dot59
+   xpos -1743
+   ypos -860
+  }
+set N6cdc1000 [stack 0]
+  Dot {
+   name Dot60
+   xpos -1841
+   ypos -860
+  }
+  Invert {
+   channels alpha
+   name Invert3
+   xpos -1875
+   ypos -828
+  }
+push $N6cdc0000
+  Merge2 {
+   inputs 2
+   operation mask
+   name Merge21
+   xpos -1875
+   ypos -778
+  }
+push $N6cdc1000
+  Switch {
+   inputs 2
+   which {{parent.lightwrap}}
+   name Switch5
+   xpos -1777
+   ypos -740
+  }
+  Dot {
+   name Dot44
+   xpos -1743
+   ypos -678
+  }
+set N6cde4400 [stack 0]
+  Dot {
+   name Dot45
+   xpos -1627
+   ypos -678
+  }
+set N6cde4800 [stack 0]
+  ChannelMerge {
+   inputs 2
+   operation divide
+   name ChannelMerge1
+   xpos -1556
+   ypos -690
+  }
+  Invert {
+   name Invert2
+   xpos -1556
+   ypos -640
+   disable {{1-parent.invert}}
+  }
+push $N6cde4800
+  Dot {
+   name Dot43
+   xpos -1627
+   ypos -592
+  }
+  ShuffleCopy {
+   inputs 2
+   name ShuffleCopy1
+   xpos -1556
+   ypos -596
+  }
+  Premult {
+   name Premult3
+   xpos -1556
+   ypos -570
+  }
+push $N6cde4400
+  Dot {
+   name Dot1
+   xpos -1743
+   ypos -526
+  }
+set N6ce0e000 [stack 0]
+  Switch {
+   inputs 2
+   which {{parent.Mask}}
+   name Switch4
+   xpos -1556
+   ypos -530
+  }
+set N6ce0e400 [stack 0]
+  Saturation {
+   saturation 0
+   name Saturation1
+   xpos -1329
+   ypos -530
+  }
+  Grade {
+   name Grade2
+   xpos -1329
+   ypos -500
+  }
+  Shuffle {
+   green red
+   blue red
+   alpha red
+   name Shuffle2
+   xpos -1329
+   ypos -429
+  }
+set N6ce0f000 [stack 0]
+push $N6ce0e400
+  ShuffleCopy {
+   inputs 2
+   name ShuffleCopy3
+   xpos -1452
+   ypos -429
+  }
+set N6ce0f400 [stack 0]
+  Shuffle {
+   red alpha
+   green alpha
+   blue alpha
+   name Shuffle1
+   xpos -1625
+   ypos -387
+  }
+  Text2 {
+   font_size_toolbar 54
+   font_width_toolbar 100
+   font_height_toolbar 100
+   message Threshold
+   old_message {{84 104 114 101 115 104 111 108 100}
+     }
+   box {0 0 0 0}
+   yjustify bottom
+   transforms {{0 2}
+     }
+   font_size_values {{0 {input.height/20} 1 {input.height/20} 2 {input.height/20} 3 {input.height/20} 4 {input.height/20} 5 {input.height/20} 6 {input.height/20} 7 {input.height/20} 8 {input.height/20} 0 {input.height/20 x1 0} 1 {input.height/20 x1 0} 2 {input.height/20 x1 0} 3 {input.height/20 x1 0}}
+     }
+   cursor_position 9
+   font_size 54
+   scale {1 1}
+   cursor_initialised true
+   autofit_bbox false
+   initial_cursor_position {{0 1080}
+     }
+   group_animations {{0} imported: 0 selected: items: "root transform/"}
+   animation_layers {{1 11 {input.width/2} {input.height/2} 0 0 1 1 0 0 0 0}
+     }
+   enable_shadows true
+   shadow_size 0.7
+   name Text3
+   xpos -1625
+   ypos 1233
+  }
+  Dot {
+   name Dot18
+   xpos -1591
+   ypos 1295
+  }
+push $N6cdc1000
+  Dot {
+   name Dot50
+   xpos -1685
+   ypos -860
+  }
+  Dot {
+   name Dot52
+   xpos -1685
+   ypos 685
+  }
+set N6ce50800 [stack 0]
+push $N6ce0e400
+push $N6ce0f400
+  Merge2 {
+   inputs 2
+   operation mask
+   name Merge18
+   xpos -1556
+   ypos -350
+  }
+  Dot {
+   name Dot32
+   xpos -1522
+   ypos -287
+  }
+  Dot {
+   name Dot14
+   xpos -1516
+   ypos 449
+  }
+set N6ce51400 [stack 0]
+  Invert {
+   clamp true
+   name Invert1
+   xpos -1550
+   ypos 508
+  }
+  ColorCorrect {
+   saturation 0
+   name ColorCorrect1
+   xpos -1550
+   ypos 552
+  }
+  Dot {
+   name Dot48
+   xpos -1516
+   ypos 643
+  }
+push $N6ce0f400
+  Premult {
+   name Premult1
+   xpos -1452
+   ypos -381
+  }
+  Dot {
+   name Dot2
+   xpos -1418
+   ypos -339
+  }
+set N6ce84800 [stack 0]
+  Dot {
+   name Dot3
+   xpos -1285
+   ypos -339
+  }
+set N6ce84c00 [stack 0]
+  Dot {
+   name Dot4
+   xpos -1174
+   ypos -339
+  }
+set N6ce85000 [stack 0]
+  Dot {
+   name Dot5
+   xpos -1060
+   ypos -339
+  }
+set N6ce85400 [stack 0]
+  Dot {
+   name Dot6
+   xpos -950
+   ypos -339
+  }
+set N6ce85800 [stack 0]
+  Dot {
+   name Dot7
+   xpos -837
+   ypos -339
+  }
+set N6ce85c00 [stack 0]
+  Dot {
+   name Dot8
+   xpos -736
+   ypos -339
+  }
+set N6ce9c000 [stack 0]
+  Dot {
+   name Dot9
+   xpos -621
+   ypos -339
+  }
+set N6ce9c400 [stack 0]
+  Dot {
+   name Dot10
+   xpos -511
+   ypos -339
+  }
+set N6ce9c800 [stack 0]
+  Dot {
+   name Dot11
+   xpos -401
+   ypos -339
+  }
+set N6ce9cc00 [stack 0]
+  Dot {
+   name Dot12
+   xpos -290
+   ypos -339
+  }
+set N6ce9d000 [stack 0]
+  Dot {
+   name Dot13
+   xpos -168
+   ypos -339
+  }
+  Blur {
+   size {{parent.Blur11.size*2}}
+   mix 0
+   name Blur12
+   xpos -202
+   ypos -267
+  }
+  Multiply {
+   value {{parent.Multiply11.value/2}}
+   name Multiply12
+   xpos -202
+   ypos -136
+  }
+  Dot {
+   name Dot29
+   xpos -168
+   ypos 330
+  }
+push $N6ce9d000
+  Blur {
+   size {{parent.Blur10.size*2}}
+   name Blur11
+   xpos -324
+   ypos -267
+  }
+  Multiply {
+   value {{parent.Multiply10.value/2}}
+   name Multiply11
+   xpos -324
+   ypos -136
+  }
+  Dot {
+   name Dot28
+   xpos -290
+   ypos 284
+  }
+push $N6ce9cc00
+  Blur {
+   size {{parent.Blur9.size*2}}
+   name Blur10
+   xpos -435
+   ypos -270
+  }
+  Multiply {
+   value {{parent.Multiply9.value/2}}
+   name Multiply10
+   xpos -435
+   ypos -137
+  }
+  Dot {
+   name Dot27
+   xpos -401
+   ypos 240
+  }
+push $N6ce9c800
+  Blur {
+   size {{parent.Blur8.size*2}}
+   mix 0
+   name Blur9
+   xpos -545
+   ypos -270
+  }
+  Multiply {
+   value {{parent.Multiply8.value/2}}
+   mix 0
+   name Multiply9
+   xpos -545
+   ypos -135
+  }
+  Dot {
+   name Dot26
+   xpos -511
+   ypos 199
+  }
+push $N6ce9c400
+  Blur {
+   size {{parent.Blur7.size*2}}
+   name Blur8
+   xpos -655
+   ypos -271
+  }
+  Multiply {
+   value {{parent.Multiply7.value/2}}
+   mix 0
+   name Multiply8
+   xpos -655
+   ypos -135
+  }
+  Dot {
+   name Dot25
+   xpos -621
+   ypos 147
+  }
+push $N6ce9c000
+  Blur {
+   size {{parent.Blur6.size*2}}
+   name Blur7
+   xpos -770
+   ypos -272
+  }
+  Multiply {
+   value {{parent.Multiply6.value/2}}
+   mix 0
+   name Multiply7
+   xpos -770
+   ypos -135
+  }
+  Dot {
+   name Dot24
+   xpos -736
+   ypos 107
+  }
+push $N6ce85c00
+  Blur {
+   size {{parent.Blur5.size*2}}
+   name Blur6
+   xpos -871
+   ypos -273
+  }
+  Multiply {
+   value {{parent.Multiply5.value/2}}
+   mix 0
+   name Multiply6
+   xpos -871
+   ypos -136
+  }
+  Dot {
+   name Dot23
+   xpos -837
+   ypos 65
+  }
+push $N6ce85800
+  Blur {
+   size {{parent.Blur4.size*2}}
+   name Blur5
+   xpos -984
+   ypos -272
+  }
+  Multiply {
+   value {{parent.Multiply4.value/2}}
+   mix 0
+   name Multiply5
+   xpos -984
+   ypos -136
+  }
+  Dot {
+   name Dot22
+   xpos -950
+   ypos 29
+  }
+push $N6ce85400
+  Blur {
+   size {{parent.Blur3.size*2}}
+   name Blur4
+   xpos -1094
+   ypos -272
+  }
+  Multiply {
+   value {{parent.Multiply3.value/2}}
+   mix 0
+   name Multiply4
+   xpos -1094
+   ypos -137
+  }
+  Dot {
+   name Dot21
+   xpos -1060
+   ypos -15
+  }
+push $N6ce85000
+  Blur {
+   size {{parent.Blur2.size*2}}
+   name Blur3
+   xpos -1208
+   ypos -271
+  }
+  Multiply {
+   value {{parent.Multiply2.value/2}}
+   mix 0
+   name Multiply3
+   xpos -1208
+   ypos -134
+  }
+  Dot {
+   name Dot20
+   xpos -1174
+   ypos -54
+  }
+push $N6ce84c00
+  Blur {
+   size {{parent.Blur1.size*2}}
+   name Blur2
+   xpos -1319
+   ypos -272
+  }
+  Multiply {
+   value {{parent.Multiply1.value/2}}
+   name Multiply2
+   xpos -1319
+   ypos -135
+  }
+  Dot {
+   name Dot19
+   xpos -1285
+   ypos -82
+  }
+push $N6ce84800
+  Blur {
+   size {{parent.GlowSize}}
+   name Blur1
+   xpos -1452
+   ypos -271
+  }
+  Multiply {
+   name Multiply1
+   xpos -1452
+   ypos -135
+  }
+  Merge2 {
+   inputs 2
+   operation plus
+   name Merge1
+   xpos -1452
+   ypos -86
+  }
+  Merge2 {
+   inputs 2
+   operation plus
+   name Merge2
+   xpos -1452
+   ypos -58
+  }
+  Merge2 {
+   inputs 2
+   operation plus
+   name Merge3
+   xpos -1452
+   ypos -19
+  }
+  Merge2 {
+   inputs 2
+   operation plus
+   name Merge4
+   xpos -1452
+   ypos 25
+  }
+  Merge2 {
+   inputs 2
+   operation plus
+   name Merge5
+   xpos -1452
+   ypos 61
+  }
+  Merge2 {
+   inputs 2
+   operation plus
+   name Merge6
+   xpos -1452
+   ypos 103
+  }
+  Merge2 {
+   inputs 2
+   operation plus
+   name Merge7
+   xpos -1452
+   ypos 148
+  }
+  Merge2 {
+   inputs 2
+   operation plus
+   name Merge8
+   xpos -1452
+   ypos 195
+  }
+  Merge2 {
+   inputs 2
+   operation plus
+   name Merge9
+   xpos -1452
+   ypos 236
+  }
+  Merge2 {
+   inputs 2
+   operation plus
+   name Merge10
+   xpos -1452
+   ypos 280
+  }
+  Merge2 {
+   inputs 2
+   operation plus
+   name Merge11
+   xpos -1452
+   ypos 326
+  }
+  Unpremult {
+   name Unpremult1
+   xpos -1452
+   ypos 358
+  }
+  Grade {
+   whitepoint {{whiteBalance.r/((whiteBalance.r+whiteBalance.g+whiteBalance.b)/3)} {whiteBalance.g/((whiteBalance.r+whiteBalance.g+whiteBalance.b)/3)} {whiteBalance.b/((whiteBalance.r+whiteBalance.g+whiteBalance.b)/3)} {curve}}
+   reverse true
+   name Grade1
+   xpos -1452
+   ypos 384
+   disable {{1-parent.color}}
+   addUserKnob {20 User}
+   addUserKnob {6 whitebalance_panelDropped l "panel dropped state" -STARTLINE +HIDDEN}
+   whitebalance_panelDropped true
+   addUserKnob {18 whiteBalance +DISABLED R 0.15 1}
+   whiteBalance 1
+   addUserKnob {6 whiteBalance_panelDropped l "panel dropped state" -STARTLINE +HIDDEN}
+   whiteBalance_panelDropped true
+  }
+  Premult {
+   name Premult2
+   xpos -1452
+   ypos 420
+  }
+  Multiply {
+   channels rgba
+   value 0.1175997422
+   name Multiply16
+   xpos -1452
+   ypos 470
+  }
+  Multiply {
+   channels rgba
+   value 0.2
+   name Multiply15
+   xpos -1452
+   ypos 514
+  }
+  Multiply {
+   channels rgba
+   value {{parent.Value}}
+   name Multiply14
+   xpos -1452
+   ypos 551
+  }
+set N6e660400 [stack 0]
+  Dot {
+   name Dot47
+   xpos -1418
+   ypos 596
+  }
+set N6e660800 [stack 0]
+  Merge2 {
+   inputs 2
+   operation mask
+   mix {{(-parent.Value+6.2)/1.2}}
+   name Merge14
+   xpos -1452
+   ypos 639
+   disable {{parent.lightwrap}}
+  }
+  Merge2 {
+   inputs 2
+   operation mask
+   name Merge20
+   xpos -1452
+   ypos 681
+   disable {{1-parent.lightwrap}}
+  }
+set N6e661000 [stack 0]
+push $N6e660800
+  Dot {
+   name Dot35
+   xpos -1477
+   ypos 596
+  }
+  Switch {
+   inputs 2
+   which {{parent.lightwrap}}
+   name Switch8
+   xpos -1511
+   ypos 743
+  }
+  Dot {
+   name Dot37
+   xpos -1477
+   ypos 1076
+  }
+  Dot {
+   name Dot49
+   xpos -1652
+   ypos 1076
+  }
+push $N6e661000
+  Dot {
+   name Dot17
+   xpos -1418
+   ypos 888
+  }
+  Dot {
+   name Dot42
+   xpos -1667
+   ypos 888
+  }
+set N6e2ae800 [stack 0]
+  Dot {
+   name Dot33
+   xpos -1667
+   ypos 925
+  }
+set N6e2aec00 [stack 0]
+  Dot {
+   name Dot51
+   xpos -1667
+   ypos 971
+  }
+set N6e2af000 [stack 0]
+  Dot {
+   name Dot34
+   xpos -1667
+   ypos 1010
+  }
+push $N6ce50800
+push $N6ce0e000
+  Dot {
+   name Dot46
+   xpos -1747
+   ypos 580
+  }
+  Switch {
+   inputs 2
+   which {{parent.lightwrap}}
+   name Switch6
+   xpos -1781
+   ypos 738
+  }
+  Dot {
+   name Dot30
+   xpos -1747
+   ypos 830
+  }
+set N6e2c6000 [stack 0]
+  Dot {
+   name Dot15
+   xpos -1879
+   ypos 830
+  }
+set N6e2c6400 [stack 0]
+  Dot {
+   name Dot41
+   xpos -1972
+   ypos 830
+  }
+set N6e2c6800 [stack 0]
+  Dot {
+   name Dot31
+   xpos -2071
+   ypos 830
+  }
+  Merge2 {
+   inputs 2
+   operation max
+   name Merge15
+   xpos -2105
+   ypos 1000
+  }
+  Dot {
+   name Dot36
+   xpos -2071
+   ypos 1108
+  }
+push $N6e2af000
+push $N6e2c6800
+  Merge2 {
+   inputs 2
+   name Merge17
+   xpos -2006
+   ypos 967
+  }
+  Dot {
+   name Dot53
+   xpos -1972
+   ypos 1066
+  }
+push $N6e2aec00
+push $N6e2c6400
+  Merge2 {
+   inputs 2
+   operation screen
+   name Merge19
+   xpos -1913
+   ypos 921
+  }
+  Dot {
+   name Dot54
+   xpos -1879
+   ypos 1058
+  }
+push $N6e2ae800
+push $N6e2c6000
+  Merge2 {
+   inputs 2
+   operation plus
+   name Merge12
+   xpos -1781
+   ypos 884
+  }
+  Switch {
+   inputs 5
+   which {{parent.Mode}}
+   name Switch2
+   xpos -1781
+   ypos 1110
+  }
+set N6e2ecc00 [stack 0]
+  Shuffle {
+   alpha white
+   name Shuffle3
+   xpos -1519
+   ypos 1110
+  }
+push $N6e2c6000
+  Dot {
+   name Dot38
+   xpos -1535
+   ypos 830
+  }
+  Dot {
+   name Dot39
+   xpos -1535
+   ypos 956
+  }
+set N6e2ed800 [stack 0]
+  Dot {
+   name Dot57
+   xpos -1420
+   ypos 956
+  }
+set N6e2edc00 [stack 0]
+push $N6e661000
+push $N6ce51400
+  Dot {
+   name Dot16
+   xpos -1297
+   ypos 449
+  }
+push $N6e660400
+  Merge2 {
+   inputs 2
+   operation max
+   name Merge13
+   xpos -1331
+   ypos 551
+  }
+  Dot {
+   name Dot63
+   xpos -1297
+   ypos 638
+  }
+set N6e318800 [stack 0]
+  Dot {
+   name Dot62
+   xpos -1355
+   ypos 710
+  }
+  Switch {
+   inputs 2
+   which {{parent.lightwrap}}
+   name Switch7
+   xpos -1389
+   ypos 742
+  }
+  Dot {
+   name Dot58
+   xpos -1355
+   ypos 887
+  }
+push $N6e2ed800
+  Dot {
+   name Dot56
+   xpos -1535
+   ypos 1054
+  }
+push $N6e318800
+  Dot {
+   name Dot55
+   xpos -1298
+   ypos 958
+  }
+push $N6e2edc00
+  Dot {
+   name Dot40
+   xpos -1331
+   ypos 956
+  }
+  Merge2 {
+   inputs 2
+   name Merge16
+   xpos -1365
+   ypos 995
+  }
+  Switch {
+   inputs 2
+   which {{parent.lightwrap}}
+   name Switch9
+   xpos -1365
+   ypos 1050
+  }
+  Shuffle {
+   name Shuffle4
+   xpos -1365
+   ypos 1112
+  }
+  Switch {
+   inputs 4
+   which {{parent.Alpha}}
+   name Switch3
+   xpos -1454
+   ypos 1174
+  }
+push $N6e2ecc00
+  ShuffleCopy {
+   inputs 2
+   name ShuffleCopy2
+   xpos -1781
+   ypos 1174
+  }
+  Switch {
+   inputs 3
+   which {{parent.ThresholdView+(parent.View*2)}}
+   name Switch1
+   xpos -1781
+   ypos 1291
+  }
+  Output {
+   name Output1
+   xpos -1781
+   ypos 1349
+  }
+push $N6ce0f000
+push $N6ce0f000
+  Viewer {
+   inputs 2
+   frame_range 1-186
+   name Viewer1
+   xpos -1091
+   ypos -458
+  }
+push $N6ce0e400
+  Keyer {
+   operation "luminance key"
+   name Keyer1
+   xpos -1434
+   ypos -568
+  }
+ end_group
+ Output {
+  name Output1
+  xpos 248
+  ypos -362
+ }
+end_group
+SphericalTransform2 {
+ panTiltRollInput {-180 0 0}
+ name SphericalTransform2
+ xpos -480
+ ypos -273
+}
+CopyMetaData {
+ inputs 2
+ name CopyMetaData2
+ xpos -480
+ ypos -234
+}
+Group {
+ name HDRI_Lux_Meter2
+ knobChanged "n = nuke.thisNode()\nk = nuke.thisKnob() \n\nif k.name()  in ('meta', 'showPanel'):\n    meta = n\['meta'].value()\n    if meta ==  0:\n        n\['InputEV'].setEnabled(True)\n        n\['metaEV'].setEnabled(False)\n    elif meta ==  1:\n        n\['InputEV'].setEnabled(False)\n        n\['metaEV'].setEnabled(True)\n"
+ tile_color 0xffd455ff
+ label "\[value Lux]lux"
+ xpos -480
+ ypos -196
+ addUserKnob {20 LuxMater}
+ addUserKnob {41 colourspace_Pulldown_Choice l Colourspace T Panoramic_HDRI_Absolute_Luminance_Calibration.colourspace_Pulldown_Choice}
+ addUserKnob {7 InputEV +DISABLED R -3 18}
+ InputEV 14.7
+ addUserKnob {6 meta l "" +STARTLINE +STARTLINE}
+ meta true
+ addUserKnob {7 metaEV l "    metaEV" t "metadata EV Use check" -STARTLINE R -3 18}
+ metaEV {{"\[metadata EV]"}}
+ addUserKnob {26 ""}
+ addUserKnob {41 compute_input_illuminance_Python_Script_Button l "Compute Input Illuminance" T Panoramic_HDRI_Absolute_Luminance_Calibration.compute_input_illuminance_Python_Script_Button}
+ addUserKnob {41 reset_input_illuminance_Python_Script_Button l "Reset Input Illuminance" -STARTLINE T Panoramic_HDRI_Absolute_Luminance_Calibration.reset_input_illuminance_Python_Script_Button}
+ addUserKnob {26 ""}
+ addUserKnob {7 Lux}
+ Lux {{Panoramic_HDRI_Absolute_Luminance_Calibration.luminance_scaling_Multiply.input_illuminance_Floating_Point_Slider}}
+ addUserKnob {26 ""}
+ addUserKnob {20 Luxcondition l "Lux condition(reference value)" t 参考照度条件 n 1}
+ addUserKnob {26 text l "" t "Lux\n120,000 lux :      最も明るい太陽光\n111,000 lux :      晴天\n20,000 lux :        うす曇り、晴れ\n1,000–2,000 lux: 曇り、晴れの日陰、日の出・日の入り\n400-800 lux :      明るい室内照明\n<300 lux :          室内照明、明るい窓からの光\n<100 lux :          日の出前の薄暗い朝、日没後の暗い夜\n0.25 lux :           満月の月明かり\n0.01 lux :           晴れた夜空" +STARTLINE T "Lux\n120,000 lux :      Brightest sunlight\n111,000 lux :      Full sunlight\n20,000 lux :        Hazy, some clouds,Sunny day\n1,000–2,000 lux: Overcast, shady areas on a sunny day, Sunrise / sunset\n400-800 lux :      Bright indoor lighting\n<300 lux :          Indoor lighting. Bright window light.\n<100 lux :          Dark morning before sunrise, dark evening after sunset.\n0.25 lux :           Moonlight from a full moon\n0.01 lux :           Clear night sky"}
+ addUserKnob {20 endGroup n -1}
+ addUserKnob {26 credit l "" +STARTLINE T "\nCGSLAB LLC. \nhttp://site.cgslab.info/"}
+ addUserKnob {20 about_Tab l About}
+ addUserKnob {26 description_Text l "" +STARTLINE T "Customized for use\n\nPanoramic HDRI - Absolute Luminance Calibration v0.1.0\n\ncolour-science.org - September 06, 2016\n\nThis Gizmo / Group performs absolute luminance calibration of panoramic HDRI images.\n\n\[1] Lagarde, S., Lachambre, S., & Jover, C. (2016). An Artist-Friendly Workflow for Panoramic HDRI. Retrieved from http://blog.selfshadow.com/publications/s2016-shading-course/unity/s2016_pbs_unity_hdri_notes.pdf"}
+}
+ Input {
+  inputs 0
+  name Input1
+  xpos -221
+  ypos -42
+ }
+set N6e38b400 [stack 0]
+ Output {
+  name Output1
+  xpos -221
+  ypos 154
+ }
+push $N6e38b400
+ Multiply {
+  value {{2**(InputEV)}}
+  name Multiply1
+  xpos -171
+  ypos -4
+  disable {{meta}}
+ }
+ Multiply {
+  value {{2**(metaEV)}}
+  name Multiply2
+  xpos -171
+  ypos 35
+  disable {{!(meta)}}
+ }
+ Group {
+  name Panoramic_HDRI_Absolute_Luminance_Calibration
+  tile_color 0xffbf00ff
+  xpos -171
+  ypos 75
+  addUserKnob {20 panoramic_hdri_absolute_luminance_calibration_tab l "Panoramic HDRI - Absolute Luminance Calibration"}
+  addUserKnob {20 illuminance_parameters_Group l "Illuminance Parameters" n 1}
+  addUserKnob {22 compute_input_illuminance_Python_Script_Button l "Compute Input Illuminance" t "Computes the input illuminance. \n\nThe input illuminance has to be manually recomputed each time that up-stream graph is changed." T nuke.toNode('average_CurveTool').knob('go').execute() +STARTLINE}
+  addUserKnob {22 reset_input_illuminance_Python_Script_Button l "Reset Input Illuminance" t "Reset the input illuminance." -STARTLINE T "node =  nuke.toNode('average_CurveTool')\n\nknob = node.knob('intensitydata')\nknob.clearAnimated()\nknob.setValue(1)"}
+  addUserKnob {7 measured_illuminance_Floating_Point_Slider l "Measured Illuminance (Lux)" t "Measured illuminance E_v in Lumen per square metre (Lux)" R 0 120000}
+  measured_illuminance_Floating_Point_Slider 51000
+  addUserKnob {20 tone_parameters_endGroup l endGroup n -1}
+  addUserKnob {20 miscellaneous_Group l "Miscellaneous Parameters" n 1}
+  addUserKnob {4 colourspace_Pulldown_Choice l Colourspace M {ACES2065-1 ACEScc ACEScg ACESproxy "ALEXA Wide Gamut RGB" "Adobe RGB (1998)" "Adobe Wide Gamut RGB" "Apple RGB" "Best RGB" "Beta RGB" "CIE RGB" "Cinema Gamut" "ColorMatch RGB" DCI-P3 DCI-P3+ DRAGONcolor DRAGONcolor2 "Don RGB 4" "ECI RGB v2" "ERIMM RGB" "Ekta Space PS 5" "Max RGB" "NTSC RGB" "Pal/Secam RGB" "ProPhoto RGB" REDcolor REDcolor2 REDcolor3 REDcolor4 "RIMM RGB" "ROMM RGB" "Rec. 2020" "Rec. 709" "Russell RGB" S-Gamut S-Gamut3 S-Gamut3.Cine "SMPTE-C RGB" V-Gamut "Xtreme RGB" sRGB ""}}
+  colourspace_Pulldown_Choice ACEScg
+  addUserKnob {20 miscellaneous_endGroup l endGroup n -1}
+  addUserKnob {20 output_values_Group l "Output Values" n 1}
+  addUserKnob {7 luminance_scaling_factor_Floating_Point_Slider l "Luminance Scaling Factor"}
+  luminance_scaling_factor_Floating_Point_Slider {{luminance_scaling_Multiply.luminance_scaling_factor_Floating_Point_Slider}}
+  addUserKnob {20 output_values_endGroup l endGroup n -1}
+  addUserKnob {41 input_illuminance_Floating_Point_Slider l "Input Illuminance (Lux)" T luminance_scaling_Multiply.input_illuminance_Floating_Point_Slider}
+  addUserKnob {20 about_Tab l About}
+  addUserKnob {26 description_Text l "" +STARTLINE T "Panoramic HDRI - Absolute Luminance Calibration v0.1.0\n\ncolour-science.org - September 06, 2016\n\nThis Gizmo / Group performs absolute luminance calibration of panoramic HDRI images.\n\n\[1] Lagarde, S., Lachambre, S., & Jover, C. (2016). An Artist-Friendly Workflow for Panoramic HDRI. Retrieved from http://blog.selfshadow.com/publications/s2016-shading-course/unity/s2016_pbs_unity_hdri_notes.pdf"}
+ }
+  Input {
+   inputs 0
+   name Input
+   xpos -150
+   ypos -177
+  }
+set N6e3da400 [stack 0]
+  Multiply {
+   value {{luminance_scaling_factor_Floating_Point_Slider}}
+   name luminance_scaling_Multiply
+   xpos -150
+   ypos -133
+   addUserKnob {20 User}
+   addUserKnob {7 input_illuminance_Floating_Point_Slider l "Input Illuminance (Lux)"}
+   input_illuminance_Floating_Point_Slider {{parent.average_CurveTool.intensitydata.r}}
+   addUserKnob {7 measured_illuminance_Floating_Point_Slider l "Measured Illuminance (Lux)"}
+   measured_illuminance_Floating_Point_Slider {{parent.measured_illuminance_Floating_Point_Slider}}
+   addUserKnob {7 luminance_scaling_factor_Floating_Point_Slider l "Luminance Scaling Factor"}
+   luminance_scaling_factor_Floating_Point_Slider {{"1 / input_illuminance_Floating_Point_Slider * measured_illuminance_Floating_Point_Slider"}}
+  }
+  Output {
+   name Output
+   xpos -152
+   ypos -89
+  }
+push $N6e3da400
+  Dot {
+   name Dot1
+   xpos -116
+   ypos -198
+  }
+  Group {
+   name RGB_Luminance1
+   xpos -260
+   ypos -201
+   addUserKnob {20 RGB_luminance_Tab l "RGB Luminance"}
+   addUserKnob {20 colourspace_parameters_Begin_Group l "Colourspace Parameters" n 1}
+   colourspace_parameters_Begin_Group 0
+   addUserKnob {4 colourspace_Pulldown_Choice l Colourspace M {ACES2065-1 ACEScc ACEScg ACESproxy "ALEXA Wide Gamut RGB" "Adobe RGB (1998)" "Adobe Wide Gamut RGB" "Apple RGB" "Best RGB" "Beta RGB" "CIE RGB" "Cinema Gamut" "ColorMatch RGB" DCI-P3 DCI-P3+ DRAGONcolor DRAGONcolor2 "Don RGB 4" "ECI RGB v2" "ERIMM RGB" "Ekta Space PS 5" "Max RGB" "NTSC RGB" "Pal/Secam RGB" "ProPhoto RGB" REDcolor REDcolor2 REDcolor3 REDcolor4 "RIMM RGB" "ROMM RGB" "Rec. 2020" "Rec. 709" "Russell RGB" S-Gamut S-Gamut3 S-Gamut3.Cine "SMPTE-C RGB" V-Gamut "Xtreme RGB" sRGB}}
+   colourspace_Pulldown_Choice {{parent.colourspace_Pulldown_Choice x1 29}}
+   addUserKnob {20 endGroup n -1}
+   addUserKnob {20 about_Tab l About}
+   addUserKnob {26 description_Text l "" +STARTLINE T "RGB Luminance v0.1.4\n\ncolour-science.org - July 10, 2016\n\nThis Gizmo / Group computes the \"RGB Luminance\" of given colourspace."}
+  }
+   Input {
+    inputs 0
+    name Input
+    xpos -4880
+    ypos -273
+   }
+set N6e3db400 [stack 0]
+   Expression {
+    expr0 "0.212639005872 * r + 0.715168678768 * g + 0.0721923153607 * b"
+    expr1 "0.212639005872 * r + 0.715168678768 * g + 0.0721923153607 * b"
+    expr2 "0.212639005872 * r + 0.715168678768 * g + 0.0721923153607 * b"
+    name sRGB_luminance_Expression
+    selected true
+    xpos -5006
+    ypos -251
+   }
+push $N6e3db400
+   Expression {
+    expr0 "0.0 * r + 1.0 * g + 0.0 * b"
+    expr1 "0.0 * r + 1.0 * g + 0.0 * b"
+    expr2 "0.0 * r + 1.0 * g + 0.0 * b"
+    name Xtreme_RGB_luminance_Expression
+    xpos -5136
+    ypos -251
+   }
+push $N6e3db400
+   Expression {
+    expr0 "0.26068555009 * r + 0.77489446333 * g + -0.03558001342 * b"
+    expr1 "0.26068555009 * r + 0.77489446333 * g + -0.03558001342 * b"
+    expr2 "0.26068555009 * r + 0.77489446333 * g + -0.03558001342 * b"
+    name V-Gamut_luminance_Expression
+    xpos -5286
+    ypos -251
+   }
+push $N6e3db400
+   Expression {
+    expr0 "0.212376360705 * r + 0.701059856926 * g + 0.0865637823692 * b"
+    expr1 "0.212376360705 * r + 0.701059856926 * g + 0.0865637823692 * b"
+    expr2 "0.212376360705 * r + 0.701059856926 * g + 0.0865637823692 * b"
+    name SMPTE-C_RGB_luminance_Expression
+    xpos -5436
+    ypos -251
+   }
+push $N6e3db400
+   Expression {
+    expr0 "0.215075820116 * r + 0.885068501744 * g + -0.100144321859 * b"
+    expr1 "0.215075820116 * r + 0.885068501744 * g + -0.100144321859 * b"
+    expr2 "0.215075820116 * r + 0.885068501744 * g + -0.100144321859 * b"
+    name S-Gamut3.Cine_luminance_Expression
+    xpos -5586
+    ypos -251
+   }
+push $N6e3db400
+   Expression {
+    expr0 "0.270979670813 * r + 0.786606411221 * g + -0.0575860820344 * b"
+    expr1 "0.270979670813 * r + 0.786606411221 * g + -0.0575860820344 * b"
+    expr2 "0.270979670813 * r + 0.786606411221 * g + -0.0575860820344 * b"
+    name S-Gamut3_luminance_Expression
+    xpos -5736
+    ypos -251
+   }
+push $N6e3db400
+   Expression {
+    expr0 "0.270979670813 * r + 0.786606411221 * g + -0.0575860820344 * b"
+    expr1 "0.270979670813 * r + 0.786606411221 * g + -0.0575860820344 * b"
+    expr2 "0.270979670813 * r + 0.786606411221 * g + -0.0575860820344 * b"
+    name S-Gamut_luminance_Expression
+    xpos -5886
+    ypos -251
+   }
+push $N6e3db400
+   Expression {
+    expr0 "0.315199106486 * r + 0.664839320751 * g + 0.0199615727626 * b"
+    expr1 "0.315199106486 * r + 0.664839320751 * g + 0.0199615727626 * b"
+    expr2 "0.315199106486 * r + 0.664839320751 * g + 0.0199615727626 * b"
+    name Russell_RGB_luminance_Expression
+    xpos -6036
+    ypos -251
+   }
+push $N6e3db400
+   Expression {
+    expr0 "0.212639005872 * r + 0.715168678768 * g + 0.0721923153607 * b"
+    expr1 "0.212639005872 * r + 0.715168678768 * g + 0.0721923153607 * b"
+    expr2 "0.212639005872 * r + 0.715168678768 * g + 0.0721923153607 * b"
+    name Rec._709_luminance_Expression
+    xpos -6186
+    ypos -251
+   }
+push $N6e3db400
+   Expression {
+    expr0 "0.262700212011 * r + 0.677998071519 * g + 0.0593017164699 * b"
+    expr1 "0.262700212011 * r + 0.677998071519 * g + 0.0593017164699 * b"
+    expr2 "0.262700212011 * r + 0.677998071519 * g + 0.0593017164699 * b"
+    name Rec._2020_luminance_Expression
+    xpos -6336
+    ypos -251
+   }
+push $N6e3db400
+   Expression {
+    expr0 "0.288071128229 * r + 0.71184321781 * g + 8.56539606053e-05 * b"
+    expr1 "0.288071128229 * r + 0.71184321781 * g + 8.56539606053e-05 * b"
+    expr2 "0.288071128229 * r + 0.71184321781 * g + 8.56539606053e-05 * b"
+    name ROMM_RGB_luminance_Expression
+    xpos -6486
+    ypos -251
+   }
+push $N6e3db400
+   Expression {
+    expr0 "0.288071128229 * r + 0.71184321781 * g + 8.56539606053e-05 * b"
+    expr1 "0.288071128229 * r + 0.71184321781 * g + 8.56539606053e-05 * b"
+    expr2 "0.288071128229 * r + 0.71184321781 * g + 8.56539606053e-05 * b"
+    name RIMM_RGB_luminance_Expression
+    xpos -6636
+    ypos -251
+   }
+push $N6e3db400
+   Expression {
+    expr0 "0.211947869481 * r + 0.723019772048 * g + 0.0650323584709 * b"
+    expr1 "0.211947869481 * r + 0.723019772048 * g + 0.0650323584709 * b"
+    expr2 "0.211947869481 * r + 0.723019772048 * g + 0.0650323584709 * b"
+    name REDcolor4_luminance_Expression
+    xpos -6786
+    ypos -251
+   }
+push $N6e3db400
+   Expression {
+    expr0 "0.22890381241 * r + 0.780859824404 * g + -0.0097636368135 * b"
+    expr1 "0.22890381241 * r + 0.780859824404 * g + -0.0097636368135 * b"
+    expr2 "0.22890381241 * r + 0.780859824404 * g + -0.0097636368135 * b"
+    name REDcolor3_luminance_Expression
+    xpos -6936
+    ypos -251
+   }
+push $N6e3db400
+   Expression {
+    expr0 "0.169442097101 * r + 0.864828202542 * g + -0.0342702996431 * b"
+    expr1 "0.169442097101 * r + 0.864828202542 * g + -0.0342702996431 * b"
+    expr2 "0.169442097101 * r + 0.864828202542 * g + -0.0342702996431 * b"
+    name REDcolor2_luminance_Expression
+    xpos -7086
+    ypos -251
+   }
+push $N6e3db400
+   Expression {
+    expr0 "0.202218816094 * r + 0.758528901746 * g + 0.03925228216 * b"
+    expr1 "0.202218816094 * r + 0.758528901746 * g + 0.03925228216 * b"
+    expr2 "0.202218816094 * r + 0.758528901746 * g + 0.03925228216 * b"
+    name REDcolor_luminance_Expression
+    xpos -7236
+    ypos -251
+   }
+push $N6e3db400
+   Expression {
+    expr0 "0.288071128229 * r + 0.71184321781 * g + 8.56539606053e-05 * b"
+    expr1 "0.288071128229 * r + 0.71184321781 * g + 8.56539606053e-05 * b"
+    expr2 "0.288071128229 * r + 0.71184321781 * g + 8.56539606053e-05 * b"
+    name ProPhoto_RGB_luminance_Expression
+    xpos -7386
+    ypos -251
+   }
+push $N6e3db400
+   Expression {
+    expr0 "0.222004309998 * r + 0.706654765925 * g + 0.0713409240765 * b"
+    expr1 "0.222004309998 * r + 0.706654765925 * g + 0.0713409240765 * b"
+    expr2 "0.222004309998 * r + 0.706654765925 * g + 0.0713409240765 * b"
+    name Pal/Secam_RGB_luminance_Expression
+    xpos -7536
+    ypos -251
+   }
+push $N6e3db400
+   Expression {
+    expr0 "0.29890307025 * r + 0.586619854659 * g + 0.114477075091 * b"
+    expr1 "0.29890307025 * r + 0.586619854659 * g + 0.114477075091 * b"
+    expr2 "0.29890307025 * r + 0.586619854659 * g + 0.114477075091 * b"
+    name NTSC_RGB_luminance_Expression
+    xpos -7686
+    ypos -251
+   }
+push $N6e3db400
+   Expression {
+    expr0 "0.31011010912 * r + 0.68988989088 * g + 0.0 * b"
+    expr1 "0.31011010912 * r + 0.68988989088 * g + 0.0 * b"
+    expr2 "0.31011010912 * r + 0.68988989088 * g + 0.0 * b"
+    name Max_RGB_luminance_Expression
+    xpos -7836
+    ypos -251
+   }
+push $N6e3db400
+   Expression {
+    expr0 "0.261148012901 * r + 0.734851409355 * g + 0.00400057774408 * b"
+    expr1 "0.261148012901 * r + 0.734851409355 * g + 0.00400057774408 * b"
+    expr2 "0.261148012901 * r + 0.734851409355 * g + 0.00400057774408 * b"
+    name Ekta_Space_PS_5_luminance_Expression
+    xpos -7986
+    ypos -251
+   }
+push $N6e3db400
+   Expression {
+    expr0 "0.288071128229 * r + 0.71184321781 * g + 8.56539606053e-05 * b"
+    expr1 "0.288071128229 * r + 0.71184321781 * g + 8.56539606053e-05 * b"
+    expr2 "0.288071128229 * r + 0.71184321781 * g + 8.56539606053e-05 * b"
+    name ERIMM_RGB_luminance_Expression
+    xpos -8136
+    ypos -251
+   }
+push $N6e3db400
+   Expression {
+    expr0 "0.320159696395 * r + 0.601827518042 * g + 0.0780127855624 * b"
+    expr1 "0.320159696395 * r + 0.601827518042 * g + 0.0780127855624 * b"
+    expr2 "0.320159696395 * r + 0.601827518042 * g + 0.0780127855624 * b"
+    name ECI_RGB_v2_luminance_Expression
+    xpos -8286
+    ypos -251
+   }
+push $N6e3db400
+   Expression {
+    expr0 "0.278137227919 * r + 0.687858269682 * g + 0.0340045023989 * b"
+    expr1 "0.278137227919 * r + 0.687858269682 * g + 0.0340045023989 * b"
+    expr2 "0.278137227919 * r + 0.687858269682 * g + 0.0340045023989 * b"
+    name Don_RGB_4_luminance_Expression
+    xpos -8436
+    ypos -251
+   }
+push $N6e3db400
+   Expression {
+    expr0 "0.194255795247 * r + 0.738556869189 * g + 0.0671873355644 * b"
+    expr1 "0.194255795247 * r + 0.738556869189 * g + 0.0671873355644 * b"
+    expr2 "0.194255795247 * r + 0.738556869189 * g + 0.0671873355644 * b"
+    name DRAGONcolor2_luminance_Expression
+    xpos -8586
+    ypos -251
+   }
+push $N6e3db400
+   Expression {
+    expr0 "0.220724022316 * r + 0.839188054601 * g + -0.0599120769169 * b"
+    expr1 "0.220724022316 * r + 0.839188054601 * g + -0.0599120769169 * b"
+    expr2 "0.220724022316 * r + 0.839188054601 * g + -0.0599120769169 * b"
+    name DRAGONcolor_luminance_Expression
+    xpos -8736
+    ypos -251
+   }
+push $N6e3db400
+   Expression {
+    expr0 "0.203986297104 * r + 0.882591093117 * g + -0.0865773902211 * b"
+    expr1 "0.203986297104 * r + 0.882591093117 * g + -0.0865773902211 * b"
+    expr2 "0.203986297104 * r + 0.882591093117 * g + -0.0865773902211 * b"
+    name DCI-P3+_luminance_Expression
+    xpos -8886
+    ypos -251
+   }
+push $N6e3db400
+   Expression {
+    expr0 "0.209491677913 * r + 0.721595254161 * g + 0.0689130679262 * b"
+    expr1 "0.209491677913 * r + 0.721595254161 * g + 0.0689130679262 * b"
+    expr2 "0.209491677913 * r + 0.721595254161 * g + 0.0689130679262 * b"
+    name DCI-P3_luminance_Expression
+    xpos -9036
+    ypos -251
+   }
+push $N6e3db400
+   Expression {
+    expr0 "0.274950336309 * r + 0.658074997381 * g + 0.0669746663108 * b"
+    expr1 "0.274950336309 * r + 0.658074997381 * g + 0.0669746663108 * b"
+    expr2 "0.274950336309 * r + 0.658074997381 * g + 0.0669746663108 * b"
+    name ColorMatch_RGB_luminance_Expression
+    xpos -9186
+    ypos -251
+   }
+push $N6e3db400
+   Expression {
+    expr0 "0.261261357526 * r + 0.869642145755 * g + -0.130903503281 * b"
+    expr1 "0.261261357526 * r + 0.869642145755 * g + -0.130903503281 * b"
+    expr2 "0.261261357526 * r + 0.869642145755 * g + -0.130903503281 * b"
+    name Cinema_Gamut_luminance_Expression
+    xpos -9336
+    ypos -251
+   }
+push $N6e3db400
+   Expression {
+    expr0 "0.176204436534 * r + 0.812984693878 * g + 0.0108108695884 * b"
+    expr1 "0.176204436534 * r + 0.812984693878 * g + 0.0108108695884 * b"
+    expr2 "0.176204436534 * r + 0.812984693878 * g + 0.0108108695884 * b"
+    name CIE_RGB_luminance_Expression
+    xpos -9486
+    ypos -251
+   }
+push $N6e3db400
+   Expression {
+    expr0 "0.303318752896 * r + 0.663744233497 * g + 0.0329370136071 * b"
+    expr1 "0.303318752896 * r + 0.663744233497 * g + 0.0329370136071 * b"
+    expr2 "0.303318752896 * r + 0.663744233497 * g + 0.0329370136071 * b"
+    name Beta_RGB_luminance_Expression
+    xpos -9636
+    ypos -251
+   }
+push $N6e3db400
+   Expression {
+    expr0 "0.227601772978 * r + 0.738394652678 * g + 0.0340035743443 * b"
+    expr1 "0.227601772978 * r + 0.738394652678 * g + 0.0340035743443 * b"
+    expr2 "0.227601772978 * r + 0.738394652678 * g + 0.0340035743443 * b"
+    name Best_RGB_luminance_Expression
+    xpos -9786
+    ypos -251
+   }
+push $N6e3db400
+   Expression {
+    expr0 "0.244615922485 * r + 0.672044251324 * g + 0.0833398261912 * b"
+    expr1 "0.244615922485 * r + 0.672044251324 * g + 0.0833398261912 * b"
+    expr2 "0.244615922485 * r + 0.672044251324 * g + 0.0833398261912 * b"
+    name Apple_RGB_luminance_Expression
+    xpos -9936
+    ypos -251
+   }
+push $N6e3db400
+   Expression {
+    expr0 "0.25872824304 * r + 0.724682314949 * g + 0.0165894420113 * b"
+    expr1 "0.25872824304 * r + 0.724682314949 * g + 0.0165894420113 * b"
+    expr2 "0.25872824304 * r + 0.724682314949 * g + 0.0165894420113 * b"
+    name Adobe_Wide_Gamut_RGB_luminance_Expression
+    xpos -10086
+    ypos -251
+   }
+push $N6e3db400
+   Expression {
+    expr0 "0.297344975251 * r + 0.627363566255 * g + 0.075291458494 * b"
+    expr1 "0.297344975251 * r + 0.627363566255 * g + 0.075291458494 * b"
+    expr2 "0.297344975251 * r + 0.627363566255 * g + 0.075291458494 * b"
+    name Adobe_RGB_(1998)_luminance_Expression
+    xpos -10236
+    ypos -251
+   }
+push $N6e3db400
+   Expression {
+    expr0 "0.291953779 * r + 0.823841041511 * g + -0.11579482051 * b"
+    expr1 "0.291953779 * r + 0.823841041511 * g + -0.11579482051 * b"
+    expr2 "0.291953779 * r + 0.823841041511 * g + -0.11579482051 * b"
+    name ALEXA_Wide_Gamut_RGB_luminance_Expression
+    xpos -10386
+    ypos -251
+   }
+push $N6e3db400
+   Expression {
+    expr0 "0.272228716781 * r + 0.674081765811 * g + 0.0536895174079 * b"
+    expr1 "0.272228716781 * r + 0.674081765811 * g + 0.0536895174079 * b"
+    expr2 "0.272228716781 * r + 0.674081765811 * g + 0.0536895174079 * b"
+    name ACESproxy_luminance_Expression
+    xpos -10536
+    ypos -251
+   }
+push $N6e3db400
+   Expression {
+    expr0 "0.272228716781 * r + 0.674081765811 * g + 0.0536895174079 * b"
+    expr1 "0.272228716781 * r + 0.674081765811 * g + 0.0536895174079 * b"
+    expr2 "0.272228716781 * r + 0.674081765811 * g + 0.0536895174079 * b"
+    name ACEScg_luminance_Expression
+    xpos -10686
+    ypos -251
+   }
+push $N6e3db400
+   Expression {
+    expr0 "0.272228716781 * r + 0.674081765811 * g + 0.0536895174079 * b"
+    expr1 "0.272228716781 * r + 0.674081765811 * g + 0.0536895174079 * b"
+    expr2 "0.272228716781 * r + 0.674081765811 * g + 0.0536895174079 * b"
+    name ACEScc_luminance_Expression
+    xpos -10836
+    ypos -251
+   }
+push $N6e3db400
+   Expression {
+    expr0 "0.343966449765 * r + 0.728166096613 * g + -0.0721325463786 * b"
+    expr1 "0.343966449765 * r + 0.728166096613 * g + -0.0721325463786 * b"
+    expr2 "0.343966449765 * r + 0.728166096613 * g + -0.0721325463786 * b"
+    name ACES2065-1_luminance_Expression
+    xpos -10986
+    ypos -251
+   }
+   Switch {
+    inputs 41
+    which {{parent.colourspace_Pulldown_Choice}}
+    name colourspace_Switch
+    xpos -4880
+    ypos -225
+    addUserKnob {20 User}
+    addUserKnob {4 colourspace_Pulldown_Choice l Colourspace M {ACES2065-1 ACEScc ACEScg ACESproxy "ALEXA Wide Gamut RGB" "Adobe RGB (1998)" "Adobe Wide Gamut RGB" "Apple RGB" "Best RGB" "Beta RGB" "CIE RGB" "Cinema Gamut" "ColorMatch RGB" DCI-P3 DCI-P3+ DRAGONcolor DRAGONcolor2 "Don RGB 4" "ECI RGB v2" "ERIMM RGB" "Ekta Space PS 5" "Max RGB" "NTSC RGB" "Pal/Secam RGB" "ProPhoto RGB" REDcolor REDcolor2 REDcolor3 REDcolor4 "RIMM RGB" "ROMM RGB" "Rec. 2020" "Rec. 709" "Russell RGB" S-Gamut S-Gamut3 S-Gamut3.Cine "SMPTE-C RGB" V-Gamut "Xtreme RGB" sRGB}}
+   }
+   Output {
+    name Output
+    xpos -4880
+    ypos -201
+   }
+  end_group
+push $N6e3da400
+  Expression {
+   temp_name0 theta_cos
+   temp_expr0 "cos((1 - y / (height - 1)) * pi)"
+   temp_name1 theta_sin
+   temp_expr1 "sin((1 - y / (height - 1)) * pi)"
+   expr0 "theta_cos > 0 ? theta_cos * theta_sin * 2 * pi ** 2 : 0"
+   expr1 "theta_cos > 0 ? theta_cos * theta_sin * 2 * pi ** 2 : 0"
+   expr2 "theta_cos > 0 ? theta_cos * theta_sin * 2 * pi ** 2 : 0"
+   name upper_hemisphere_illuminance_weights_Expression
+   selected true
+   xpos -370
+   ypos -177
+  }
+  Dot {
+   name Dot4
+   xpos -336
+   ypos -150
+  }
+  Merge2 {
+   inputs 2
+   operation multiply
+   name merge_Multiply
+   xpos -260
+   ypos -153
+  }
+  CurveTool {
+   avgframes 1
+   ROI {0 0 {Input.width} {Input.height}}
+   autocropdata {1071 712 3214 2136}
+   intensitydata {{curve x1 90372.39815} {curve x1 90372.39815} {curve x1 90372.39815} {curve x1 107220.6434}}
+   name average_CurveTool
+   xpos -260
+   ypos -129
+  }
+ end_group
+end_group
+Group {
+ name ColorMatch2
+ knobChanged "n = nuke.thisNode()\nk = nuke.thisKnob() \n\nif k.name()  in ('PickSource', 'showPanel'):\n    PickSource = n\['PickSource'].value()\n    if PickSource ==  0:\n        n\['SourceWH'].setVisible(False)\n        n\['SourceEV'].setVisible(True)\n    elif PickSource ==  1:\n        n\['SourceWH'].setVisible(True)\n        n\['SourceEV'].setVisible(False)\n   \n\nif k.name()  in ('Pick', 'showPanel'):\n    Pick = n\['Pick'].value()\n    if Pick ==  0:\n        n\['SourceEV'].setEnabled(False)\n        n\['TargetEV'].setEnabled(False)\n        n\['SourceWH'].setEnabled(False)\n        n\['PickSource'].setEnabled(False)\n        n\['Exposure'].setEnabled(True)\n    elif Pick ==  1:\n        n\['SourceEV'].setEnabled(True)\n        n\['TargetEV'].setEnabled(True)\n        n\['SourceWH'].setEnabled(True)\n        n\['PickSource'].setEnabled(True)\n        n\['Exposure'].setEnabled(False)\n"
+ tile_color 0xaa55ffff
+ xpos -480
+ ypos -160
+ addUserKnob {20 ColorMatch l "Color Match"}
+ addUserKnob {26 text l "Match Whitepoint"}
+ addUserKnob {18 Source l "Source color"}
+ Source {0.5068112612 0.5149133801 0.5798488259}
+ addUserKnob {6 Source_panelDropped l "panel dropped state" -STARTLINE +HIDDEN}
+ addUserKnob {6 color_rgb_panelDropped l "panel dropped state" -STARTLINE +HIDDEN}
+ addUserKnob {18 Target l "Target color"}
+ Target {0.5778717399 0.587305963 0.5947839618}
+ addUserKnob {6 Target_panelDropped l "panel dropped state" +HIDDEN +STARTLINE}
+ addUserKnob {6 color_rgb_1_panelDropped l "panel dropped state" -STARTLINE +HIDDEN}
+ addUserKnob {6 Exposure l "Match Exposure" +STARTLINE}
+ Exposure true
+ addUserKnob {26 text_1 l "Change Exposure"}
+ addUserKnob {6 Pick l "Pick Other source Match Exposure" +STARTLINE}
+ addUserKnob {6 PickSource l "Use Whitepoint Source color" +DISABLED +STARTLINE}
+ addUserKnob {18 SourceWH l "Source color" +DISABLED +HIDDEN}
+ SourceWH {{Source.r} {Source.g} {Source.b}}
+ addUserKnob {6 SourceWH_panelDropped l "panel dropped state" -STARTLINE +HIDDEN}
+ addUserKnob {18 SourceEV l "Source color" +DISABLED}
+ SourceEV {1 1 1}
+ addUserKnob {6 SourceEV_panelDropped l "panel dropped state" -STARTLINE +HIDDEN}
+ addUserKnob {18 TargetEV l "Target Color" +DISABLED R 0 10}
+ TargetEV {1 1 1}
+ addUserKnob {6 TargetEV_panelDropped l "panel dropped state" -STARTLINE +HIDDEN}
+ addUserKnob {26 ""}
+ addUserKnob {6 WBreverse l "Whitepoint reverse" +STARTLINE}
+ addUserKnob {6 EVreverse l "Exposure reverse" +STARTLINE}
+ addUserKnob {26 ""}
+ addUserKnob {26 credit l "" +STARTLINE T "\nCGSLAB LLC. \nhttp://site.cgslab.info/"}
+ addUserKnob {6 PickExposure_panelDropped l "panel dropped state" +HIDDEN +STARTLINE}
+}
+ Input {
+  inputs 0
+  name Input1
+  xpos 510
+  ypos 111
+ }
+ Grade {
+  whitepoint {{(white.r*0.2126)+(white.g*0.7152)+(white.b*0.0722)}}
+  white {{parent.Target.r} {parent.Target.g} {parent.Target.b} 1}
+  reverse {{parent.WBreverse}}
+  name Grade1
+  xpos 510
+  ypos 159
+ }
+ Grade {
+  whitepoint {{parent.Source.r} {parent.Source.g} {parent.Source.b} 0}
+  white {{(whitepoint.r*0.2126)+(whitepoint.g*0.7152)+(whitepoint.b*0.0722)}}
+  reverse {{parent.WBreverse}}
+  name Grade2
+  xpos 510
+  ypos 207
+ }
+ Grade {
+  whitepoint {{parent.Grade2.white}}
+  white {{parent.Grade1.whitepoint}}
+  reverse {{parent.EVreverse}}
+  name Grade3
+  xpos 510
+  ypos 255
+  disable {{!(Exposure)/(!(Pick))}}
+ }
+ Grade {
+  whitepoint {{(SourceEV.r*0.2126)+(SourceEV.g*0.7152)+(SourceEV.b*0.0722)}}
+  white {{(TargetEV.r*0.2126)+(TargetEV.g*0.7152)+(TargetEV.b*0.0722)}}
+  reverse {{parent.EVreverse}}
+  name Grade4
+  xpos 510
+  ypos 303
+  disable {{!(Pick)}}
+ }
+ Output {
+  name Output1
+  xpos 510
+  ypos 351
+ }
+end_group
+Write {
+ file "\[file dirname \[value root.name]]/\[metadata Name]_\[metadata EV]EV_ACEScg.exr"
+ colorspace "ACES - ACEScg"
+ file_type exr
+ metadata "all metadata except input/*"
+ first_part rgba
+ version 14
+ in_colorspace scene_linear
+ out_colorspace scene_linear
+ name Write1
+ xpos -480
+ ypos -117
+}
+Read {
+ inputs 0
+ file_type exr
+ file "\[file dirname \[value root.name]]/data/XH2_Plate_ACEScg.exr"
+ format "1920 1080 0 0 1920 1080 1 HD_1080"
+ origset true
+ colorspace scene_linear
+ name Read2
+ xpos 12
+ ypos -278
+}
+push $N6e3e7700
+Viewer {
+ frame_range 1-100
+ colour_sample_bbox {-0.1760416627 0.01666666754 -0.1197916642 0.07604166865}
+ viewerProcess "sRGB (ACES)"
+ name Viewer1
+ xpos -149
+ ypos 20
+}
